@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integrated Cognitive Workspace</title>
+    <style>
+        :root {
+            --bg-dark: #090d16;
+            --panel-bg: #111827;
+            --accent-blue: #2563eb;
+            --accent-red: #dc2626;
+            --accent-amber: #d97706;
+            --accent-green: #16a34a;
+            --border-color: #374151;
+            --text-light: #f3f4f6;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .workspace-card {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 650px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);
+        }
+
+        .header {
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+
+        .header h1 { font-size: 1.4rem; margin: 0; font-weight: 600; }
+        .header p { color: #9ca3af; font-size: 0.85rem; margin: 0.25rem 0 0 0; }
+
+        /* Milestone 1: Core UI State Indicator Panel */
+        .status-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            background: #1f2937;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #6b7280;
+            transition: background 0.3s ease;
+        }
+
+        .status-lbl {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* State Mapping Configurations */
+        .status-container[data-state="idle"] .status-dot { background-color: var(--accent-blue); }
+        .status-container[data-state="idle"] .status-lbl { color: var(--accent-blue); }
+
+        .status-container[data-state="listening"] .status-dot { background-color: var(--accent-red); animation: pulse 1s infinite alternate; }
+        .status-container[data-state="listening"] .status-lbl { color: var(--accent-red); }
+
+        .status-container[data-state="processing"] .status-dot { background-color: var(--accent-amber); }
+        .status-container[data-state="processing"] .status-lbl { color: var(--accent-amber); }
+
+        .status-container[data-state="executing"] .status-dot { background-color: var(--accent-green); }
+        .status-container[data-state="executing"] .status-lbl { color: var(--accent-green); }
+
+        /* Milestone 5: Lock Indicator UI Style State */
+        .status-container[data-state="busy"] .status-dot { background-color: #7c3aed; animation: pulse 0.5s infinite alternate; }
+        .status-container[data-state="busy"] .status-lbl { color: #7c3aed; }
+
+        /* Interface Layout elements */
+        .action-tray {
+            display: flex;
+            justify-content: center;
+            padding: 1.5rem 0;
+        }
+
+        .audio-trigger-btn {
+            background-color: var(--accent-blue);
+            border: none;
+            color: white;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .audio-trigger-btn:hover { transform: scale(1.05); }
+        .audio-trigger-btn.recording {
+            background-color: var(--accent-red);
+            box-shadow: 0 4px 14px rgba(220, 38, 38, 0.4);
+        }
+
+        .audio-trigger-btn svg { width: 26px; height: 26px; fill: white; }
+
+        /* Fallback Terminal Styling */
+        .console-header {
+            font-size: 0.8rem;
+            color: #9ca3af;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .terminal-box {
+            background-color: #030712;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 1rem;
+            font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+            font-size: 0.85rem;
+            min-height: 140px;
+            max-height: 220px;
+            overflow-y: auto;
+            color: #34d399;
+            white-space: pre-wrap;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="workspace-card">
+    <div class="header">
+        <h1>Cognitive Interface Engine</h1>
+        <p>Unified Milestones 1-5 Operational Profile Matrix</p>
+    </div>
+
+    <!-- Dynamic UI State Element Display Layer (Milestone 1) -->
+    <div id="statusIndicator" class="status-container" data-state="idle">
+        <div class="status-dot"></div>
+        <span id="statusLabel" class="status-lbl">Idle</span>
+    </div>
+
+    <!-- Active Microphone Input Button Element (Milestone 1) -->
+    <div class="action-tray">
+        <button id="micBtn" class="audio-trigger-btn" title="Toggle Input Layer">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Text Fallback Console Interface Module (Milestone 1) -->
+    <div class="console-header">System Output Pipeline</div>
+    <div id="terminal" class="terminal-box">Workspace initialized. Trigger audio track...</div>
+</div>
+
+<script>
+    const micBtn = document.getElementById('micBtn');
+    const statusIndicator = document.getElementById('statusIndicator');
+    const statusLabel = document.getElementById('statusLabel');
+    const terminal = document.getElementById('terminal');
+
+    // Milestone 1: Initialize Web Speech API Engine Browser Wrapper
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let recognitionMatrix = null;
+    let applicationListeningState = false;
+
+    if (!SpeechRecognition) {
+        logToTerminal("[CRITICAL]: Browser client missing native Speech API access framework.");
+        micBtn.disabled = true;
+    } else {
+        recognitionMatrix = new SpeechRecognition();
+        recognitionMatrix.continuous = false;
+        recognitionMatrix.interimResults = false;
+        recognitionMatrix.lang = 'en-US';
+
+        recognitionMatrix.onstart = () => mutateUIState('listening');
+        recognitionMatrix.onerror = (err) => {
+            logToTerminal(`[Speech Engine Exception]: ${err.error}`);
+            mutateUIState('idle');
+        };
+        recognitionMatrix.onend = () => {
+            applicationListeningState = false;
+            micBtn.classList.remove('recording');
+        };
+        recognitionMatrix.onresult = (evt) => {
+            const rawSpeechOutput = evt.results[0][0].transcript;
+            logToTerminal(`Parsed Plaintext: "${rawSpeechOutput}"`);
+            
+            // Forward translated plaintext directly down the asynchronous network dispatcher
+            dispatchTargetPayload(rawSpeechOutput);
+        };
+    }
+
+    micBtn.addEventListener('click', () => {
+        if(!recognitionMatrix) return;
+        if(applicationListeningState) {
+            recognitionMatrix.stop();
+        } else {
+            terminal.textContent = "[System Log]: Opening speech interface buffer link...";
+            recognitionMatrix.start();
+            applicationListeningState = true;
+            micBtn.classList.add('recording');
+        }
+    });
+
+    function logToTerminal(message) {
+        terminal.textContent += `\n${message}`;
+        terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    function mutateUIState(targetState) {
+        statusIndicator.setAttribute('data-state', targetState);
+        statusLabel.textContent = targetState;
+    }
+
+    // Milestone 2: Asynchronous JavaScript network dispatch utility
+    async function dispatchTargetPayload(transcribedString) {
+        mutateUIState('processing');
+        logToTerminal("[Network API]: Dispatching structured query transaction package upstream...");
+
+        const targetPayload = { command: transcribedString };
+        
+        try {
+            const apiResponse = await fetch('/api/command', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(targetPayload)
+            });
+
+            // Milestone 5: Intercept locked/busy server loops non-blockingly
+            if (apiResponse.status === 423) {
+                const data = await apiResponse.json();
+                mutateUIState('busy');
+                logToTerminal(`[System Concurrency Lock]: ${data.message}`);
+                
+                // Return smoothly back to an ready state after fallback notification
+                setTimeout(() => mutateUIState('idle'), 4000);
+                return;
+            }
+
+            const coordinateRoute = await apiResponse.json();
+            
+            if (coordinateRoute.status === "success") {
+                mutateUIState('executing');
+                logToTerminal(`[Cognitive Analysis]: Platform Match -> ${coordinateRoute.intent.platform.toUpperCase()} | Intent: ${coordinateRoute.intent.action}`);
+                logToTerminal(`[Server Response]: ${coordinateRoute.message}`);
+
+                // Milestone 4: Client Workspace Tab Redirection logic execution
+                if (coordinateRoute.url) {
+                    logToTerminal(`[Redirect Dispatch]: Deploying target workspace hook: ${coordinateRoute.url}`);
+                    window.open(coordinateRoute.url, '_blank');
+                }
+                
+                // Return gracefully to idle loop sequence if no active blocking loops
+                if (!coordinateRoute.has_automation) {
+                    setTimeout(() => mutateUIState('idle'), 2000);
+                }
+            } else {
+                mutateUIState('idle');
+                logToTerminal(`[Server Execution Fault]: ${coordinateRoute.message}`);
+            }
+
+        } catch (netErr) {
+            mutateUIState('idle');
+            logToTerminal(`[Network Fatal Exception]: Handshake stack unreached. ${netErr.message}`);
+        }
+    }
+</script>
+
+</body>
+</html>
