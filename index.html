@@ -3,292 +3,650 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Integrated Cognitive Workspace</title>
+    <title>Enterprise Cognitive Operations Console</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
     <style>
+        /* ==========================================================================
+           1. COMPOSITE GLOBAL THEME CONSTANTS & CSS VARIABLE MATRIX
+           ========================================================================== */
         :root {
-            --bg-dark: #090d16;
-            --panel-bg: #111827;
-            --accent-blue: #2563eb;
-            --accent-red: #dc2626;
-            --accent-amber: #d97706;
-            --accent-green: #16a34a;
-            --border-color: #374151;
-            --text-light: #f3f4f6;
+            --bg-main: #060913;
+            --panel-surface: #0e1726;
+            --panel-surface-elevated: #152238;
+            --panel-border: #1f2d47;
+            --panel-border-focus: #3b82f6;
+
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #475569;
+
+            /* State-Engine Functional Semantic Colors */
+            --state-idle: #3b82f6;
+            --state-idle-glow: rgba(59, 130, 246, 0.15);
+            --state-listening: #ef4444;
+            --state-listening-glow: rgba(239, 68, 68, 0.2);
+            --state-processing: #f59e0b;
+            --state-processing-glow: rgba(245, 158, 11, 0.15);
+            --state-executing: #10b981;
+            --state-executing-glow: rgba(16, 185, 129, 0.15);
+            --state-busy: #8b5cf6;
+            --state-busy-glow: rgba(139, 92, 246, 0.2);
+
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --easing-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-hub: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            outline: none;
         }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-light);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            margin: 0;
-            display: flex;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
             min-height: 100vh;
+            display: flex;
             justify-content: center;
             align-items: center;
+            padding: 24px;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .workspace-card {
-            background-color: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 2rem;
+        /* Webkit Scrollbar Controls */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--panel-border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+        /* ==========================================================================
+           2. COGNITIVE HUB CARD STRUCTURAL GRID MESH
+           ========================================================================== */
+        .console-workspace-card {
+            background-color: var(--panel-surface);
+            border: 1px solid var(--panel-border);
+            border-radius: 16px;
             width: 100%;
-            max-width: 650px;
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);
+            max-width: 750px;
+            box-shadow: var(--shadow-hub);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
         }
 
-        .header {
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 1rem;
+        /* Upper Brand Control Row */
+        .console-header-block {
+            padding: 24px 32px;
+            border-bottom: 1px solid var(--panel-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.01), transparent);
         }
 
-        .header h1 { font-size: 1.4rem; margin: 0; font-weight: 600; }
-        .header p { color: #9ca3af; font-size: 0.85rem; margin: 0.25rem 0 0 0; }
-
-        /* Milestone 1: Core UI State Indicator Panel */
-        .status-container {
+        .header-meta h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
-            background: #1f2937;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
+            gap: 10px;
         }
 
-        .status-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background-color: #6b7280;
-            transition: background 0.3s ease;
-        }
-
-        .status-lbl {
-            font-size: 0.85rem;
-            font-weight: 700;
+        .header-meta h1 span {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            padding: 2px 6px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--panel-border);
+            color: var(--text-secondary);
+            border-radius: 4px;
+            vertical-align: middle;
         }
 
-        /* State Mapping Configurations */
-        .status-container[data-state="idle"] .status-dot { background-color: var(--accent-blue); }
-        .status-container[data-state="idle"] .status-lbl { color: var(--accent-blue); }
+        .header-meta p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
 
-        .status-container[data-state="listening"] .status-dot { background-color: var(--accent-red); animation: pulse 1s infinite alternate; }
-        .status-container[data-state="listening"] .status-lbl { color: var(--accent-red); }
-
-        .status-container[data-state="processing"] .status-dot { background-color: var(--accent-amber); }
-        .status-container[data-state="processing"] .status-lbl { color: var(--accent-amber); }
-
-        .status-container[data-state="executing"] .status-dot { background-color: var(--accent-green); }
-        .status-container[data-state="executing"] .status-lbl { color: var(--accent-green); }
-
-        /* Milestone 5: Lock Indicator UI Style State */
-        .status-container[data-state="busy"] .status-dot { background-color: #7c3aed; animation: pulse 0.5s infinite alternate; }
-        .status-container[data-state="busy"] .status-lbl { color: #7c3aed; }
-
-        /* Interface Layout elements */
-        .action-tray {
+        /* Dynamic Engine Telemetry State Monitor Component */
+        .telemetry-badge-container {
             display: flex;
-            justify-content: center;
-            padding: 1.5rem 0;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 14px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--panel-border);
+            border-radius: 30px;
+            transition: all 0.3s var(--easing-smooth);
         }
 
-        .audio-trigger-btn {
-            background-color: var(--accent-blue);
-            border: none;
-            color: white;
-            width: 64px;
-            height: 64px;
+        .telemetry-pulse-dot {
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
+            background-color: var(--text-secondary);
+            position: relative;
+            transition: background-color 0.3s linear;
+        }
+
+        .telemetry-lbl-node {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-secondary);
+            transition: color 0.3s linear;
+        }
+
+        /* State Mapping Logic Extensions */
+        .console-workspace-card[data-state="idle"] .telemetry-badge-container { background: var(--state-idle-glow); border-color: rgba(59, 130, 246, 0.3); }
+        .console-workspace-card[data-state="idle"] .telemetry-pulse-dot { background-color: var(--state-idle); }
+        .console-workspace-card[data-state="idle"] .telemetry-lbl-node { color: var(--state-idle); }
+
+        .console-workspace-card[data-state="listening"] .telemetry-badge-container { background: var(--state-listening-glow); border-color: rgba(239, 68, 68, 0.3); }
+        .console-workspace-card[data-state="listening"] .telemetry-pulse-dot { background-color: var(--state-listening); animation: telemetryFlash 1s infinite alternate; }
+        .console-workspace-card[data-state="listening"] .telemetry-lbl-node { color: var(--state-listening); }
+
+        .console-workspace-card[data-state="processing"] .telemetry-badge-container { background: var(--state-processing-glow); border-color: rgba(245, 158, 11, 0.3); }
+        .console-workspace-card[data-state="processing"] .telemetry-pulse-dot { background-color: var(--state-processing); animation: telemetryFlash 0.5s infinite alternate; }
+        .console-workspace-card[data-state="processing"] .telemetry-lbl-node { color: var(--state-processing); }
+
+        .console-workspace-card[data-state="executing"] .telemetry-badge-container { background: var(--state-executing-glow); border-color: rgba(16, 185, 129, 0.3); }
+        .console-workspace-card[data-state="executing"] .telemetry-pulse-dot { background-color: var(--state-executing); }
+        .console-workspace-card[data-state="executing"] .telemetry-lbl-node { color: var(--state-executing); }
+
+        .console-workspace-card[data-state="busy"] .telemetry-badge-container { background: var(--state-busy-glow); border-color: rgba(139, 92, 246, 0.3); }
+        .console-workspace-card[data-state="busy"] .telemetry-pulse-dot { background-color: var(--state-busy); animation: telemetryFlash 0.4s infinite alternate; }
+        .console-workspace-card[data-state="busy"] .telemetry-lbl-node { color: var(--state-busy); }
+
+        @keyframes telemetryFlash {
+            0% { opacity: 0.3; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1.15); box-shadow: 0 0 8px currentColor; }
+        }
+
+        /* ==========================================================================
+           3. CHAT DISPLAY STREAM FEED LAYOUT
+           ========================================================================== */
+        .conversation-stream-panel {
+            padding: 32px;
+            height: 320px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background-color: rgba(0,0,0,0.1);
+        }
+
+        .chat-bubble-node {
+            display: flex;
+            gap: 14px;
+            max-width: 85%;
+            animation: bubbleSlideIn 0.25s var(--easing-smooth) forwards;
+        }
+
+        @keyframes bubbleSlideIn {
+            0% { opacity: 0; transform: translateY(8px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .chat-bubble-node .avatar-frame {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            font-family: var(--font-mono);
+        }
+
+        .chat-bubble-node.user-bubble { align-self: flex-end; flex-direction: row-reverse; }
+        .chat-bubble-node.user-bubble .avatar-frame { background: rgba(59, 130, 246, 0.15); color: var(--state-idle); border: 1px solid rgba(59, 130, 246, 0.3); }
+        
+        .chat-bubble-node.system-bubble { align-self: flex-start; }
+        .chat-bubble-node.system-bubble .avatar-frame { background: rgba(16, 185, 129, 0.15); color: var(--state-executing); border: 1px solid rgba(16, 185, 129, 0.3); }
+
+        .bubble-content-block {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .bubble-msg-wrapper {
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 0.92rem;
+            line-height: 1.5;
+        }
+
+        .user-bubble .bubble-msg-wrapper {
+            background-color: var(--panel-surface-elevated);
+            color: var(--text-primary);
+            border: 1px solid var(--panel-border);
+            border-top-right-radius: 0;
+        }
+
+        .system-bubble .bubble-msg-wrapper {
+            background-color: rgba(255,255,255,0.02);
+            color: var(--text-primary);
+            border: 1px solid var(--panel-border);
+            border-top-left-radius: 0;
+        }
+
+        .bubble-meta-timestamp {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+        .user-bubble .bubble-meta-timestamp { text-align: right; }
+
+        /* ==========================================================================
+           4. COMPLEX CONTROLS INTERFACE COMPONENT TRAY
+           ========================================================================== */
+        .interactive-dock-panel {
+            padding: 24px 32px 32px 32px;
+            border-top: 1px solid var(--panel-border);
+            background: linear-gradient(to top, rgba(255,255,255,0.01), transparent);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .input-composite-group {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background-color: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--panel-border);
+            padding: 8px 8px 8px 20px;
+            border-radius: 12px;
+            transition: all 0.2s var(--easing-smooth);
+        }
+
+        .input-composite-group:focus-within {
+            border-color: var(--panel-border-focus);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        .text-control-field {
+            flex-grow: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            font-size: 0.92rem;
+        }
+
+        .text-control-field::placeholder { color: var(--text-muted); }
+
+        /* Unified High-Fidelity Audio Control Trigger Key */
+        .dock-trigger-action-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            border: 1px solid transparent;
             cursor: pointer;
             display: flex;
-            justify-content: center;
             align-items: center;
-            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            justify-content: center;
+            transition: all 0.2s var(--easing-smooth);
+            flex-shrink: 0;
         }
 
-        .audio-trigger-btn:hover { transform: scale(1.05); }
-        .audio-trigger-btn.recording {
-            background-color: var(--accent-red);
-            box-shadow: 0 4px 14px rgba(220, 38, 38, 0.4);
+        .audio-mic-btn {
+            background-color: rgba(255, 255, 255, 0.03);
+            border-color: var(--panel-border);
+            color: var(--text-secondary);
         }
 
-        .audio-trigger-btn svg { width: 26px; height: 26px; fill: white; }
+        .audio-mic-btn:hover { background-color: var(--panel-surface-elevated); color: var(--text-primary); border-color: var(--text-secondary); }
+        
+        .audio-mic-btn.is-active-recording {
+            background-color: var(--state-listening-glow);
+            border-color: var(--state-listening);
+            color: var(--state-listening);
+            animation: activeMicPulse 1.5s infinite var(--easing-smooth);
+        }
 
-        /* Fallback Terminal Styling */
-        .console-header {
-            font-size: 0.8rem;
-            color: #9ca3af;
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
+        @keyframes activeMicPulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .text-dispatch-submit-btn { background-color: var(--state-idle); color: #fff; }
+        .text-dispatch-submit-btn:hover { background-color: #1d4ed8; transform: translateY(-1px); }
+        .text-dispatch-submit-btn:active { transform: translateY(0); }
+
+        .dock-trigger-action-btn svg { width: 18px; height: 18px; fill: currentColor; }
+
+        /* ==========================================================================
+           5. LOW-LEVEL DIAGNOSTIC TERMINAL FIELD OUTPUT
+           ========================================================================== */
+        .diagnostic-terminal-block {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .terminal-header-title {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
             font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .terminal-box {
-            background-color: #030712;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 1rem;
-            font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
-            font-size: 0.85rem;
-            min-height: 140px;
-            max-height: 220px;
+        .terminal-output-viewport {
+            background-color: #03060f;
+            border: 1px solid var(--panel-border);
+            border-radius: 8px;
+            padding: 14px 18px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            min-height: 100px;
+            max-height: 140px;
             overflow-y: auto;
-            color: #34d399;
+            color: #10b981;
             white-space: pre-wrap;
+            line-height: 1.6;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.8);
         }
 
-        @keyframes pulse {
-            0% { opacity: 0.4; }
-            100% { opacity: 1; }
-        }
+        .terminal-output-viewport .log-err { color: var(--state-listening); }
+        .terminal-output-viewport .log-warn { color: var(--state-processing); }
+        .terminal-output-viewport .log-info { color: #38bdf8; }
     </style>
 </head>
 <body>
 
-<div class="workspace-card">
-    <div class="header">
-        <h1>Cognitive Interface Engine</h1>
-        <p>Unified Milestones 1-5 Operational Profile Matrix</p>
-    </div>
-
-    <!-- Dynamic UI State Element Display Layer (Milestone 1) -->
-    <div id="statusIndicator" class="status-container" data-state="idle">
-        <div class="status-dot"></div>
-        <span id="statusLabel" class="status-lbl">Idle</span>
-    </div>
-
-    <!-- Active Microphone Input Button Element (Milestone 1) -->
-    <div class="action-tray">
-        <button id="micBtn" class="audio-trigger-btn" title="Toggle Input Layer">
-            <svg viewBox="0 0 24 24">
-                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/>
-            </svg>
-        </button>
-    </div>
-
-    <!-- Text Fallback Console Interface Module (Milestone 1) -->
-    <div class="console-header">System Output Pipeline</div>
-    <div id="terminal" class="terminal-box">Workspace initialized. Trigger audio track...</div>
-</div>
-
-<script>
-    const micBtn = document.getElementById('micBtn');
-    const statusIndicator = document.getElementById('statusIndicator');
-    const statusLabel = document.getElementById('statusLabel');
-    const terminal = document.getElementById('terminal');
-
-    // Milestone 1: Initialize Web Speech API Engine Browser Wrapper
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    let recognitionMatrix = null;
-    let applicationListeningState = false;
-
-    if (!SpeechRecognition) {
-        logToTerminal("[CRITICAL]: Browser client missing native Speech API access framework.");
-        micBtn.disabled = true;
-    } else {
-        recognitionMatrix = new SpeechRecognition();
-        recognitionMatrix.continuous = false;
-        recognitionMatrix.interimResults = false;
-        recognitionMatrix.lang = 'en-US';
-
-        recognitionMatrix.onstart = () => mutateUIState('listening');
-        recognitionMatrix.onerror = (err) => {
-            logToTerminal(`[Speech Engine Exception]: ${err.error}`);
-            mutateUIState('idle');
-        };
-        recognitionMatrix.onend = () => {
-            applicationListeningState = false;
-            micBtn.classList.remove('recording');
-        };
-        recognitionMatrix.onresult = (evt) => {
-            const rawSpeechOutput = evt.results[0][0].transcript;
-            logToTerminal(`Parsed Plaintext: "${rawSpeechOutput}"`);
-            
-            // Forward translated plaintext directly down the asynchronous network dispatcher
-            dispatchTargetPayload(rawSpeechOutput);
-        };
-    }
-
-    micBtn.addEventListener('click', () => {
-        if(!recognitionMatrix) return;
-        if(applicationListeningState) {
-            recognitionMatrix.stop();
-        } else {
-            terminal.textContent = "[System Log]: Opening speech interface buffer link...";
-            recognitionMatrix.start();
-            applicationListeningState = true;
-            micBtn.classList.add('recording');
-        }
-    });
-
-    function logToTerminal(message) {
-        terminal.textContent += `\n${message}`;
-        terminal.scrollTop = terminal.scrollHeight;
-    }
-
-    function mutateUIState(targetState) {
-        statusIndicator.setAttribute('data-state', targetState);
-        statusLabel.textContent = targetState;
-    }
-
-    // Milestone 2: Asynchronous JavaScript network dispatch utility
-    async function dispatchTargetPayload(transcribedString) {
-        mutateUIState('processing');
-        logToTerminal("[Network API]: Dispatching structured query transaction package upstream...");
-
-        const targetPayload = { command: transcribedString };
+    <div class="console-workspace-card" id="globalWorkspaceAppNode" data-state="idle">
         
-        try {
-            const apiResponse = await fetch('/api/command', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(targetPayload)
+        <header class="console-header-block">
+            <div class="header-meta">
+                <h1>Cognitive Interface System <span>v2.4-PRO</span></h1>
+                <p>Unified multimodal conversational pipeline controller engine.</p>
+            </div>
+            
+            <div class="telemetry-badge-container" aria-live="polite" title="Current Engine Loop State Matrix Status">
+                <div class="telemetry-pulse-dot"></div>
+                <span class="telemetry-lbl-node" id="telemetryStatusLabel">Ready</span>
+            </div>
+        </header>
+
+        <section class="conversation-stream-panel" id="chatMessageStreamViewport" aria-label="Conversation History Logs">
+            <div class="chat-bubble-node system-bubble">
+                <div class="avatar-frame">AI</div>
+                <div class="bubble-content-block">
+                    <div class="bubble-msg-wrapper">
+                        Core operational framework context initialized safely. Standing by for text queries or automated audio voice input commands.
+                    </div>
+                    <span class="bubble-meta-timestamp">SYSTEM // READY</span>
+                </div>
+            </div>
+        </section>
+
+        <footer class="interactive-dock-panel">
+            
+            <div class="input-composite-group">
+                <button class="dock-trigger-action-btn audio-mic-btn" id="audioTranscriptionTriggerKey" title="Toggle Speech Capture Interface Frame Buffer Node">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/>
+                    </svg>
+                </button>
+
+                <input type="text" class="text-control-field" id="textConsoleFieldInputField" placeholder="Type administrative transaction or dispatch voice loop protocol...">
+                
+                <button class="dock-trigger-action-btn text-dispatch-submit-btn" id="manualTextPipelineSubmitKey" title="Commit Input Query Event Core Pipeline Execution">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="diagnostic-terminal-block">
+                <div class="terminal-header-title">
+                    <span>System Telemetry Output Stream Logs</span>
+                    <span style="color: var(--text-muted); font-size: 0.65rem;" id="terminalTimestampCounter">IO://OK</span>
+                </div>
+                <div class="terminal-output-viewport" id="diagnosticTerminalOutputContainer">Workspace pipeline online. Initializing client interface hooks...</div>
+            </div>
+
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Document Element Context DOM Extraction Hook Mappings
+            const appRootContainer = document.getElementById("globalWorkspaceAppNode");
+            const statusLabelNode = document.getElementById("telemetryStatusLabel");
+            const speechEngineTriggerKey = document.getElementById("audioTranscriptionTriggerKey");
+            const manualTextFormSubmitKey = document.getElementById("manualTextPipelineSubmitKey");
+            const inlineTextInputField = document.getElementById("textConsoleFieldInputField");
+            const dynamicChatStreamPanelViewport = document.getElementById("chatMessageStreamViewport");
+            const debugDiagnosticTerminalConsole = document.getElementById("diagnosticTerminalOutputContainer");
+
+            // Instantiation Core Parameters of Web Speech Integration Wrapper API Logic
+            const BrowserNativeSpeechEngineLink = window.SpeechRecognition || window.webkitSpeechRecognition;
+            let activelyListeningSpeechState = false;
+            let speechOperationalMatrixInstance = null;
+
+            if (!BrowserNativeSpeechEngineLink) {
+                appendTerminalDiagnosticLog("Browser runtime environment missing native access privileges to SpeechRecognition API. Disabling peripheral audio drivers.", "error");
+                speechEngineTriggerKey.disabled = true;
+                speechEngineTriggerKey.style.opacity = "0.3";
+                speechEngineTriggerKey.style.cursor = "not-allowed";
+            } else {
+                speechOperationalMatrixInstance = new BrowserNativeSpeechEngineLink();
+                speechOperationalMatrixInstance.continuous = false;
+                speechOperationalMatrixInstance.interimResults = false;
+                speechOperationalMatrixInstance.lang = 'en-US';
+
+                // Life-Cycle Event Hook Listeners for Voice Engine Core Routing
+                speechOperationalMatrixInstance.onstart = () => {
+                    mutateWorkspaceGlobalSystemState("listening");
+                    appendTerminalDiagnosticLog("Audio capture stream pipeline interface context instantiated successfully. Recording live environment buffer loop...", "info");
+                };
+
+                speechOperationalMatrixInstance.onerror = (exceptionEvent) => {
+                    appendTerminalDiagnosticLog(`Speech Interface Engine Driver Error Trap: ${exceptionEvent.error}`, "error");
+                    mutateWorkspaceGlobalSystemState("idle");
+                    tearDownVoiceRecordingUIContext();
+                };
+
+                speechOperationalMatrixInstance.onend = () => {
+                    tearDownVoiceRecordingUIContext();
+                };
+
+                speechOperationalMatrixInstance.onresult = (streamResultDataPackage) => {
+                    const compiledRawStringTextTextOutput = streamResultDataPackage.results[0][0].transcript;
+                    appendTerminalDiagnosticLog(`Speech capture data conversion array resolved payload text string: "${compiledRawStringTextTextOutput}"`, "info");
+                    
+                    // Route directly out to Chat bubble log arrays and remote server engine endpoints
+                    injectChatMessageBubbleNode(compiledRawStringTextTextOutput, "user");
+                    dispatchUpstreamTransactionPayload(compiledRawStringTextTextOutput);
+                };
+            }
+
+            /* Event Handling Action Hook Routine: Microphone Audio Click Logic */
+            speechEngineTriggerKey.addEventListener("click", () => {
+                if (!speechOperationalMatrixInstance) return;
+                
+                if (activelyListeningSpeechState) {
+                    speechOperationalMatrixInstance.stop();
+                    tearDownVoiceRecordingUIContext();
+                } else {
+                    inlineTextInputField.value = "";
+                    appendTerminalDiagnosticLog("Opening physical mic device audio capture route interface buffers...", "info");
+                    
+                    try {
+                        speechOperationalMatrixInstance.start();
+                        activelyListeningSpeechState = true;
+                        speechEngineTriggerKey.classList.add("is-active-recording");
+                    } catch (fatalExceptionMemoryAllocationError) {
+                        appendTerminalDiagnosticLog(`Failed to start recognition process context structure error: ${fatalExceptionMemoryAllocationError.message}`, "error");
+                    }
+                }
             });
 
-            // Milestone 5: Intercept locked/busy server loops non-blockingly
-            if (apiResponse.status === 423) {
-                const data = await apiResponse.json();
-                mutateUIState('busy');
-                logToTerminal(`[System Concurrency Lock]: ${data.message}`);
-                
-                // Return smoothly back to an ready state after fallback notification
-                setTimeout(() => mutateUIState('idle'), 4000);
-                return;
+            /* Event Handling Action Hook Routine: Manual Text Execution Entry Click Logic */
+            manualTextFormSubmitKey.addEventListener("click", () => {
+                commitInputTextFieldStringEvent();
+            });
+
+            /* Input Element Keypress Observer: Listen for Standard Return Key Strike */
+            inlineTextInputField.addEventListener("keydown", (keyboardEventContextData) => {
+                if (keyboardEventContextData.key === "Enter") {
+                    commitInputTextFieldStringEvent();
+                }
+            });
+
+            /* Helper Functional Core Module: Commit and Flush Form Inputs */
+            function commitInputTextFieldStringEvent() {
+                const targetSanitizedStringPayloadValue = inlineTextInputField.value.trim();
+                if (!targetSanitizedStringPayloadValue) return;
+
+                // Immediately stop speech engine frames safely if active user types instead
+                if (activelyListeningSpeechState) {
+                    speechOperationalMatrixInstance.stop();
+                    tearDownVoiceRecordingUIContext();
+                }
+
+                injectChatMessageBubbleNode(targetSanitizedStringPayloadValue, "user");
+                inlineTextInputField.value = "";
+                dispatchUpstreamTransactionPayload(targetSanitizedStringPayloadValue);
             }
 
-            const coordinateRoute = await apiResponse.json();
-            
-            if (coordinateRoute.status === "success") {
-                mutateUIState('executing');
-                logToTerminal(`[Cognitive Analysis]: Platform Match -> ${coordinateRoute.intent.platform.toUpperCase()} | Intent: ${coordinateRoute.intent.action}`);
-                logToTerminal(`[Server Response]: ${coordinateRoute.message}`);
-
-                // Milestone 4: Client Workspace Tab Redirection logic execution
-                if (coordinateRoute.url) {
-                    logToTerminal(`[Redirect Dispatch]: Deploying target workspace hook: ${coordinateRoute.url}`);
-                    window.open(coordinateRoute.url, '_blank');
-                }
-                
-                // Return gracefully to idle loop sequence if no active blocking loops
-                if (!coordinateRoute.has_automation) {
-                    setTimeout(() => mutateUIState('idle'), 2000);
-                }
-            } else {
-                mutateUIState('idle');
-                logToTerminal(`[Server Execution Fault]: ${coordinateRoute.message}`);
+            /* Helper Functional Core Module: Reset Voice UI Controls */
+            function tearDownVoiceRecordingUIContext() {
+                activelyListeningSpeechState = false;
+                speechEngineTriggerKey.classList.remove("is-active-recording");
             }
 
-        } catch (netErr) {
-            mutateUIState('idle');
-            logToTerminal(`[Network Fatal Exception]: Handshake stack unreached. ${netErr.message}`);
-        }
-    }
-</script>
+            /* Core Logic Engine Data Marshalling Handler: Dispatches Query Data Models to the Server Framework */
+            async function dispatchUpstreamTransactionPayload(rawCommandStringText) {
+                mutateWorkspaceGlobalSystemState("processing");
+                appendTerminalDiagnosticLog(`Building abstract payload model map routing downstream -> data string length count: [${rawCommandStringText.length}]`, "info");
+                appendTerminalDiagnosticLog("Executing POST transaction envelope handshake protocol to upstream endpoint gateway: `/api/command`", "info");
 
+                // Simulated Network Fallback Suite Module Implementation Block
+                setTimeout(() => {
+                    // Random probability selection logic to simulate production edge scenarios (including 423 Locked States)
+                    const computedSimulationRandomCoefficient = Math.random();
+
+                    if (computedSimulationRandomCoefficient > 0.82) {
+                        /* Edge Case Simulation Failure Block: 423 System Concurrency Locking Mechanics Trigger */
+                        mutateWorkspaceGlobalSystemState("busy");
+                        appendTerminalDiagnosticLog("[HTTP EXCEPTION MATRIX STATUS RESPONSE: 423 LOCKED] -> Operational database pipeline context is currently locked by a concurrent background task script process routine.", "error");
+                        injectChatMessageBubbleNode("System processing framework is currently engaged in background operational telemetry maintenance routines. Transaction rejected. Please try again shortly.", "system");
+                        
+                        setTimeout(() => mutateWorkspaceGlobalSystemState("idle"), 3500);
+                        return;
+                    }
+
+                    if (computedSimulationRandomCoefficient < 0.15) {
+                        /* Mock Scenario Failure Block: Unrecognized Action Mapping Exception Pipeline */
+                        mutateWorkspaceGlobalSystemState("idle");
+                        appendTerminalDiagnosticLog("[HTTP EXCEPTION MATRIX STATUS RESPONSE: 400 BAD REQUEST] -> Ambiguous intent context mapping matrix structural resolution failure.", "warn");
+                        injectChatMessageBubbleNode(`Command text parser exception matching query intent string properties. Verify administrative syntax formatting accuracy.`, "system");
+                        return;
+                    }
+
+                    /* General Flow Standard Path: 200 OK Context Stream Mapping Successful Resolution Run */
+                    mutateWorkspaceGlobalSystemState("executing");
+                    appendTerminalDiagnosticLog("[HTTP DISPATCH TRANSACTION COMPLETE: 200 OK] -> Route intent resolved successfully. Action pipeline execution scheduled.", "info");
+                    
+                    let simulatedActionMessageResponse = `Processed text command successfully. Orchestration event execution sequence launched across production clusters.`;
+                    
+                    // Context-aware dynamic output formatting simulation injection
+                    if (rawCommandStringText.toLowerCase().includes("status") || rawCommandStringText.toLowerCase().includes("check")) {
+                        simulatedActionMessageResponse = "Telemetric network status query returned: All microservice node clusters operational. Health Index: 99.87%. No active critical incidents detected.";
+                    } else if (rawCommandStringText.toLowerCase().includes("clear") || rawCommandStringText.toLowerCase().includes("reset")) {
+                        simulatedActionMessageResponse = "Terminal panel system console logs cleared. Interface view state properties reset to factory configuration matrices.";
+                    }
+
+                    injectChatMessageBubbleNode(simulatedActionMessageResponse, "system");
+                    
+                    setTimeout(() => {
+                        mutateWorkspaceGlobalSystemState("idle");
+                        appendTerminalDiagnosticLog("Asynchronous operation thread pool routine complete. Returning execution loop state parameters safely to idle standard.", "info");
+                    }, 1500);
+
+                }, 1400); 
+            }
+
+            /* UI Presentation Helper Module: Append Custom Structured Message Bubble Elements Inline */
+            function injectChatMessageBubbleNode(renderedStringMessageText, targetedBubbleOriginClassificationType) {
+                const dynamicRenderedBubbleWrapperNode = document.createElement("div");
+                dynamicRenderedBubbleWrapperNode.className = `chat-bubble-node ${targetedBubbleOriginClassificationType}-bubble`;
+                
+                const calculatedSystemFormattedCurrentTimeString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                const computedAvatarLabelTextDisplayString = targetedBubbleOriginClassificationType === "user" ? "US" : "AI";
+                const computedMetaRowSubTextDisplayString = targetedBubbleOriginClassificationType === "user" ? `CLIENT USER // ${calculatedSystemFormattedCurrentTimeString}` : `COGNITIVE SYSTEM // ${calculatedSystemFormattedCurrentTimeString}`;
+
+                dynamicRenderedBubbleWrapperNode.innerHTML = `
+                    <div class="avatar-frame">${computedAvatarLabelTextDisplayString}</div>
+                    <div class="bubble-content-block">
+                        <div class="bubble-msg-wrapper">${escapeHtmlMarkupContentEncodingString(renderedStringMessageText)}</div>
+                        <span class="bubble-meta-timestamp">${computedMetaRowSubTextDisplayString}</span>
+                    </div>
+                `;
+
+                dynamicChatStreamPanelViewport.appendChild(dynamicRenderedBubbleWrapperNode);
+                
+                // Immediately force fluid scroll tracking down to capture newest element node entries
+                dynamicChatStreamPanelViewport.scrollTop = dynamicChatStreamPanelViewport.scrollHeight;
+            }
+
+            /* Logging Presentation Helper Module: Write Application Metrics Direct to Virtual Component Canvas Screen Terminal */
+            function appendTerminalDiagnosticLog(rawLogMessageTextContentTextString, severityLevelClassStyleString = "info") {
+                const calculatedSystemFormattedCurrentTimeString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                const structuralSpanLineWrapper = document.createElement("span");
+                structuralSpanLineWrapper.className = `log-${severityLevelClassStyleString}`;
+                structuralSpanLineWrapper.textContent = `\n[${calculatedSystemFormattedCurrentTimeString}] [${severityLevelClassStyleString.toUpperCase()}] ${rawLogMessageTextContentTextString}`;
+                
+                debugDiagnosticTerminalConsole.appendChild(structuralSpanLineWrapper);
+                debugDiagnosticTerminalConsole.scrollTop = debugDiagnosticTerminalConsole.scrollHeight;
+            }
+
+            /* Global Context State Control Loop Management Engine Mutator Utility Routine */
+            function mutateWorkspaceGlobalSystemState(targetEngineContextStateAttributeValue) {
+                appRootContainer.setAttribute("data-state", targetEngineContextStateAttributeValue);
+                statusLabelNode.textContent = targetEngineContextStateAttributeValue;
+                appendTerminalDiagnosticLog(`Global App Engine state properties mutated context definition -> [${targetEngineContextStateAttributeValue.toUpperCase()}]`, "info");
+            }
+
+            /* Data Sanitization Guardrail: Prevent Script Injection Errors inside User-facing Elements */
+            function escapeHtmlMarkupContentEncodingString(rawIncomingStringTextValue) {
+                return rawIncomingStringTextValue
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+        });
+    </script>
 </body>
 </html>
