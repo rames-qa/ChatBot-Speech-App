@@ -3,6 +3,7 @@
 A dynamic, multilingual AI chat companion designed to seamlessly bridge human speech and text inputs. It instantly translates, displays, and speaks back responses in your chosen language—fully synchronized for both mobile and desktop screens.
 
 Key Capabilities
+
 Dual-Input Modality (Voice & Text): Integrates native browser speech recognition engines to process live vocal input on the fly, alongside a traditional, clean text-command console.
 
 True Multilingual Localization Engine: Supports 14 distinct global and Indian regional languages (including Tamil, Telugu, Kannada, Hindi, and Malayalam). When a language is selected or spoken, the system translates the entire user interface—including labels, buttons, placeholders, and panel headers—in real time.
