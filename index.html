@@ -2,756 +2,731 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Advanced Multimodal AI Command Center</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexisOS Enterprise // Advanced Multimodal Control Plane</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        /* ==========================================================================
-           1. MODERN METRIC THEME CONSTANTS & CSS VARIABLES
-           ========================================================================== */
         :root {
-            --bg-base: #030712;
-            --surface-primary: #0b1329;
-            --surface-secondary: #111c44;
-            --surface-tertiary: #1c2a5e;
-            --border-color: #1e293b;
+            --bg-deep: #020617;
+            --surface-base: #0f172a;
+            --surface-card: #1e293b;
+            --surface-pill: #334155;
             --border-glow: #3b82f6;
-
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --text-dark: #475569;
-
-            /* Visual Branding Accents */
-            --accent-blue: #3b82f6;
-            --accent-emerald: #10b981;
-            --accent-purple: #8b5cf6;
+            --border-mute: #1e293b;
             
+            --text-pure: #f8fafc;
+            --text-side: #94a3b8;
+            --text-dark: #64748b;
+
+            /* Domain Context Accents */
+            --cls-edu: #3b82f6;     
+            --cls-biz: #10b981;     
+            --cls-iot: #f59e0b;     
+            --cls-osint: #ec4899;   
+
             --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
-            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --curve-rad: 12px;
+            --transition-fluid: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            outline: none;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
         body {
-            background-color: var(--bg-base);
-            color: var(--text-main);
+            background-color: var(--bg-deep);
+            color: var(--text-pure);
             font-family: var(--font-sans);
-            min-height: 100vh;
+            height: 100vh;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            overflow-x: hidden;
+            padding: 12px;
+            overflow: hidden;
         }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 5px; height: 5px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+        .dashboard-grid-root {
+            display: grid;
+            grid-template-columns: 300px 1fr 360px;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+        }
+
+        h2, h3 { font-weight: 600; letter-spacing: -0.01em; }
+        
+        .pane-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(15, 23, 42, 0.2);
+        }
 
         /* ==========================================================================
-           2. OVERALL MASTER WORKSPACE LAYOUT
+           LEFT COLUMN: PERSISTENT THREAD MESH & CONTROLLER
            ========================================================================== */
-        .app-workspace-container {
-            background-color: var(--surface-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            width: 100%;
-            max-width: 1200px;
-            height: 850px;
+        .sidebar-control-panel {
+            background-color: rgba(15, 23, 42, 0.8);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
             display: flex;
             flex-direction: column;
-            box-shadow: 0 25px 70px -10px rgba(0,0,0,0.7);
             overflow: hidden;
-            position: relative;
         }
 
-        /* App Navbar Header */
-        .app-header-nav {
-            padding: 18px 24px;
-            border-bottom: 1px solid var(--border-color);
+        .thread-history-section {
+            flex-grow: 1;
+            padding: 16px;
+            overflow-y: auto;
             display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .thread-node-item {
+            padding: 12px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: var(--transition-fluid);
+            display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: center;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.02), transparent);
         }
 
-        .brand-meta h1 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .thread-node-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
         }
 
-        .brand-meta h1 span {
-            font-size: 0.65rem;
-            background-color: rgba(59, 130, 246, 0.15);
-            color: var(--accent-blue);
-            padding: 3px 8px;
-            border-radius: 6px;
-            font-family: var(--font-mono);
-            border: 1px solid rgba(59, 130, 246, 0.3);
+        .thread-node-item.is-active {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
         }
 
-        .brand-meta p {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 3px;
+        .thread-meta-title {
+            font-size: 0.85rem;
+            color: var(--text-pure);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 180px;
         }
+
+        .domain-matrix-selector {
+            padding: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .matrix-card-trigger {
+            background-color: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            padding: 10px;
+            cursor: pointer;
+            text-align: left;
+            transition: var(--transition-fluid);
+        }
+
+        .matrix-card-trigger.is-active {
+            border-color: var(--border-glow);
+            background: rgba(59, 130, 246, 0.15);
+        }
+
+        .matrix-card-trigger h3 { font-size: 0.78rem; color: var(--text-pure); }
 
         /* ==========================================================================
-           3. SPLIT RUNTIME CONSOLE WORKSPACE LAYOUT
+           CENTER COLUMN: DYNAMIC STREAM PIPELINE & MULTIMODAL INGESTION
            ========================================================================== */
-        .main-console-split {
-            display: grid;
-            grid-template-columns: 1fr 360px;
-            flex-grow: 1;
-            overflow: hidden;
-        }
-
-        /* Left Chat Interface Container */
-        .chat-pipeline-section {
+        .central-chat-pipeline {
             display: flex;
             flex-direction: column;
             height: 100%;
-            overflow: hidden;
-            border-right: 1px solid var(--border-color);
+            background-color: rgba(15, 23, 42, 0.3);
         }
 
-        .message-feed-stream {
+        .pipeline-feed-stream {
             flex-grow: 1;
             padding: 24px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             gap: 20px;
-            background-color: rgba(0,0,0,0.1);
         }
 
-        /* Advanced Chat Bubble Mechanics */
-        .msg-bubble-card {
-            display: flex;
-            gap: 16px;
-            max-width: 85%;
-            animation: slideUpFade 0.3s var(--transition-smooth) forwards;
-        }
-
-        @keyframes slideUpFade {
-            0% { opacity: 0; transform: translateY(10px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        .msg-bubble-card.user-variant { align-self: flex-end; flex-direction: row-reverse; }
-        .msg-bubble-card.system-variant { align-self: flex-start; }
-
-        .avatar-circle-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            font-weight: 700;
-            flex-shrink: 0;
-            font-family: var(--font-mono);
-        }
-
-        .user-variant .avatar-circle-icon { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); border: 1px solid rgba(59, 130, 246, 0.3); }
-        .system-variant .avatar-circle-icon { background: rgba(139, 92, 246, 0.15); color: var(--accent-purple); border: 1px solid rgba(139, 92, 246, 0.3); }
-
-        .bubble-inner-content { display: flex; flex-direction: column; gap: 6px; }
+        .chat-row-node { display: flex; gap: 14px; max-width: 85%; animation: nodeFadeIn 0.2s cubic-bezier(0,0,0.2,1) forwards; }
+        @keyframes nodeFadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
         
-        .bubble-text-block {
-            padding: 14px 18px;
-            border-radius: 14px;
-            font-size: 0.92rem;
-            line-height: 1.5;
-            word-break: break-word;
+        .chat-row-node.variant-user { align-self: flex-end; flex-direction: row-reverse; }
+        .chat-row-node.variant-system { align-self: flex-start; }
+
+        .avatar-frame-box {
+            width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; flex-shrink: 0;
+            border: 1px solid rgba(255, 255, 255, 0.1); background-color: var(--surface-card);
         }
 
-        .user-variant .bubble-text-block { background-color: var(--surface-secondary); border: 1px solid var(--border-color); border-top-right-radius: 0; }
-        .system-variant .bubble-text-block { background-color: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-top-left-radius: 0; }
+        .bubble-content-text {
+            padding: 12px 16px; border-radius: 12px; font-size: 0.9rem; line-height: 1.5; word-break: break-word;
+            border: 1px solid rgba(255, 255, 255, 0.05); background-color: rgba(30, 41, 59, 0.7);
+        }
+        .variant-user .bubble-content-text { background-color: var(--cls-edu); border-color: transparent; }
 
-        /* Integrated Inline Image Cards Inside System Bubbles */
-        .inline-image-grid-node {
-            margin-top: 8px;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
+        /* Multimodal Processing Frame */
+        .multimodal-attachment-tray {
+            padding: 8px 20px;
+            display: none;
             gap: 10px;
-            max-width: 500px;
+            background: rgba(15, 23, 42, 0.4);
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
         }
+        
+        .multimodal-attachment-tray.has-items { display: flex; }
 
-        .inline-image-card {
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            position: relative;
-            cursor: pointer;
-            aspect-ratio: 16 / 10;
-            background-color: rgba(0,0,0,0.3);
-        }
-
-        .inline-image-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: var(--transition-smooth);
-        }
-
-        .inline-image-card:hover img { transform: scale(1.05); }
-
-        .inline-image-card .image-overlay-lbl {
-            position: absolute;
-            bottom: 0; left: 0; right: 0;
-            padding: 8px;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-            font-size: 0.7rem;
-            color: rgba(255,255,255,0.8);
-            font-weight: 500;
-        }
-
-        .msg-timestamp-log { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-dark); }
-        .user-variant .msg-timestamp-log { text-align: right; }
-
-        /* ==========================================================================
-           4. RIGHT ALIGNED MEDIA ENGINE PREVIEW SIDEBAR
-           ========================================================================== */
-        .media-gallery-sidebar {
-            padding: 24px;
-            background-color: rgba(4, 9, 24, 0.4);
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-            overflow-y: auto;
-        }
-
-        .sidebar-section-title {
+        .file-attachment-chip {
+            background: var(--surface-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 6px 12px;
+            border-radius: 6px;
             font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .sidebar-section-title span {
-            background-color: var(--surface-tertiary);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 0.65rem;
-            color: var(--accent-blue);
-        }
-
-        .media-showcase-rack {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
-
-        .rack-item-thumb {
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            aspect-ratio: 1;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .rack-item-thumb img { width: 100%; height: 100%; object-fit: cover; transition: var(--transition-smooth); }
-        .rack-item-thumb:hover img { transform: scale(1.08); border-color: var(--accent-blue); }
-
-        /* Prompt Suggestions Matrix */
-        .multimodal-suggestions-deck {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .suggestion-chip-btn {
-            background-color: var(--surface-secondary);
-            border: 1px solid var(--border-color);
-            padding: 10px 12px;
-            border-radius: 8px;
-            font-size: 0.78rem;
-            color: var(--text-main);
-            text-align: left;
-            cursor: pointer;
-            transition: var(--transition-smooth);
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .suggestion-chip-btn:hover {
-            border-color: var(--accent-blue);
-            background-color: var(--surface-tertiary);
-            transform: translateX(4px);
+        .file-attachment-chip .close-chip { cursor: pointer; color: var(--text-dark); }
+        .file-attachment-chip .close-chip:hover { color: #fff; }
+
+        .console-dock-tray {
+            padding: 16px 20px; border-top: 1px solid rgba(255, 255, 255, 0.05); background-color: var(--surface-base);
         }
+        
+        .input-composite-cluster {
+            display: flex; align-items: center; gap: 10px; background-color: rgba(2, 6, 17, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 4px 8px;
+        }
+        
+        .core-text-field {
+            flex-grow: 1; background: transparent; border: none; color: var(--text-pure);
+            font-family: var(--font-sans); font-size: 0.88rem; height: 40px; padding-left: 8px;
+        }
+
+        .dock-action-button {
+            width: 36px; height: 36px; border-radius: 8px; border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; background: transparent;
+            color: var(--text-side); transition: var(--transition-fluid);
+        }
+        
+        .dock-action-button:hover { background-color: var(--surface-pill); color: var(--text-pure); }
+        .dock-action-button.submit-btn { background-color: var(--border-glow); color: #fff; }
+        .dock-action-button.submit-btn:hover { background-color: #2563eb; }
+        .dock-action-button svg { width: 16px; height: 16px; fill: currentColor; }
 
         /* ==========================================================================
-           5. INTERACTIVE INSTRUMENT INPUT PANEL DOCK
+           RIGHT COLUMN: REAL-TIME GRAPH METRICS & SYSTEM PARAMETERS
            ========================================================================== */
-        .dock-input-tray {
-            padding: 20px 24px;
-            border-top: 1px solid var(--border-color);
-            background-color: var(--surface-primary);
-        }
-
-        /* Upload Previews Container Layer */
-        .image-attachment-preview-bar {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-
-        .image-attachment-preview-bar:empty { margin-bottom: 0; }
-
-        .attached-preview-node {
-            width: 54px;
-            height: 54px;
-            border-radius: 8px;
-            border: 1px solid var(--accent-blue);
-            position: relative;
-            overflow: hidden;
-            animation: scaleUp 0.2s var(--transition-smooth);
-        }
-
-        @keyframes scaleUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
-        .attached-preview-node img { width: 100%; height: 100%; object-fit: cover; }
-        
-        .attached-preview-node .remove-node-overlay {
-            position: absolute;
-            top: 2px; right: 2px;
-            background: rgba(239, 68, 68, 0.8);
-            border: none; color: white;
-            width: 16px; height: 16px;
-            border-radius: 50%; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 0.6rem; font-weight: bold;
-        }
-
-        .input-composite-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background-color: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--border-color);
-            padding: 6px 6px 6px 14px;
-            border-radius: 14px;
-        }
-
-        .input-composite-wrapper:focus-within {
-            border-color: var(--accent-blue);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-        }
-
-        .console-text-input {
-            flex-grow: 1;
-            background: transparent;
-            border: none;
-            color: var(--text-main);
-            font-family: var(--font-sans);
-            font-size: 0.9rem;
-            height: 40px;
-        }
-
-        .action-icon-trigger-btn {
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
-            border: 1px solid transparent;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition-smooth);
-            color: var(--text-muted);
-            background: transparent;
-        }
-
-        .action-icon-trigger-btn:hover { background-color: var(--surface-secondary); color: var(--text-main); }
-        
-        .action-icon-trigger-btn.submit-variant { background-color: var(--accent-blue); color: #ffffff; }
-        .action-icon-trigger-btn.submit-variant:hover { background-color: #2563eb; }
-
-        .action-icon-trigger-btn svg { width: 18px; height: 18px; fill: currentColor; }
-
-        /* ==========================================================================
-           6. LIGHTBOX MODAL COMPONENT (FULL SCREEN PREVIEW)
-           ========================================================================== */
-        .lightbox-modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: rgba(3, 7, 18, 0.95);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0; pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .lightbox-modal-overlay.is-visible { opacity: 1; pointer-events: auto; }
-
-        .lightbox-wrapper-content {
-            position: relative;
-            max-width: 85%;
-            max-height: 85%;
+        .analytics-sidebar-panel {
+            background-color: rgba(15, 23, 42, 0.8);
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 14px;
+            overflow: hidden;
         }
 
-        .lightbox-wrapper-content img {
-            max-width: 100%;
-            max-height: 75vh;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        .sidebar-scroll-wrapper { padding: 20px; display: flex; flex-direction: column; gap: 24px; flex-grow: 1; overflow-y: auto; }
+        .telemetry-module-box { display: none; flex-direction: column; gap: 12px; }
+        .telemetry-module-box.is-visible { display: flex; }
+
+        .sub-panel-title { font-family: var(--font-mono); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dark); }
+        
+        /* Hardware Grid Switches */
+        .hardware-relay-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .relay-switch-card {
+            background-color: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255, 255, 255, 0.03); padding: 12px; border-radius: 8px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .relay-switch-card p { font-size: 0.78rem; }
+        
+        .switch-toggle-input {
+            appearance: none; width: 34px; height: 18px; background: var(--surface-pill);
+            border-radius: 20px; position: relative; cursor: pointer; transition: var(--transition-fluid);
+        }
+        .switch-toggle-input:checked { background: var(--border-glow); }
+        .switch-toggle-input::before {
+            content: ''; position: absolute; width: 12px; height: 12px; border-radius: 50%;
+            background: #fff; top: 3px; left: 3px; transition: var(--transition-fluid);
+        }
+        .switch-toggle-input:checked::before { transform: translateX(16px); }
+
+        /* Business KPI Modules */
+        .kpi-metric-strip-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .kpi-data-chip {
+            background-color: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255, 255, 255, 0.03); padding: 12px; border-radius: 8px;
+        }
+        .kpi-data-chip span { font-size: 0.7rem; color: var(--text-side); }
+        .kpi-data-chip p { font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; margin-top: 4px; color: var(--cls-biz); }
+
+        /* News Deck Architecture */
+        .news-headline-stack { display: flex; flex-direction: column; gap: 8px; }
+        .headline-node-item {
+            background-color: rgba(255, 255, 255, 0.01); border: 1px solid rgba(255, 255, 255, 0.03);
+            border-left: 3px solid var(--cls-osint); padding: 10px 12px; border-radius: 6px;
+            display: flex; flex-direction: column; gap: 4px; transition: var(--transition-fluid); cursor: pointer;
+        }
+        .headline-node-item:hover { background-color: rgba(255, 255, 255, 0.03); }
+        .headline-node-item h4 { font-size: 0.8rem; font-weight: 500; }
+
+        /* Config / Parameters Module */
+        .config-slider-panel {
+            background: rgba(30, 41, 59, 0.3); border: 1px solid rgba(255, 255, 255, 0.03);
+            padding: 14px; border-radius: 8px; display: flex; flex-direction: column; gap: 12px;
+        }
+        .slider-node { display: flex; flex-direction: column; gap: 6px; }
+        .slider-node label { font-size: 0.75rem; color: var(--text-side); display: flex; justify-content: space-between; }
+        .slider-node input[type="range"] { appearance: none; background: var(--surface-pill); height: 4px; border-radius: 2px; }
+        .slider-node input[type="range"]::-webkit-slider-thumb { appearance: none; width: 12px; height: 12px; background: var(--border-glow); border-radius: 50%; cursor: pointer; }
+
+        .interactive-chart-container {
+            background-color: rgba(2, 6, 17, 0.5); border: 1px solid rgba(255, 255, 255, 0.03); padding: 12px; border-radius: 10px;
         }
 
-        .lightbox-caption-text {
-            color: var(--text-main);
-            font-size: 0.95rem;
-            font-weight: 500;
-            text-align: center;
-        }
-
-        .lightbox-close-btn {
-            position: absolute;
-            top: -40px; right: 0;
-            background: transparent; border: none;
-            color: var(--text-muted); font-size: 1.5rem;
-            cursor: pointer; transition: color 0.2s;
-        }
-        .lightbox-close-btn:hover { color: var(--text-main); }
-
-        /* ==========================================================================
-           7. MEDIA QUERY RESPONSIVENESS MATRIX
-           ========================================================================== */
-        @media (max-width: 992px) {
-            body { padding: 10px; }
-            .app-workspace-container { height: calc(100vh - 20px); border-radius: 14px; }
-            .main-console-split { grid-template-columns: 1fr; }
-            .media-gallery-sidebar { display: none; } /* Hide sidebar gallery on tablets/mobile */
-        }
-
-        @media (max-width: 576px) {
-            .app-header-nav { padding: 14px; }
-            .brand-meta p { display: none; }
-            .message-feed-stream { padding: 14px; }
-            .msg-bubble-card { max-width: 95%; }
-            .inline-image-grid-node { grid-template-columns: 1fr; }
-            .dock-input-tray { padding: 14px; }
+        @media (max-width: 1200px) {
+            .dashboard-grid-root { grid-template-columns: 260px 1fr; }
+            .analytics-sidebar-panel { display: none; }
         }
     </style>
 </head>
 <body>
 
-    <div class="app-workspace-container">
+    <div class="dashboard-grid-root">
         
-        <!-- App Navbar Header -->
-        <header class="app-header-nav">
-            <div class="brand-meta">
-                <h1>Multimodal Vision Command Center <span>v3.0 Pro</span></h1>
-                <p>Advanced conversational layout supporting cross-platform object recognition and image diagnostics.</p>
+        <aside class="sidebar-control-panel">
+            <header class="pane-header">
+                <div class="engine-identity">
+                    <div class="pulse-beacon"></div>
+                    <h2 style="font-size: 0.9rem;">NexisOS Core Enterprise</h2>
+                </div>
+            </header>
+
+            <div class="pane-header" style="border-bottom: none; padding: 12px 16px 4px 16px;">
+                <span class="sub-panel-title">Active AI Workspace Threads</span>
+                <button class="dock-action-button" id="initiateNewThreadTrigger" title="Spawn Unified Framework Instance" style="width:24px; height:24px;">
+                    <svg viewBox="0 0 24 24" style="width:14px; height:14px;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                </button>
             </div>
-        </header>
 
-        <!-- Main Workspace Interface Splitting Splitter Grid -->
-        <div class="main-console-split">
-            
-            <!-- Left Chat Column -->
-            <section class="chat-pipeline-section">
-                <div class="message-feed-stream" id="chatMessageStreamViewport">
-                    
-                    <!-- Welcome System Message -->
-                    <div class="msg-bubble-card system-variant">
-                        <div class="avatar-circle-icon">AI</div>
-                        <div class="bubble-inner-content">
-                            <div class="bubble-text-block">
-                                Core vision analytics layer linked up successfully. Drop text prompts or attach rich imagery data assets to process analytical workflows.
-                            </div>
-                            <span class="msg-timestamp-log">SYSTEM // ONLINE</span>
-                        </div>
-                    </div>
-
+            <div class="thread-history-section" id="activeThreadDockTargetStream">
                 </div>
 
-                <!-- Input Panel Matrix Dock -->
-                <footer class="dock-input-tray">
-                    <!-- Target box for file attachment previews -->
-                    <div class="image-attachment-preview-bar" id="imagePreviewContainerRow"></div>
+            <nav class="domain-matrix-selector" id="matrixDomainNavTrack">
+                <button class="matrix-card-trigger is-active" data-domain="education">
+                    <h3>Academic</h3>
+                </button>
+                <button class="matrix-card-trigger" data-domain="business">
+                    <h3>Enterprise</h3>
+                </button>
+                <button class="matrix-card-trigger" data-domain="iot">
+                    <h3>Edge IoT</h3>
+                </button>
+                <button class="matrix-card-trigger" data-domain="osint">
+                    <h3>OSINT Feed</h3>
+                </button>
+            </nav>
+        </aside>
 
-                    <div class="input-composite-wrapper">
-                        <!-- Hidden File Native Handle -->
-                        <input type="file" id="hiddenFileAttachmentNativeControl" accept="image/*" multiple style="display: none;">
-                        
-                        <button class="action-icon-trigger-btn" id="triggerAttachmentHookKey" title="Attach Multimodal Image Asset">
-                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c0 1.1.9-2 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
-                            </svg>
-                        </button>
-
-                        <input type="text" class="console-text-input" id="chatSystemInputFieldNode" placeholder="Ask a question or analyze vision matrices...">
-                        
-                        <button class="action-icon-trigger-btn submit-variant" id="dispatchQueryActionKey" title="Send Payload">
-                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-                            </svg>
-                        </button>
-                    </div>
-                </footer>
-            </section>
-
-            <!-- Right Asset / Suggestions Gallery Sidebar -->
-            <aside class="media-gallery-sidebar">
-                
+        <section class="central-chat-pipeline">
+            <header class="pane-header">
                 <div>
-                    <div class="sidebar-section-title" style="margin-bottom: 12px;">
-                        <span>Image Inspection Rack</span>
-                        <span>4 Active</span>
-                    </div>
-                    <div class="media-showcase-rack" id="sidebarAssetRackContainer">
-                        <!-- Preloaded asset cards -->
-                        <div class="rack-item-thumb" data-caption="Neural Core Schematics Grid">
-                            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=200&q=80" alt="Asset 1">
+                    <h2 id="dynamicConsoleContextHeader" style="font-size: 0.95rem; text-transform: capitalize;">Educational Matrix Pipeline</h2>
+                    <p style="font-size: 0.72rem; color: var(--text-side);" id="dynamicConsoleContextSub">Active Node Instance: Alpha-1 Neural Weaver Layer</p>
+                </div>
+            </header>
+
+            <div class="pipeline-feed-stream" id="consoleMessagePipelineStream">
+                </div>
+
+            <div class="multimodal-attachment-tray" id="multimodalAttachmentTrayNode">
+                </div>
+
+            <footer class="console-dock-tray">
+                <div class="input-composite-cluster">
+                    <input type="file" id="hiddenFilePayloadBridgeInput" style="display: none;" multiple>
+                    <button class="dock-action-button" id="triggerFileAttachmentUploadMesh" title="Ingest Multimodal Asset Payload Frame">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-3.31 2.69-6 6-6s6 2.69 6 6v12c0 4.42-3.58 8-8 8s-8-3.58-8-8V6h2v11c0 3.31 2.69 6 6 6s6-2.69 6-6V5c0-2.21-1.79-4-4-4s-4 1.79-4 4v11.5c0 1.1.9 2 2 2s2-.9 2-2V6h2z"/>
+                        </svg>
+                    </button>
+                    
+                    <input type="text" class="core-text-field" id="consolePrimaryTextInputField" placeholder="Compile textual payload parameters or instruct model agents...">
+                    
+                    <button class="dock-action-button submit-btn" id="dispatchCorePayloadTriggerKey" title="Commit Event Frame Sequence">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                        </svg>
+                    </button>
+                </div>
+            </footer>
+        </section>
+
+        <aside class="analytics-sidebar-panel">
+            <header class="pane-header">
+                <span class="sub-panel-title">Contextual Stream Metrics</span>
+                <span id="telemetryStatePillTag" style="font-family: var(--font-mono); font-size: 0.62rem; color: var(--cls-edu); text-transform: uppercase; font-weight: 600;">Syllabus Sync</span>
+            </header>
+
+            <div class="sidebar-scroll-wrapper">
+                
+                <div class="slider-node">
+                    <span class="sub-panel-title">Hyperparameter Tuning Matrices</span>
+                    <div class="config-slider-panel">
+                        <div class="slider-node">
+                            <label><span>Execution Model Temperature</span> <span id="valDisplayTemp">0.7</span></label>
+                            <input type="range" min="0" max="2" step="0.1" value="0.7" id="sliderSettingTemperature">
                         </div>
-                        <div class="rack-item-thumb" data-caption="Cybernetic Render Engine Matrix">
-                            <img src="https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=200&q=80" alt="Asset 2">
-                        </div>
-                        <div class="rack-item-thumb" data-caption="Bio-metric Compute Server Hub">
-                            <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=200&q=80" alt="Asset 3">
-                        </div>
-                        <div class="rack-item-thumb" data-caption="Automated Data Pattern Array">
-                            <img src="https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=200&q=80" alt="Asset 4">
+                        <div class="slider-node">
+                            <label><span>Top P Sampling Alpha</span> <span id="valDisplayTopP">0.9</span></label>
+                            <input type="range" min="0" max="1" step="0.05" value="0.9" id="sliderSettingTopP">
                         </div>
                     </div>
                 </div>
 
-                <hr style="border: none; border-top: 1px solid var(--border-color); margin: 6px 0;">
-
-                <div class="multimodal-suggestions-deck">
-                    <div class="sidebar-section-title" style="margin-bottom: 8px;">
-                        <span>Multimodal Preset Diagnostics</span>
+                <div class="telemetry-module-box is-visible" id="sidebarBlockEducation">
+                    <span class="sub-panel-title">Curriculum Progress Mapping</span>
+                    <div class="kpi-metric-strip-grid">
+                        <div class="kpi-data-chip" style="grid-column: span 2;"><span>Target Learning Graph Mastery</span><p style="color: var(--cls-edu);">84.6% Delta</p></div>
                     </div>
-                    <button class="suggestion-chip-btn" data-prompt="Generate synthetic rendering engine prototypes.">
-                        ⚡ Generate Rendering Prototypes
-                    </button>
-                    <button class="suggestion-chip-btn" data-prompt="Analyze active rack assets for structural network pattern anomalies.">
-                        🔍 Scan Network System Rack Logs
-                    </button>
-                    <button class="suggestion-chip-btn" data-prompt="Provide breakdown analysis of structural data matrices.">
-                        📊 Extract Matrix Telemetry
-                    </button>
                 </div>
 
-            </aside>
+                <div class="telemetry-module-box" id="sidebarBlockBusiness">
+                    <span class="sub-panel-title">Transactional KPI Ledger</span>
+                    <div class="kpi-metric-strip-grid">
+                        <div class="kpi-data-chip"><span>Daily Clearings</span><p>$184.2K</p></div>
+                        <div class="kpi-data-chip"><span>Latency Delta</span><p>12.4ms</p></div>
+                    </div>
+                </div>
 
-        </div>
-    </div>
+                <div class="telemetry-module-box" id="sidebarBlockIot">
+                    <span class="sub-panel-title">Edge Actuator Cluster Array</span>
+                    <div class="hardware-relay-grid">
+                        <div class="relay-switch-card"><p>MQTT Gate</p><input type="checkbox" class="switch-toggle-input" checked id="iotSwitchMqttGate"></div>
+                        <div class="relay-switch-card"><p>Log Pipeline</p><input type="checkbox" class="switch-toggle-input" id="iotSwitchLogGate"></div>
+                    </div>
+                </div>
 
-    <!-- Master Lightbox Modal Structure -->
-    <div class="lightbox-modal-overlay" id="globalLightboxComponentOverlay" aria-hidden="true">
-        <div class="lightbox-wrapper-content">
-            <button class="lightbox-close-btn" id="closeLightboxComponentAction" title="Exit Preview">&times;</button>
-            <img id="lightboxTargetMediaElement" src="" alt="Active View Zoom">
-            <div class="lightbox-caption-text" id="lightboxTargetCaptionLabel">Asset Inspection</div>
-        </div>
+                <div class="telemetry-module-box" id="sidebarBlockOsint">
+                    <span class="sub-panel-title">Newswire Crawler Real-Time Index</span>
+                    <div class="news-headline-stack" id="osintDynamicHeadlineTargetDeck"></div>
+                </div>
+
+                <div>
+                    <span class="sub-panel-title" style="margin-bottom: 10px; display: block;">Dynamic Context Analytics Stream</span>
+                    <div class="interactive-chart-container">
+                        <canvas id="sidebarGlobalAnalyticsChartEngineCanvasNode" height="160"></canvas>
+                    </div>
+                </div>
+
+            </div>
+        </aside>
+
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const chatMessageStreamViewport = document.getElementById("chatMessageStreamViewport");
-            const chatSystemInputFieldNode = document.getElementById("chatSystemInputFieldNode");
-            const dispatchQueryActionKey = document.getElementById("dispatchQueryActionKey");
-            const triggerAttachmentHookKey = document.getElementById("triggerAttachmentHookKey");
-            const hiddenFileAttachmentNativeControl = document.getElementById("hiddenFileAttachmentNativeControl");
-            const imagePreviewContainerRow = document.getElementById("imagePreviewContainerRow");
-            const sidebarAssetRackContainer = document.getElementById("sidebarAssetRackContainer");
-
-            // Lightbox Modal References
-            const globalLightboxComponentOverlay = document.getElementById("globalLightboxComponentOverlay");
-            const lightboxTargetMediaElement = document.getElementById("lightboxTargetMediaElement");
-            const lightboxTargetCaptionLabel = document.getElementById("lightboxTargetCaptionLabel");
-            const closeLightboxComponentAction = document.getElementById("closeLightboxComponentAction");
-
-            // Memory Cache for Active Attached Images
-            let volatileImageUploadBin = [];
-
-            // Trigger Image Lightbox Modal Viewports
-            function launchLightboxPreviewInstance(imageSourceUrl, captionString = "Asset Verification View") {
-                lightboxTargetMediaElement.src = imageSourceUrl;
-                lightboxTargetCaptionLabel.textContent = captionString;
-                globalLightboxComponentOverlay.classList.add("is-visible");
-                globalLightboxComponentOverlay.setAttribute("aria-hidden", "false");
-            }
-
-            function shutdownLightboxPreviewInstance() {
-                globalLightboxComponentOverlay.classList.remove("is-visible");
-                globalLightboxComponentOverlay.setAttribute("aria-hidden", "true");
-                lightboxTargetMediaElement.src = "";
-            }
-
-            closeLightboxComponentAction.addEventListener("click", shutdownLightboxPreviewInstance);
-            globalLightboxComponentOverlay.addEventListener("click", (e) => {
-                if (e.target === globalLightboxComponentOverlay) shutdownLightboxPreviewInstance();
-            });
-
-            // Initialize Static Document Sidebar Image Elements Click Mappings
-            document.querySelectorAll(".rack-item-thumb").forEach(item => {
-                item.addEventListener("click", () => {
-                    const src = item.querySelector("img").src.replace("&w=200", "&w=1000");
-                    const caption = item.getAttribute("data-caption");
-                    launchLightboxPreviewInstance(src, caption);
-                });
-            });
-
-            // Re-render Selected Attachment Previews Row Layout
-            function synchronizeAttachmentPreviewsBar() {
-                imagePreviewContainerRow.innerHTML = "";
-                volatileImageUploadBin.forEach((fileObj, index) => {
-                    const node = document.createElement("div");
-                    node.className = "attached-preview-node";
-                    
-                    const img = document.createElement("img");
-                    img.src = URL.createObjectURL(fileObj);
-                    node.appendChild(img);
-                    
-                    const removeBtn = document.createElement("button");
-                    removeBtn.className = "remove-node-overlay";
-                    removeBtn.innerHTML = "&times;";
-                    removeBtn.onclick = () => {
-                        volatileImageUploadBin.splice(index, 1);
-                        synchronizeAttachmentPreviewsBar();
-                    };
-                    
-                    node.appendChild(removeBtn);
-                    imagePreviewContainerRow.appendChild(node);
-                });
-            }
-
-            // Bind Native Attachment Input System Triggers
-            triggerAttachmentHookKey.addEventListener("click", () => hiddenFileAttachmentNativeControl.click());
+            // Workspace Application Context Layout Elements Map
+            const matrixDomainNavTrack = document.getElementById("matrixDomainNavTrack");
+            const consoleMessagePipelineStream = document.getElementById("consoleMessagePipelineStream");
+            const consolePrimaryTextInputField = document.getElementById("consolePrimaryTextInputField");
+            const dispatchCorePayloadTriggerKey = document.getElementById("dispatchCorePayloadTriggerKey");
+            const dynamicConsoleContextHeader = document.getElementById("dynamicConsoleContextHeader");
+            const dynamicConsoleContextSub = document.getElementById("dynamicConsoleContextSub");
+            const telemetryStatePillTag = document.getElementById("telemetryStatePillTag");
+            const osintDynamicHeadlineTargetDeck = document.getElementById("osintDynamicHeadlineTargetDeck");
             
-            hiddenFileAttachmentNativeControl.addEventListener("change", (e) => {
-                const identifiedFiles = Array.from(e.target.files);
-                volatileImageUploadBin = [...volatileImageUploadBin, ...identifiedFiles];
-                synchronizeAttachmentPreviewsBar();
-                hiddenFileAttachmentNativeControl.value = ""; // clear selector native handle
-            });
+            // Advanced Thread & File Mapping References
+            const activeThreadDockTargetStream = document.getElementById("activeThreadDockTargetStream");
+            const initiateNewThreadTrigger = document.getElementById("initiateNewThreadTrigger");
+            const triggerFileAttachmentUploadMesh = document.getElementById("triggerFileAttachmentUploadMesh");
+            const hiddenFilePayloadBridgeInput = document.getElementById("hiddenFilePayloadBridgeInput");
+            const multimodalAttachmentTrayNode = document.getElementById("multimodalAttachmentTrayNode");
+            const sidebarGlobalAnalyticsChartEngineCanvasNode = document.getElementById("sidebarGlobalAnalyticsChartEngineCanvasNode").getContext('2d');
 
-            // Dynamically build message bubble cards inside feed viewport container
-            function commitMessageToFeedStream(messageText, authorType = "system", embeddedImagesArray = []) {
-                const bubbleCard = document.createElement("div");
-                bubbleCard.className = `msg-bubble-card ${authorType}-variant`;
-                
-                const initials = authorType === "system" ? "AI" : "UR";
+            // Slider Config DOM bindings
+            const sliderSettingTemperature = document.getElementById("sliderSettingTemperature");
+            const sliderSettingTopP = document.getElementById("sliderSettingTopP");
+            const valDisplayTemp = document.getElementById("valDisplayTemp");
+            const valDisplayTopP = document.getElementById("valDisplayTopP");
+
+            let currentContextDomainScope = "education";
+            let globalTelemetryChartEngineRef = null;
+            let loadedPayloadFilesCache = [];
+
+            // IN-MEMORY COMPREHENSIVE CONVERSATIONAL PERSISTENT STATE LOGICAL ARCHITECTURE
+            let workspaceThreadMemoryCollection = [
+                { id: "thread_01", label: "Neural Model Fine-Tuning Setup", domain: "education", messages: [{ role: "system", content: "Academic Knowledge Graph Engine active. Core parameters baseline metrics nominal." }] },
+                { id: "thread_02", label: "Q3 Asset Valuation Ledger Scrape", domain: "business", messages: [{ role: "system", content: "Business Intelligence Engine online. Ready to structure general ledger transactional queries." }] }
+            ];
+            let activeTrackingThreadId = "thread_01";
+
+            const coreDomainDatabaseDictionary = {
+                education: { header: "Academic Knowledge Graph Engine", subText: "Active Context Node: Curriculum Parsing & Vector Assembly", color: "#3b82f6", pillText: "Syllabus Sync", chartLabel: "Concept Density Map", chartData: [64, 78, 90, 42, 56, 88], chartCategories: ["NLP", "Consensus", "Calculus", "Vectors", "Graph Theory", "Linear Alg"] },
+                business: { header: "Enterprise Business Intelligence Console", subText: "Active Context Node: Financial Ledger Analysis", color: "#10b981", pillText: "KPI Ledger Run", chartLabel: "Pipeline Transaction Velocity", chartData: [120, 145, 132, 168, 194, 210], chartCategories: ["08:00", "10:00", "12:00", "14:00", "16:00", "18:00"] },
+                iot: { header: "Edge Core IoT Device Control Plane", subText: "Active Context Node: MQTT Edge Telemetry Broker", color: "#f59e0b", pillText: "Edge Mesh Live", chartLabel: "Device Pulse Signal Delta (Hz)", chartData: [45, 48, 44, 52, 61, 58], chartCategories: ["Node A", "Node B", "Node C", "Node D", "Node E", "Node F"] },
+                osint: { header: "OSINT Open-Source News Monitoring Grid", subText: "Active Context Node: Multi-Wire RSS Scrape Matrix", color: "#ec4899", pillText: "OSINT Crawler Matrix", chartLabel: "Incoming Signal Wire Volume", chartData: [320, 412, 289, 506, 612, 480], chartCategories: ["Tech", "Finance", "GeoPol", "Edge Tech", "Markets", "Logistics"] }
+            };
+
+            const sampleOsintNewsWireMockDatabase = [
+                { title: "Quantum Compute Core Scaling Milestone Met", source: "TechWire Wire" },
+                { title: "Global Microchip Supply Channels Project 8% Velocity Gains", source: "SupplyChain Log" }
+            ];
+
+            // DYNAMIC SIMULATED TOKENS TOKENIZER STREAM OUTPUT PIPELINE RENDER ENGINE
+            function streamSystemResponseToPipelineViewport(fullTextPayloadString) {
+                const nodeRow = document.createElement("div");
+                nodeRow.className = "chat-row-node variant-system";
                 const timeStr = new Date().toTimeString().split(' ')[0];
-                
-                let imageGridHtml = "";
-                if (embeddedImagesArray.length > 0) {
-                    imageGridHtml = `<div class="inline-image-grid-node">`;
-                    embeddedImagesArray.forEach((imgSrc, idx) => {
-                        imageGridHtml += `
-                            <div class="inline-image-card" data-idx="${idx}">
-                                <img src="${imgSrc}" alt="Embedded Image Node">
-                                <div class="image-overlay-lbl">ANALYTICS_IMAGE_0${idx+1}.PNG</div>
-                            </div>
-                        `;
-                    });
-                    imageGridHtml += `</div>`;
-                }
 
-                bubbleCard.innerHTML = `
-                    <div class="avatar-circle-icon">${initials}</div>
-                    <div class="bubble-inner-content">
-                        <div class="bubble-text-block">${messageText}</div>
-                        ${imageGridHtml}
-                        <span class="msg-timestamp-log">${authorType.toUpperCase()} // ${timeStr}</span>
+                nodeRow.innerHTML = `
+                    <div class="avatar-frame-box">OS</div>
+                    <div class="bubble-wrapper-box">
+                        <div class="bubble-content-text"></div>
+                        <span class="node-meta-time">SYSTEM // LIVE STREAM // ${timeStr}</span>
                     </div>
                 `;
 
-                // Set up lightbox triggers for freshly appended inline custom image nodes
-                bubbleCard.querySelectorAll(".inline-image-card").forEach(card => {
-                    card.addEventListener("click", () => {
-                        const targetImgSrc = card.querySelector("img").src;
-                        launchLightboxPreviewInstance(targetImgSrc, "Dynamic Inline Node Inspection Layer");
-                    });
-                });
+                consoleMessagePipelineStream.appendChild(nodeRow);
+                consoleMessagePipelineStream.scrollTop = consoleMessagePipelineStream.scrollHeight;
 
-                chatMessageStreamViewport.appendChild(bubbleCard);
-                chatMessageStreamViewport.scrollTop = chatMessageStreamViewport.scrollHeight;
+                const textBubbleContainerNode = nodeRow.querySelector(".bubble-content-text");
+                let wordIterationPointer = 0;
+                const explodedTokenWordArray = fullTextPayloadString.split(" ");
+
+                const tokenStreamIntervalTaskLoop = setInterval(() => {
+                    if (wordIterationPointer < explodedTokenWordArray.length) {
+                        textBubbleContainerNode.textContent += (wordIterationPointer === 0 ? "" : " ") + explodedTokenWordArray[wordIterationPointer];
+                        wordIterationPointer++;
+                        consoleMessagePipelineStream.scrollTop = consoleMessagePipelineStream.scrollHeight;
+                    } else {
+                        clearInterval(tokenStreamIntervalTaskLoop);
+                        // Save structural message frame output into active context state
+                        const currentlyTrackedThreadStateNode = workspaceThreadMemoryCollection.find(t => t.id === activeTrackingThreadId);
+                        if (currentlyTrackedThreadStateNode) {
+                            currentlyTrackedThreadStateNode.messages.push({ role: "system", content: fullTextPayloadString });
+                        }
+                    }
+                }, 45); // Enterprise standard simulation network latency ticker value
             }
 
-            // Mock Intelligent Automation Processing Engine
-            function simulateVisionEnginePipelineResponse(hasUserImages = false) {
-                setTimeout(() => {
-                    // Responses dynamically pull sample visual artwork to demonstrate rich picture capabilities
-                    const outputMockText = hasUserImages 
-                        ? "Multimodal array data analysis complete. Core neural weights detect layered structures, abstract gradient curves, and high-frequency pixel variations matching systemic design profiles."
-                        : "Synthetic render matrices generated across cluster pipelines successfully. Review the inline graphical breakdowns below.";
+            // CHART REBUILD UTILITY ENGINE LOGIC PLUG
+            function rebuildContextualTelemetryChartMatrix(config) {
+                if (globalTelemetryChartEngineRef) globalTelemetryChartEngineRef.destroy();
+                globalTelemetryChartEngineRef = new Chart(sidebarGlobalAnalyticsChartEngineCanvasNode, {
+                    type: 'line',
+                    data: {
+                        labels: config.chartCategories,
+                        datasets: [{
+                            label: config.chartLabel,
+                            data: config.chartData,
+                            borderColor: config.color,
+                            backgroundColor: config.color + "10",
+                            borderWidth: 2,
+                            pointRadius: 2,
+                            fill: true,
+                            tension: 0.2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#64748b', font: { size: 9 } } },
+                            y: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#64748b', font: { size: 9 } } }
+                        }
+                    }
+                });
+            }
+
+            // APPLICATION UI WORKSPACE REFRACTOR SYNC CONTROLLER
+            function updateWorkspaceDisplayInterfaceLayout() {
+                activeThreadDockTargetStream.innerHTML = "";
+                workspaceThreadMemoryCollection.forEach(thread => {
+                    const node = document.createElement("div");
+                    node.className = `thread-node-item ${thread.id === activeTrackingThreadId ? 'is-active' : ''}`;
+                    node.innerHTML = `<span class="thread-meta-title">${thread.label}</span>
+                                      <span style="font-size:0.6rem; text-transform:uppercase; color:var(--text-dark); font-family:var(--font-mono);">${thread.domain}</span>`;
                     
-                    // Mock generated rich imagery responses from Unsplash
-                    const mockGeneratedGraphics = hasUserImages ? [] : [
-                        "https://images.unsplash.com/photo-1614741118887-7a4ee193a5fa?auto=format&fit=crop&w=600&q=80",
-                        "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?auto=format&fit=crop&w=600&q=80"
-                    ];
-
-                    commitMessageToFeedStream(outputMockText, "system", mockGeneratedGraphics);
-                }, 1500);
-            }
-
-            // Core Execution Process Hook for User Actions
-            function handleUserPayloadSubmission() {
-                const rawText = chatSystemInputFieldNode.value.trim();
-                if (!rawText && volatileImageUploadBin.length === 0) return;
-
-                // Map attached object file objects into runtime local strings for viewport injection
-                const processStringsArray = volatileImageUploadBin.map(file => URL.createObjectURL(file));
-                const userHadImages = processStringsArray.length > 0;
-
-                commitMessageToFeedStream(rawText || "Processing attached image elements...", "user", processStringsArray);
-                
-                // Clear state caches
-                chatSystemInputFieldNode.value = "";
-                volatileImageUploadBin = [];
-                synchronizeAttachmentPreviewsBar();
-
-                simulateVisionEnginePipelineResponse(userHadImages);
-            }
-
-            dispatchQueryActionKey.addEventListener("click", handleUserPayloadSubmission);
-            chatSystemInputFieldNode.addEventListener("keydown", (e) => {
-                if (e.key === "Enter") handleUserPayloadSubmission();
-            });
-
-            // Bind Prompt Preset Suggestions Deck
-            document.querySelectorAll(".suggestion-chip-btn").forEach(btn => {
-                btn.addEventListener("click", () => {
-                    const targetedPrompt = btn.getAttribute("data-prompt");
-                    chatSystemInputFieldNode.value = targetedPrompt;
-                    handleUserPayloadSubmission();
+                    node.onclick = () => {
+                        activeTrackingThreadId = thread.id;
+                        currentContextDomainScope = thread.domain;
+                        updateWorkspaceDisplayInterfaceLayout();
+                        synchronizeDomainStateContext(thread.domain, false);
+                    };
+                    activeThreadDockTargetStream.appendChild(node);
                 });
+
+                // Render current conversational loop arrays completely to viewport track frame
+                consoleMessagePipelineStream.innerHTML = "";
+                const activeThreadRef = workspaceThreadMemoryCollection.find(t => t.id === activeTrackingThreadId);
+                if (activeThreadRef) {
+                    activeThreadRef.messages.push;
+                    activeThreadRef.messages.forEach(msg => {
+                        const row = document.createElement("div");
+                        row.className = `chat-row-node variant-${msg.role}`;
+                        const badgeInit = msg.role === "system" ? "OS" : "UX";
+                        row.innerHTML = `<div class="avatar-frame-box">${badgeInit}</div>
+                                         <div class="bubble-wrapper-box"><div class="bubble-content-text">${msg.content}</div></div>`;
+                        consoleMessagePipelineStream.appendChild(row);
+                    });
+                }
+                consoleMessagePipelineStream.scrollTop = consoleMessagePipelineStream.scrollHeight;
+            }
+
+            function synchronizeDomainStateContext(domainKey, mutateActiveThreadDomain = true) {
+                currentContextDomainScope = domainKey;
+                const dbContext = coreDomainDatabaseDictionary[domainKey];
+                
+                document.querySelectorAll(".matrix-card-trigger").forEach(btn => {
+                    btn.classList.toggle("is-active", btn.getAttribute("data-domain") === domainKey);
+                });
+
+                document.querySelectorAll(".telemetry-module-box").forEach(box => box.classList.remove("is-visible"));
+                const targetedModuleBoxNode = document.getElementById(`sidebarBlock${domainKey.charAt(0).toUpperCase() + domainKey.slice(1)}`);
+                if (targetedModuleBoxNode) targetedModuleBoxNode.classList.add("is-visible");
+
+                dynamicConsoleContextHeader.textContent = dbContext.header;
+                dynamicConsoleContextSub.textContent = dbContext.subText;
+                telemetryStatePillTag.textContent = dbContext.pillText;
+                telemetryStatePillTag.style.color = dbContext.color;
+
+                if (mutateActiveThreadDomain) {
+                    const activeThreadRef = workspaceThreadMemoryCollection.find(t => t.id === activeTrackingThreadId);
+                    if (activeThreadRef) activeThreadRef.domain = domainKey;
+                    updateWorkspaceDisplayInterfaceLayout();
+                }
+
+                rebuildContextualTelemetryChartMatrix(dbContext);
+            }
+
+            // FILE MANAGEMENT MULTIMODAL MESH PIPELINE HANDLERS
+            triggerFileAttachmentUploadMesh.addEventListener("click", () => hiddenFilePayloadBridgeInput.click());
+            hiddenFilePayloadBridgeInput.addEventListener("change", (e) => {
+                const targetFilesSelected = Array.from(e.target.files);
+                targetFilesSelected.forEach(file => {
+                    if (!loadedPayloadFilesCache.some(f => f.name === file.name)) {
+                        loadedPayloadFilesCache.push(file);
+                    }
+                });
+                renderMultimodalUIAttachmentTrayChips();
             });
+
+            function renderMultimodalUIAttachmentTrayChips() {
+                multimodalAttachmentTrayNode.innerHTML = "";
+                if (loadedPayloadFilesCache.length > 0) {
+                    multimodalAttachmentTrayNode.classList.add("has-items");
+                    loadedPayloadFilesCache.forEach((file, idx) => {
+                        const chip = document.createElement("div");
+                        chip.className = "file-attachment-chip";
+                        chip.innerHTML = `<span>📎 ${file.name}</span><span class="close-chip" data-idx="${idx}">×</span>`;
+                        multimodalAttachmentTrayNode.appendChild(chip);
+                    });
+                } else {
+                    multimodalAttachmentTrayNode.classList.remove("has-items");
+                }
+            }
+
+            multimodalAttachmentTrayNode.addEventListener("click", (e) => {
+                if (e.target.classList.contains("close-chip")) {
+                    const targetedIndex = parseInt(e.target.getAttribute("data-idx"));
+                    loadedPayloadFilesCache.splice(targetedIndex, 1);
+                    renderMultimodalUIAttachmentTrayChips();
+                }
+            });
+
+            // INSTANTIATE AND SPAWN FRESH RUNTIME HISTORY LOG CONTEXTS
+            initiateNewThreadTrigger.addEventListener("click", () => {
+                const uniquelyGeneratedIdString = "thread_" + Date.now();
+                const newThreadPayloadNode = {
+                    id: uniquelyGeneratedIdString,
+                    label: `Exploratory Query Vector Cluster`,
+                    domain: currentContextDomainScope,
+                    messages: [{ role: "system", content: `${coreDomainDatabaseDictionary[currentContextDomainScope].header} instantiated initialized dynamic system loop context sequence cleanly.` }]
+                };
+                workspaceThreadMemoryCollection.unshift(newThreadPayloadNode);
+                activeTrackingThreadId = uniquelyGeneratedIdString;
+                updateWorkspaceDisplayInterfaceLayout();
+                synchronizeDomainStateContext(currentContextDomainScope, false);
+            });
+
+            // CORE DISPATCH INTERFACE ROUTINES
+            function processConsolePrimaryUserExecutionPayload() {
+                const promptString = consolePrimaryTextInputField.value.trim();
+                if (!promptString && loadedPayloadFilesCache.length === 0) return;
+
+                let composedUserPayloadString = promptString;
+                if (loadedPayloadFilesCache.length > 0) {
+                    const fileNamesString = loadedPayloadFilesCache.map(f => `[${f.name}]`).join(", ");
+                    composedUserPayloadString += `\n\n*[Ingested Multi-Asset File Matrix Array Payload Buffer: ${fileNamesString}]*`;
+                }
+
+                const activeThreadRef = workspaceThreadMemoryCollection.find(t => t.id === activeTrackingThreadId);
+                if (activeThreadRef) {
+                    // Update automated thread titles from default names on initial expression sequence updates
+                    if (activeThreadRef.messages.length <= 1 && promptString.length > 0) {
+                        activeThreadRef.label = promptString.slice(0, 32) + (promptString.length > 32 ? "..." : "");
+                    }
+                    activeThreadRef.messages.push({ role: "user", content: composedUserPayloadString });
+                }
+
+                updateWorkspaceDisplayInterfaceLayout();
+                consolePrimaryTextInputField.value = "";
+                loadedPayloadFilesCache = [];
+                renderMultimodalUIAttachmentTrayChips();
+
+                // Trigger intelligent structured simulated response loop
+                setTimeout(() => {
+                    let aiResponseBufferString = `Simulated processing completed across targeted configuration parameters. Model temperature weights set to value alpha [${sliderSettingTemperature.value}]. Context mapping state updates applied natively into cluster stream visualization metrics panels.`;
+                    streamSystemResponseToPipelineViewport(aiResponseBufferString);
+                }, 800);
+            }
+
+            // CORE DOMAIN EVENT MONITOR DECK BINDINGS INTERCEPTORS
+            matrixDomainNavTrack.addEventListener("click", (event) => {
+                const targetedButton = event.target.closest(".matrix-card-trigger");
+                if (!targetedButton) return;
+                synchronizeDomainStateContext(targetedButton.getAttribute("data-domain"), true);
+            });
+
+            dispatchCorePayloadTriggerKey.addEventListener("click", processConsolePrimaryUserExecutionPayload);
+            consolePrimaryTextInputField.addEventListener("keydown", (e) => { if (e.key === "Enter") processConsolePrimaryUserExecutionPayload(); });
+
+            sliderSettingTemperature.addEventListener("input", (e) => valDisplayTemp.textContent = e.target.value);
+            sliderSettingTopP.addEventListener("input", (e) => valDisplayTopP.textContent = e.target.value);
+
+            // INITIALIZATION INVOCATIONS SETUP ROUTINES
+            function populateOsintHeadlineStackView() {
+                osintDynamicHeadlineTargetDeck.innerHTML = "";
+                sampleOsintNewsWireMockDatabase.forEach(article => {
+                    const node = document.createElement("div");
+                    node.className = "headline-node-item";
+                    node.innerHTML = `<h4>${article.title}</h4><span style="font-size:0.65rem; color:var(--text-dark); font-family:var(--font-mono);">${article.source}</span>`;
+                    node.onclick = () => { consolePrimaryTextInputField.value = `Perform comprehensive analysis parsing target parameters for: "${article.title}"`; };
+                    osintDynamicHeadlineTargetDeck.appendChild(node);
+                });
+            }
+
+            populateOsintHeadlineStackView();
+            updateWorkspaceDisplayInterfaceLayout();
+            synchronizeDomainStateContext("education", false);
         });
     </script>
 </body>
