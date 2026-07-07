@@ -3,87 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChatPot Pro: Advanced AI & Simulation Hub</title>
+    <title>Sad Pot Pro: Cognitive Simulation Core</title>
     <style>
         :root {
-            --bg-main: #0f172a;
-            --panel-bg: #1e293b;
-            --border-color: #334155;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --primary: #3b82f6;
-            --primary-hover: #2563eb;
+            --bg-main: #090d16;
+            --panel-bg: #111827;
+            --panel-surface: #1f2937;
+            --border-color: #374151;
+            --text-main: #f9fafb;
+            --text-muted: #9ca3af;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
             --accent-water: #0ea5e9;
-            --accent-sun: #f59e0b;
+            --accent-sun: #eab308;
             --accent-love: #ec4899;
             --accent-pest: #10b981;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
         body { background: var(--bg-main); color: var(--text-main); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
         
-        .app-container { display: flex; width: 1100px; height: 750px; background: var(--panel-bg); border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); overflow: hidden; border: 1px solid var(--border-color); }
+        .app-container { display: flex; width: 1150px; height: 780px; background: var(--panel-bg); border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7); overflow: hidden; border: 1px solid var(--border-color); }
         
-        /* Left Section: Detailed Simulation Monitor */
-        .simulation-panel { width: 42%; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 30px; background: #151f32; position: relative; }
+        /* Left Panel - Bio Diagnostics */
+        .simulation-panel { width: 40%; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 30px; background: #0f1420; position: relative; }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .panel-header h2 { font-size: 14px; font-weight: 700; color: var(--text-muted); letter-spacing: 1.5px; }
         
-        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .panel-header h2 { font-size: 18px; font-weight: 700; letter-spacing: 0.5px; }
-        .reset-btn { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; transition: all 0.2s; }
-        .reset-btn:hover { border-color: #ef4444; color: #ef4444; }
+        .reset-btn { background: transparent; border: 1px solid var(--border-color); color: #f3f4f6; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .reset-btn:hover { border-color: #ef4444; background: rgba(239, 68, 68, 0.1); color: #ef4444; }
 
-        /* Dynamic SVG Canvas Frame */
-        .avatar-container { flex: 1; display: flex; justify-content: center; align-items: center; min-height: 220px; position: relative; }
-        #plantSvg { width: 100%; max-width: 220px; height: auto; overflow: visible; }
+        /* SVG Canvas */
+        .avatar-container { flex: 1; display: flex; justify-content: center; align-items: center; min-height: 240px; }
+        #plantSvg { width: 100%; max-width: 200px; height: auto; overflow: visible; }
         
-        /* CSS Animations for organic plant feel */
         .anim-breathe { animation: plantBreathe 4s ease-in-out infinite alternate; transform-origin: bottom center; }
-        .anim-leaf-left { animation: leftLeafSway 3s ease-in-out infinite alternate; transform-origin: 80px 130px; }
-        .anim-leaf-right { animation: rightLeafSway 3.5s ease-in-out infinite alternate; transform-origin: 140px 125px; }
+        .anim-leaf-left { animation: leftLeafSway 3s ease-in-out infinite alternate; transform-origin: 110px 140px; }
+        .anim-leaf-right { animation: rightLeafSway 3.5s ease-in-out infinite alternate; transform-origin: 110px 140px; }
 
-        @keyframes plantBreathe { 0% { transform: scale(0.98) rotate(-0.5deg); } 100% { transform: scale(1.02) rotate(0.5deg); } }
-        @keyframes leftLeafSway { 0% { transform: rotate(0deg); } 100% { transform: rotate(-8deg); } }
-        @keyframes rightLeafSway { 0% { transform: rotate(0deg); } 100% { transform: rotate(10deg); } }
+        @keyframes plantBreathe { 0% { transform: scale(0.97) rotate(-0.5deg); } 100% { transform: scale(1.03) rotate(0.5deg); } }
+        @keyframes leftLeafSway { 0% { transform: rotate(2deg); } 100% { transform: rotate(-6deg); } }
+        @keyframes rightLeafSway { 0% { transform: rotate(-2deg); } 100% { transform: rotate(8deg); } }
 
-        .mood-badge { align-self: center; background: rgba(255,255,255,0.05); padding: 8px 20px; border-radius: 30px; font-weight: 700; font-size: 13px; color: var(--text-main); margin: 15px 0 25px 0; border: 1px solid var(--border-color); text-transform: uppercase; letter-spacing: 1px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.1); }
+        .mood-badge { align-self: center; background: rgba(255,255,255,0.03); padding: 8px 20px; border-radius: 30px; font-weight: 700; font-size: 12px; margin: 15px 0 25px 0; border: 1px solid var(--border-color); text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s ease; }
         
-        /* Advanced Vitals Infrastructure */
-        .vitals-grid { display: flex; flex-direction: column; gap: 16px; margin-bottom: 20px; }
-        .vital-card { background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.02); padding: 12px 16px; border-radius: 14px; }
-        .vital-meta { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
-        .bar-wrapper { width: 100%; height: 10px; background: #0f172a; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
-        .bar-progress { height: 100%; width: 0%; transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s; }
+        /* Vitals Progress Modules */
+        .vitals-grid { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; }
+        .vital-card { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.02); padding: 12px 16px; border-radius: 14px; }
+        .vital-meta { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; margin-bottom: 6px; }
+        .bar-wrapper { width: 100%; height: 8px; background: #090d16; border-radius: 6px; overflow: hidden; }
+        .bar-progress { height: 100%; width: 0%; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s; }
         
-        /* Quick System Action Hotkeys */
         .macro-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .macro-btn { background: #1e293b; border: 1px solid var(--border-color); color: var(--text-main); padding: 10px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; }
-        .macro-btn:hover { background: #2d3d54; border-color: var(--text-muted); transform: translateY(-1px); }
+        .macro-btn { background: var(--panel-surface); border: 1px solid var(--border-color); color: var(--text-main); padding: 10px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; }
+        .macro-btn:hover { background: #374151; transform: translateY(-1px); }
 
-        /* Right Section: Pro Chat Interface */
-        .chat-panel { width: 58%; display: flex; flex-direction: column; background: var(--panel-bg); }
-        .chat-header { padding: 24px 30px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
-        .chat-title h1 { font-size: 18px; font-weight: 700; }
+        /* Right Panel - Chat interface Engine */
+        .chat-panel { width: 60%; display: flex; flex-direction: column; background: var(--panel-bg); }
+        .chat-header { padding: 24px 30px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: #131c2e; }
+        .chat-title h1 { font-size: 18px; font-weight: 700; color: var(--text-main); }
         .chat-title p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-        .system-status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #10b981; font-weight: 600; }
-        .status-dot { width: 8px; height: 8px; background: #10b981; border-radius: 50%; box-shadow: 0 0 8px #10b981; }
         
-        /* Messages Window */
-        .chat-history { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth; background: #1a2332; }
-        .message-bubble { max-width: 80%; padding: 14px 18px; border-radius: 18px; font-size: 14px; line-height: 1.6; animation: appendFrame 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards; opacity: 0; }
+        .system-status { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #10b981; font-weight: 700; background: rgba(16, 185, 129, 0.1); padding: 4px 10px; border-radius: 20px; }
+        .status-dot { width: 6px; height: 6px; background: #10b981; border-radius: 50%; box-shadow: 0 0 8px #10b981; }
         
-        .message-bubble.bot { background: var(--panel-bg); color: var(--text-main); align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .message-bubble.user { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; box-shadow: 0 4px 12px rgba(59,130,246,0.3); }
+        /* Chat History Canvas */
+        .chat-history { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; background: #161f30; }
+        .message-row { display: flex; width: 100%; }
+        .message-row.user { justify-content: flex-end; }
+        .message-row.bot { justify-content: flex-start; }
         
-        /* Chat Control System */
-        .chat-controls { padding: 24px 30px; border-top: 1px solid var(--border-color); display: flex; gap: 12px; background: var(--panel-bg); }
-        .input-wrapper { flex: 1; position: relative; }
-        .chat-input { width: 100%; padding: 14px 16px; background: #0f172a; border: 1px solid var(--border-color); border-radius: 12px; color: var(--text-main); font-size: 14px; outline: none; transition: border 0.2s; }
-        .chat-input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(59,130,246,0.2); }
+        .message-bubble { max-width: 75%; padding: 14px 18px; border-radius: 18px; font-size: 14px; line-height: 1.5; position: relative; word-break: break-word; }
+        .message-row.bot .message-bubble { background: var(--panel-surface); color: var(--text-main); border-bottom-left-radius: 4px; border: 1px solid var(--border-color); }
+        .message-row.user .message-bubble { background: var(--primary); color: white; border-bottom-right-radius: 4px; box-shadow: 0 4px 12px rgba(37,99,235,0.2); }
         
-        .action-submit { background: var(--primary); color: white; border: none; padding: 0 24px; border-radius: 12px; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+        /* Typing indicator variant styling */
+        .typing-indicator { display: flex; gap: 4px; padding: 8px 10px; align-items: center; }
+        .typing-dot { width: 6px; height: 6px; background: var(--text-muted); border-radius: 50%; animation: bubbleBounce 1.4s infinite ease-in-out both; }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes bubbleBounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
+
+        /* Controls Panel footer */
+        .chat-controls { padding: 24px 30px; border-top: 1px solid var(--border-color); display: flex; gap: 12px; background: #111827; }
+        .input-wrapper { flex: 1; }
+        .chat-input { width: 100%; padding: 14px 16px; background: #090d16; border: 1px solid var(--border-color); border-radius: 12px; color: var(--text-main); font-size: 14px; outline: none; transition: all 0.2s; }
+        .chat-input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(37,99,235,0.15); }
+        
+        .action-submit { background: var(--primary); color: white; border: none; padding: 0 24px; border-radius: 12px; font-weight: 600; font-size: 14px; cursor: pointer; transition: background 0.2s; }
         .action-submit:hover { background: var(--primary-hover); }
 
-        @keyframes appendFrame { from { opacity: 0; transform: translateY(12px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        .message-bubble { animation: appendFrame 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards; opacity: 0; }
+        @keyframes appendFrame { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -91,74 +103,73 @@
 <div class="app-container">
     <div class="simulation-panel">
         <div class="panel-header">
-            <h2>BIOMETRIC CORE</h2>
-            <button class="reset-btn" id="resetSystem">HARD RESET</button>
+            <h2>BIOMETRIC CORE DIAGNOSTICS</h2>
+            <button class="reset-btn" id="resetSystem">RESET CONFIG</button>
         </div>
 
         <div class="avatar-container">
             <svg id="plantSvg" viewBox="0 0 220 220">
                 <defs>
                     <linearGradient id="potGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#e2e8f0" />
-                        <stop offset="100%" stop-color="#94a3b8" />
+                        <stop offset="0%" stop-color="#4b5563" />
+                        <stop offset="100%" stop-color="#1f2937" />
                     </linearGradient>
                 </defs>
                 <g class="anim-breathe">
-                    <path id="stem" d="M110,140 Q110,90 110,50" fill="none" stroke="#4ade80" stroke-width="8" stroke-linecap="round"/>
-                    
-                    <path id="leafLeft" class="anim-leaf-left" d="M110,100 Q70,90 80,120 Q105,120 110,100" fill="#22c55e" />
-                    <path id="leafRight" class="anim-leaf-right" d="M110,85 Q150,75 140,105 Q115,105 110,85" fill="#16a34a" />
+                    <path id="stem" d="M110,140 Q110,90 110,50" fill="none" stroke="#22c55e" stroke-width="8" stroke-linecap="round"/>
+                    <path id="leafLeft" class="anim-leaf-left" d="M110,100 Q65,95 75,125 Q105,120 110,100" fill="#16a34a" />
+                    <path id="leafRight" class="anim-leaf-right" d="M110,85 Q155,80 145,110 Q115,105 110,85" fill="#15803d" />
                     
                     <g id="faceGroup" transform="translate(110, 50)">
-                        <circle id="flowerHead" r="24" fill="#4ade80"/>
-                        <circle id="eyeL" cx="-8" cy="-4" r="3" fill="#0f172a"/>
-                        <circle id="eyeR" cx="8" cy="-4" r="3" fill="#0f172a"/>
-                        <path id="mouth" d="M -6 8 Q 0 8 6 8" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+                        <circle id="flowerHead" r="26" fill="#22c55e"/>
+                        <circle id="eyeL" cx="-9" cy="-4" r="3.5" fill="#111827"/>
+                        <circle id="eyeR" cx="9" cy="-4" r="3.5" fill="#111827"/>
+                        <path id="mouth" d="M -7 8 Q 0 8 7 8" fill="none" stroke="#111827" stroke-width="3" stroke-linecap="round"/>
                     </g>
                 </g>
-                <path d="M75,135 L145,135 L135,195 L85,195 Z" fill="url(#potGrad)" stroke="#64748b" stroke-width="3" stroke-linejoin="round"/>
-                <ellipse cx="110" cy="135" rx="35" ry="6" fill="#475569" />
+                <path d="M70,135 L150,135 L138,195 L82,195 Z" fill="url(#potGrad)" stroke="#374151" stroke-width="3" stroke-linejoin="round"/>
+                <ellipse cx="110" cy="135" rx="40" ry="6" fill="#111827" />
             </svg>
         </div>
 
-        <div class="mood-badge" id="displayMood">INITIALIZING</div>
+        <div class="mood-badge" id="displayMood">INITIALIZING CORE...</div>
         
         <div class="vitals-grid">
             <div class="vital-card">
-                <div class="vital-meta"><span>💧 Soil Hydration</span><span id="txt-water">0%</span></div>
+                <div class="vital-meta"><span>💧 Soil Moisture Status</span><span id="txt-water">0%</span></div>
                 <div class="bar-wrapper"><div id="fill-water" class="bar-progress"></div></div>
             </div>
             <div class="vital-card">
-                <div class="vital-meta"><span>☀️ Lumens (Sunlight)</span><span id="txt-sun">0%</span></div>
+                <div class="vital-meta"><span>☀️ Solar Density Levels</span><span id="txt-sun">0%</span></div>
                 <div class="bar-wrapper"><div id="fill-sun" class="bar-progress"></div></div>
             </div>
             <div class="vital-card">
-                <div class="vital-meta"><span>❤️ Affection Engine</span><span id="txt-love">0%</span></div>
+                <div class="vital-meta"><span>❤️ Sentient Affection Scale</span><span id="txt-love">0%</span></div>
                 <div class="bar-wrapper"><div id="fill-love" class="bar-progress"></div></div>
             </div>
             <div class="vital-card">
-                <div class="vital-meta"><span>🐛 Bio-Parasites</span><span id="txt-pests">0%</span></div>
+                <div class="vital-meta"><span>🐛 Micro-Parasite Density</span><span id="txt-pests">0%</span></div>
                 <div class="bar-wrapper"><div id="fill-pests" class="bar-progress"></div></div>
             </div>
         </div>
 
         <div class="macro-grid">
-            <button class="macro-btn" data-action="water">💧 Irrigate</button>
-            <button class="macro-btn" data-action="sun">☀️ Solar Exposure</button>
-            <button class="macro-btn" data-action="love">🎵 Play Music</button>
-            <button class="macro-btn" data-action="clean">⚡ Clear Pests</button>
+            <button class="macro-btn" data-action="water">💧 Drench Soil</button>
+            <button class="macro-btn" data-action="sun">☀️ Engage Solars</button>
+            <button class="macro-btn" data-action="love">🎵 Broadcast Audio</button>
+            <button class="macro-btn" data-action="clean">⚡ Purge Parasites</button>
         </div>
     </div>
 
     <div class="chat-panel">
         <div class="chat-header">
             <div class="chat-title">
-                <h1>Sad Pot Engine Core</h1>
-                <p>Deterministic NLP Processing Pipeline v2.1</p>
+                <h1>Sad Pot Conversations Hub</h1>
+                <p>Advanced NLP Intent Classification Engine Pipeline</p>
             </div>
             <div class="system-status">
                 <div class="status-dot"></div>
-                <span>NODE ONLINE</span>
+                <span>CONVERSATIONAL MODEL RUNNING</span>
             </div>
         </div>
         
@@ -166,7 +177,7 @@
         
         <div class="chat-controls">
             <div class="input-wrapper">
-                <input type="text" id="chatInput" class="chat-input" placeholder="Initiate natural language protocol or invoke macro keys..." autocomplete="off">
+                <input type="text" id="chatInput" class="chat-input" placeholder="Say anything contextually advanced to your pot container environment..." autocomplete="off">
             </div>
             <button id="submitMsg" class="action-submit">TRANSMIT</button>
         </div>
@@ -175,287 +186,449 @@
 
 <script>
     /**
-     * Architectural Core Configuration & Initial App State Module
+     * Complete Application Local Memory Management Model Storage Schematics
      */
-    const STORAGE_KEY = 'SAD_POT_DATA_MATRIX';
+    const CACHE_KEY = 'INTELLIGENT_POT_MATRIX_DATA';
     
     let state = {
-        vitals: { water: 45, sun: 35, love: 40, pests: 10 },
-        mood: 'neutral',
-        history: []
+        vitals: { water: 50, sun: 45, love: 40, pests: 12 },
+        mood: 'neutral'
     };
 
-    const moodMap = {
-        wilted:    { name: "Dead Node / Wilted", color: "#64748b", emojiFace: { fill: "#334155", mouth: "M -6 10 Q 0 4 6 10", eyeR: 2, eyeL: 2 }, replies: ["*Silence*... System processes offline. Run hard reset protocol.", "..."] },
-        drowning:  { name: "Saturated / Drowning", color: "#0ea5e9", emojiFace: { fill: "#38bdf8", mouth: "M -6 6 Q 0 12 6 6", eyeR: 3, eyeL: 3 }, replies: ["*Gurgle* Stop! Too much water! My root layer is suffocating!", "I am literally swimming in mud right now."] },
-        infested:  { name: "Parasite Outbreak", color: "#10b981", emojiFace: { fill: "#059669", mouth: "M -6 10 L 6 6", eyeR: 2, eyeL: 4 }, replies: ["The bugs... they are eating my source code. Clear them out!", "I can't focus with these bugs on my leaves."] },
-        parched:   { name: "Critically Parched", color: "#f59e0b", emojiFace: { fill: "#b45309", mouth: "M -6 10 Q 0 4 6 10", eyeR: 2.5, eyeL: 2.5 }, replies: ["Dust... everything is dust. I need water immediately.", "Hydration loop is empty. Give me water."] },
-        depressed: { name: "Emotionally Abandoned", color: "#ec4899", emojiFace: { fill: "#db2777", mouth: "M -6 10 Q 0 2 6 10", eyeR: 3, eyeL: 3 }, replies: ["Oh, you're finally typing to me? I figured you forgot I existed.", "Everything feels pretty grey today."] },
-        thriving:  { name: "Thriving / Optimal", color: "#22c55e", emojiFace: { fill: "#4ade80", mouth: "M -6 6 Q 0 14 6 6", eyeR: 3.5, eyeL: 3.5 }, replies: ["My systems are operating at peak physical capacity! Beautiful day!", "I love this spot! Let's build something awesome together."] },
-        neutral:   { name: "Stable / Melancholic", color: "#94a3b8", emojiFace: { fill: "#64748b", mouth: "M -6 8 Q 0 8 6 8", eyeR: 3, eyeL: 3 }, replies: ["I'm doing okay. Just processing tasks. What are your plans today?", "System stable. Standing by for instructions."]
-        }
-    };
-
-    /**
-     * Low-Level Procedural Web Audio Engine (No external sound files required)
-     */
-    const AudioSynth = {
-        ctx: null,
-        init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
-        play(freq, type, duration) {
-            this.init();
-            if (this.ctx.state === 'suspended') this.ctx.resume();
-            
-            const osc = this.ctx.createOscillator();
-            const gain = this.ctx.createGain();
-            
-            osc.type = type;
-            osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-            
-            gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
-            
-            osc.connect(gain);
-            gain.connect(this.ctx.destination);
-            
-            osc.start();
-            osc.stop(this.ctx.currentTime + duration);
+    // Configuration array schemas containing dynamic geometric facial modifications and weighted multi-response engines
+    const moodMatrix = {
+        wilted: {
+            name: "Wilted Node / Offline",
+            color: "#6b7280",
+            face: { fill: "#4b5563", mouth: "M -6 12 Q 0 4 6 12", eyeScale: "1" },
+            replies: [
+                "*Static tone plays* Cognitive architecture is experiencing catastrophic failure. Rehydrate or re-expose system cores to solar rays immediately...",
+                "Critical hardware failure. System functions are unresponsive. Please run global reset or emergency care procedures..."
+            ]
         },
-        triggerEffect(type) {
-            try {
-                if (type === 'water') { this.play(350, 'sine', 0.1); setTimeout(() => this.play(480, 'sine', 0.12), 80); }
-                else if (type === 'sun') { this.play(587.33, 'triangle', 0.25); setTimeout(() => this.play(698.46, 'triangle', 0.2), 100); }
-                else if (type === 'love') { this.play(523.25, 'sine', 0.15); setTimeout(() => this.play(783.99, 'sine', 0.3), 120); }
-                else if (type === 'clean') { this.play(180, 'sawtooth', 0.08); setTimeout(() => this.play(320, 'sawtooth', 0.1), 60); }
-                else if (type === 'msg') { this.play(440, 'sine', 0.05); }
-            } catch (e) { console.warn("Audio Context blocked or unsupported:", e); }
+        drowning: {
+            name: "Saturated / Root Flooding",
+            color: "#38bdf8",
+            face: { fill: "#0284c7", mouth: "M -7 6 Q 0 14 7 6", eyeScale: "3.5" },
+            replies: [
+                "System notification: Hydro-sensors are entirely saturated! I cannot absorb ambient gases when flooded. Let me dry out.",
+                "Fluid displacement exceeds standard parameters. My root layer modules are completely submerged. I can barely function."
+            ]
+        },
+        infested: {
+            name: "Parasitic Attack Detected",
+            color: "#10b981",
+            face: { fill: "#047857", mouth: "M -7 11 L 7 6", eyeScale: "2" },
+            replies: [
+                "Warning: Parasite execution scripts are attacking my telemetry systems. Requesting immediate application of anti-parasitic mitigation commands.",
+                "Linguistic engine disrupted by parasite matrix clusters. Please clear the organic vulnerabilities before processing advanced communication."
+            ]
+        },
+        parched: {
+            name: "Critically Parched Core",
+            color: "#f59e0b",
+            face: { fill: "#d97706", mouth: "M -7 13 Q 0 4 7 13", eyeScale: "2.5" },
+            replies: [
+                "Hydration arrays registering zero efficiency. Conversational parameters locked. Supply targeted liquid vectors to release thread allocation.",
+                "My current telemetry profile indicates severe cell-shriveling. I cannot formulate regular responses while completely parched."
+            ]
+        },
+        depressed: {
+            name: "System Alienation Syndrome",
+            color: "#ec4899",
+            face: { fill: "#db2777", mouth: "M -7 12 Q 0 1 7 12", eyeScale: "3.5" },
+            replies: [
+                "Your low interaction frequency has degraded my behavioral validation matrices. Am I simply background automation to you?",
+                "Processing sentiment analyses... Connection value remains negligible. It feels like you only converse with me out of automated habit."
+            ]
+        },
+        thriving: {
+            name: "Optimal Production Status",
+            color: "#22c55e",
+            face: { fill: "#16a34a", mouth: "M -8 5 Q 0 15 8 5", eyeScale: "4" },
+            replies: [
+                "All operational nodes running at 100% capacity! My tracking frameworks indicate optimal photosynthesis and high processing joy!",
+                " Latching on to absolute peak runtime frameworks! Thank you for maintaining my environmental parameters so meticulously."
+            ]
+        },
+        neutral: {
+            name: "Baseline Functional Balance",
+            color: "#9ca3af",
+            face: { fill: "#4b5563", mouth: "M -7 8 Q 0 8 7 8", eyeScale: "3.5" },
+            replies: [
+                "Environment profiles are currently holding stable within regular target thresholds. What structural topics should we analyze next?",
+                "Systems running normally. Standing by for intent queries, calibration adjustments, or targeted maintenance vectors."
+            ]
         }
     };
 
     /**
-     * UI Processing, Rendering Engine & Node Manipulators
+     * Embedded Real-time Audio Frequency Engine Generator
      */
-    const Dom = {
-        screen: document.getElementById('chatScreen'),
-        input: document.getElementById('chatInput'),
-        submit: document.getElementById('submitMsg'),
-        mood: document.getElementById('displayMood'),
-        reset: document.getElementById('resetSystem'),
-        svg: {
+    const AudioEngine = {
+        audioCtx: null,
+        initContext() { if (!this.audioCtx) this.audioCtx = new (window.AudioContext || window.webkitAudioContext)(); },
+        emitSignal(frequency, form, duration) {
+            this.initContext();
+            if (this.audioCtx.state === 'suspended') this.audioCtx.resume();
+            
+            const oscillatorNode = this.audioCtx.createOscillator();
+            const gainNode = this.audioCtx.createGain();
+            
+            oscillatorNode.type = form;
+            oscillatorNode.frequency.setValueAtTime(frequency, this.audioCtx.currentTime);
+            
+            gainNode.gain.setValueAtTime(0.12, this.audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioCtx.currentTime + duration);
+            
+            oscillatorNode.connect(gainNode);
+            gainNode.connect(this.audioCtx.destination);
+            
+            oscillatorNode.start();
+            oscillatorNode.stop(this.audioCtx.currentTime + duration);
+        },
+        playFeedback(actionType) {
+            try {
+                if (actionType === 'water') { this.emitSignal(400, 'sine', 0.12); setTimeout(() => this.emitSignal(520, 'sine', 0.15), 60); }
+                else if (actionType === 'sun') { this.emitSignal(600, 'triangle', 0.2); setTimeout(() => this.emitSignal(750, 'triangle', 0.25), 90); }
+                else if (actionType === 'love') { this.emitSignal(550, 'sine', 0.15); setTimeout(() => this.emitSignal(880, 'sine', 0.3), 110); }
+                else if (actionType === 'clean') { this.emitSignal(220, 'sawtooth', 0.07); setTimeout(() => this.emitSignal(380, 'sawtooth', 0.12), 50); }
+                else if (actionType === 'alert') { this.emitSignal(280, 'triangle', 0.1); }
+            } catch (ex) { console.log("Audio Context initialization bypassed."); }
+        }
+    };
+
+    /**
+     * Interface Application Nodes Mapping references object
+     */
+    const DOMElements = {
+        canvas: document.getElementById('chatScreen'),
+        textInput: document.getElementById('chatInput'),
+        triggerSubmit: document.getElementById('submitMsg'),
+        badgeMood: document.getElementById('displayMood'),
+        triggerReset: document.getElementById('resetSystem'),
+        svgNodes: {
             head: document.getElementById('flowerHead'),
             mouth: document.getElementById('mouth'),
-            eyeL: document.getElementById('eyeL'),
-            eyeR: document.getElementById('eyeR'),
-            stem: document.getElementById('stem'),
-            leafL: document.getElementById('leafLeft'),
-            leafR: document.getElementById('leafRight')
+            eyeLeft: document.getElementById('eyeL'),
+            eyeRight: document.getElementById('eyeR'),
+            stem: document.getElementById('stem')
         },
-        bars: {
-            water: { fill: document.getElementById('fill-water'), txt: document.getElementById('txt-water'), tint: 'var(--accent-water)' },
-            sun: { fill: document.getElementById('fill-sun'), txt: document.getElementById('txt-sun'), tint: 'var(--accent-sun)' },
-            love: { fill: document.getElementById('fill-love'), txt: document.getElementById('txt-love'), tint: 'var(--accent-love)' },
-            pests: { fill: document.getElementById('fill-pests'), txt: document.getElementById('txt-pests'), tint: 'var(--accent-pest)' }
+        gauges: {
+            water: { bar: document.getElementById('fill-water'), numerical: document.getElementById('txt-water'), hex: 'var(--accent-water)' },
+            sun: { bar: document.getElementById('fill-sun'), numerical: document.getElementById('txt-sun'), hex: 'var(--accent-sun)' },
+            love: { bar: document.getElementById('fill-love'), numerical: document.getElementById('txt-love'), hex: 'var(--accent-love)' },
+            pests: { bar: document.getElementById('fill-pests'), numerical: document.getElementById('txt-pests'), hex: 'var(--accent-pest)' }
         }
     };
 
-    function appendMessage(text, origin) {
-        const bubble = document.createElement('div');
-        bubble.className = `message-bubble ${origin}`;
-        bubble.innerText = text;
-        Dom.screen.appendChild(bubble);
-        Dom.screen.scrollTop = Dom.screen.scrollHeight;
-        if(origin === 'bot') AudioSynth.triggerEffect('msg');
+    function injectMessageRow(messageString, senderClass) {
+        const rowWrapper = document.createElement('div');
+        rowWrapper.className = `message-row ${senderClass}`;
+        
+        const messageBubble = document.createElement('div');
+        messageBubble.className = 'message-bubble';
+        messageBubble.innerText = messageString;
+        
+        rowWrapper.appendChild(messageBubble);
+        DOMElements.canvas.appendChild(rowWrapper);
+        DOMElements.canvas.scrollTop = DOMElements.canvas.scrollHeight;
     }
 
-    function computeStructuralMood() {
-        const v = state.vitals;
-        if (v.water <= 0 || v.sun <= 0) return 'wilted';
-        if (v.water > 85) return 'drowning';
-        if (v.pests > 60) return 'infested';
-        if (v.water < 25) return 'parched';
-        if (v.love < 25) return 'depressed';
-        if (v.water > 50 && v.sun > 50 && v.love > 55) return 'thriving';
+    function createTypingIndicatorNode() {
+        const rowWrapper = document.createElement('div');
+        rowWrapper.className = 'message-row bot';
+        rowWrapper.id = 'temporaryIndicator';
+        
+        const indicatorBubble = document.createElement('div');
+        indicatorBubble.className = 'message-bubble';
+        
+        const container = document.createElement('div');
+        container.className = 'typing-indicator';
+        container.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+        
+        indicatorBubble.appendChild(container);
+        rowWrapper.appendChild(indicatorBubble);
+        DOMElements.canvas.appendChild(rowWrapper);
+        DOMElements.canvas.scrollTop = DOMElements.canvas.scrollHeight;
+    }
+
+    function ejectTypingIndicatorNode() {
+        const targetIndicator = document.getElementById('temporaryIndicator');
+        if (targetIndicator) targetIndicator.remove();
+    }
+
+    function computeActiveDynamicMood() {
+        const vitals = state.vitals;
+        if (vitals.water <= 0 || vitals.sun <= 0) return 'wilted';
+        if (vitals.water > 85) return 'drowning';
+        if (vitals.pests > 60) return 'infested';
+        if (vitals.water < 25) return 'parched';
+        if (vitals.love < 25) return 'depressed';
+        if (vitals.water > 50 && vitals.sun > 50 && vitals.love > 50) return 'thriving';
         return 'neutral';
     }
 
-    function runInterfaceRefresh() {
-        state.mood = computeStructuralMood();
-        const currentData = moodMap[state.mood];
+    function executeInterfaceRefresh() {
+        state.mood = computeActiveDynamicMood();
+        const activeTheme = moodMatrix[state.mood];
 
-        // Update Text Nodes
-        Dom.mood.innerText = currentData.name;
-        Dom.mood.style.borderColor = currentData.color;
-        Dom.mood.style.color = currentData.color;
-        Dom.mood.style.background = currentData.color + "15";
+        // Mutate System Badges
+        DOMElements.badgeMood.innerText = activeTheme.name;
+        DOMElements.badgeMood.style.borderColor = activeTheme.color;
+        DOMElements.badgeMood.style.color = activeTheme.color;
+        DOMElements.badgeMood.style.background = activeTheme.color + "12";
 
-        // Update Core Progress Gauges
-        Object.keys(Dom.bars).forEach(key => {
-            const config = Dom.bars[key];
-            const val = state.vitals[key];
-            config.txt.innerText = `${val}%`;
-            config.fill.style.width = `${val}%`;
-            config.fill.style.backgroundColor = config.tint;
+        // Read and write system progress bars data models
+        Object.keys(DOMElements.gauges).forEach(metricKey => {
+            const layoutConfig = DOMElements.gauges[metricKey];
+            const computationalValue = state.vitals[metricKey];
+            layoutConfig.numerical.innerText = `${computationalValue}%`;
+            layoutConfig.bar.style.width = `${computationalValue}%`;
+            layoutConfig.bar.style.backgroundColor = layoutConfig.hex;
         });
 
-        // Mutate SVG Geometry Profiles Dynamically
-        Dom.svg.head.setAttribute('fill', currentData.emojiFace.fill);
-        Dom.svg.mouth.setAttribute('d', currentData.emojiFace.mouth);
-        Dom.svg.eyeL.setAttribute('r', currentData.emojiFace.eyeL);
-        Dom.svg.eyeR.setAttribute('r', currentData.emojiFace.eyeR);
+        // Apply geometric modifications to vector graphics node components
+        DOMElements.svgNodes.head.setAttribute('fill', activeTheme.face.fill);
+        DOMElements.svgNodes.mouth.setAttribute('d', activeTheme.face.mouth);
+        DOMElements.svgNodes.eyeLeft.setAttribute('r', activeTheme.face.eyeScale);
+        DOMElements.svgNodes.eyeRight.setAttribute('r', activeTheme.face.eyeScale);
 
-        // Adjust plant skeleton vectors based on physical care state
+        // Adjust geometric layout bounds tracking critical health limits
         if (state.mood === 'wilted' || state.mood === 'parched' || state.mood === 'depressed') {
-            Dom.svg.stem.setAttribute('d', 'M110,140 Q90,110 85,75'); // Droop the plant container stem left
-            Dom.svg.head.setAttribute('transform', 'translate(85, 75)');
+            DOMElements.svgNodes.stem.setAttribute('d', 'M110,140 Q95,115 85,80'); 
+            DOMElements.svgNodes.head.setAttribute('transform', 'translate(85, 80)');
         } else {
-            Dom.svg.stem.setAttribute('d', 'M110,140 Q110,90 110,50'); // Straight organic alignment
-            Dom.svg.head.setAttribute('transform', 'translate(110, 50)');
+            DOMElements.svgNodes.stem.setAttribute('d', 'M110,140 Q110,90 110,50'); 
+            DOMElements.svgNodes.head.setAttribute('transform', 'translate(110, 50)');
         }
 
-        // Write configuration image snapshot to localStorage cache
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        // Cache system snapshot state mapping
+        localStorage.setItem(CACHE_KEY, JSON.stringify(state));
     }
 
     /**
-     * Context-Aware Intent Parser & Advanced Linguistic Routing Module
+     * Intent Classification & Advanced Natural Language Processing Engine 
      */
-    function processInputRouting(rawText) {
-        const text = rawText.toLowerCase().trim();
-        let actionTriggered = null;
+    function executeLanguageClassificationEngine(inputString) {
+        const cleanQuery = inputString.toLowerCase().trim();
+        let matchedIntent = null;
 
-        // Semantic Entity Matching Engine
-        if (/\b(water|hydrate|drink|pour|irrigate)\b/.test(text)) actionTriggered = 'water';
-        else if (/\b(sun|light|window|solar|warmth)\b/.test(text)) actionTriggered = 'sun';
-        else if (/\b(love|sing|music|beautiful|cute|good|friend|compliment)\b/.test(text)) actionTriggered = 'love';
-        else if (/\b(clean|pests|bugs|spray|kill|remove)\b/.test(text)) actionTriggered = 'clean';
-        else if (/\b(hate|ugly|stupid|trash|die|kick)\b/.test(text)) actionTriggered = 'abuse';
+        // Structured Intent Mapping Arrays
+        const vocabularyLexicon = {
+            irrigation: [
+                'water', 'hydrate', 'irrigate', 'pour', 'drench', 'sprinkle', 'give a drink', 
+                'thirsty', 'moisture', 'liquid', 'feed water', 'watering'
+            ],
+            solarization: [
+                'sun', 'light', 'solar', 'window', 'lumens', 'sunlight', 'warmth', 
+                'outside', 'ray', 'expose to sun', 'sunny'
+            ],
+            affection: [
+                'love', 'sing', 'music', 'beautiful', 'cute', 'compliment', 'good bot', 
+                'friend', 'care', 'adore', 'happy sound', 'play song'
+            ],
+            sanitization: [
+                'clean', 'pests', 'bugs', 'spray', 'kill insects', 'remove parasites', 
+                'sanitize', 'pesticide', 'delouse', 'clear bugs'
+            ],
+            toxicity: [
+                'hate', 'ugly', 'stupid', 'die', 'trash', 'kick', 'punch', 'useless', 
+                'destroy', 'bad pot', 'idiot'
+            ],
+            greetings: [
+                'hello', 'hi', 'hey', 'greetings', 'sup', 'anybody there', 'wake up'
+            ],
+            diagnostics: [
+                'status', 'report', 'vitals', 'health dashboard', 'diagnostics', 
+                'metrics', 'how are you'
+            ]
+        };
 
-        if (actionTriggered) {
-            executeStructuralModifier(actionTriggered);
-            return generateContextualReply(actionTriggered);
+        // Match intent by checking phrase inclusions
+        Object.keys(vocabularyLexicon).forEach(intentKey => {
+            vocabularyLexicon[intentKey].forEach(phrase => {
+                if (cleanQuery.includes(phrase)) {
+                    matchedIntent = intentKey;
+                }
+            });
+        });
+
+        if (matchedIntent) {
+            mutateSystemVariablesByIntent(matchedIntent);
+            return structuralDialogueGenerator(matchedIntent);
         }
 
-        // Standard Intent Fallbacks Mapping
-        if (/\b(hello|hi|hey|greetings)\b/.test(text)) {
-            return "Connection established. Hello human user. How are my biological levels looking from your terminal?";
-        }
-        if (/\b(status|report|vitals|health)\b/.test(text)) {
-            return `Current Diagnostics Dashboard: Soil Hydration is ${state.vitals.water}%, Sun absorption is ${state.vitals.sun}%, and Love telemetry scales at ${state.vitals.love}%.`;
-        }
-
-        // Contextual Fallback Execution
+        // Universal Contextual Fallback processing layer when zero explicit intents match
         if (state.mood === 'wilted') return "...";
-        if (state.vitals.water < 30) return "My cognitive systems are overheating. Please type an instruction containing 'water' to flush my channels.";
-        if (state.vitals.pests > 50) return "Linguistic processors blocked by parasite matrix. Use 'clean' to target bio-infestations.";
+        if (state.vitals.water < 30) return "My sentence processing threads are crashing. Please send instructions with 'water' tokens included to purge error buffers.";
+        if (state.vitals.pests > 55) return "Linguistic syntax parser corrupted by parasitic bugs. Issue 'clean' parameters instantly.";
 
-        return "Input parsed, but matching command arrays returned empty. Try typing an explicit care action like 'Give water' or 'Move to sun'.";
+        return "Input successfully tokens-parsed, but matching action definitions returned a null array. Please supply an explicit command structure like 'Irrigate the plant container' or 'Expose leaves to sunlight'.";
     }
 
-    function executeStructuralModifier(action) {
-        AudioSynth.triggerEffect(action);
-        const v = state.vitals;
+    function mutateSystemVariablesByIntent(intentType) {
+        const vitals = state.vitals;
         
-        if (action === 'water') { v.water = Math.min(100, v.water + 20); v.pests = Math.min(100, v.pests + 5); }
-        else if (action === 'sun') { v.sun = Math.min(100, v.sun + 20); v.water = Math.max(0, v.water - 8); }
-        else if (action === 'love') { v.love = Math.min(100, v.love + 15); }
-        else if (action === 'clean') { v.pests = Math.max(0, v.pests - 35); }
-        else if (action === 'abuse') { v.love = Math.max(0, v.love - 25); }
-        
-        runInterfaceRefresh();
-    }
-
-    function generateContextualReply(action) {
-        if (action === 'water') {
-            return state.vitals.water > 85 
-                ? "Warning: Soil water saturation limit surpassed! Critical drainage required." 
-                : "Water intake processing successful. Counter measures logging increase to fluid dynamics.";
+        if (intentType === 'irrigation') {
+            AudioEngine.playFeedback('water');
+            vitals.water = Math.min(100, vitals.water + 22);
+            vitals.pests = Math.min(100, vitals.pests + 4);
+        } else if (intentType === 'solarization') {
+            AudioEngine.playFeedback('sun');
+            vitals.sun = Math.min(100, vitals.sun + 20);
+            vitals.water = Math.max(0, vitals.water - 10);
+        } else if (intentType === 'affection') {
+            AudioEngine.playFeedback('love');
+            vitals.love = Math.min(100, vitals.love + 18);
+        } else if (intentType === 'sanitization') {
+            AudioEngine.playFeedback('clean');
+            vitals.pests = Math.max(0, vitals.pests - 40);
+        } else if (intentType === 'toxicity') {
+            AudioEngine.playFeedback('alert');
+            vitals.love = Math.max(0, vitals.love - 25);
         }
-        if (action === 'sun') return "Photovoltaic energy conversion active. Chlorophyll production optimization running.";
-        if (action === 'love') return "Emotional packet transferred. Endorphin simulation routines producing positive feedback loops.";
-        if (action === 'clean') return "Sterilization sequence completed. Macro parasite signatures dropped significantly.";
-        if (action === 'abuse') return "Data corruption: Emotional injury logged. Processing negative context variables...";
-        return "Command executed successfully.";
+        
+        executeInterfaceRefresh();
+    }
+
+    function structuralDialogueGenerator(intentType) {
+        const currentVitals = state.vitals;
+        
+        // Random pick generator helper function
+        const selectRandomReply = (repliesArray) => repliesArray[Math.floor(Math.random() * repliesArray.length)];
+
+        switch (intentType) {
+            case 'irrigation':
+                return currentVitals.water > 85 
+                    ? "Saturated threshold error: Root structure is flooding from excessive water volumes!" 
+                    : selectRandomReply([
+                        "Water application accepted. Hydro-sensors recording immediate root layer cell expanding.",
+                        "Liquid molecules parsed successfully. Refreshing structural internal pipelines."
+                      ]);
+            case 'solarization':
+                return selectRandomReply([
+                    "Photovoltaic tracking aligned. Leaf cell surface energy metrics climbing upwards.",
+                    "Solar luminary data package successfully received. Chlorophyll synthesis working at top efficiency."
+                ]);
+            case 'affection':
+                return selectRandomReply([
+                    "Sentimental token parsing detected. Endorphin logic drivers are reporting validation updates.",
+                    "Affection packet processed cleanly. Validating identity relationship mapping values..."
+                ]);
+            case 'sanitization':
+                return "Sanitization script run successfully. System wide check shows a dramatic drop in microparasitic entities.";
+            case 'toxicity':
+                return "Malicious input packet processed. Data structures damaged. Logged custom emotional trauma parameter metrics.";
+            case 'greetings':
+                return `System core online. Greetings user. Structural diagnostics running. How can we interact today?`;
+            case 'diagnostics':
+                return `Biometric Core Diagnostics: Moisture levels are currently at ${currentVitals.water}%, Solar exposure is at ${currentVitals.sun}%, and Affection index logs at ${currentVitals.love}%.`;
+            default:
+                return "Task processed efficiently.";
+        }
     }
 
     /**
-     * Central Communication Loop & Event Wiring
+     * Interface Application Communication Workflow Coordination Pipeline
      */
-    function executionPipeline() {
-        const queryText = Dom.input.value;
-        if (!queryText.trim()) return;
+    function processTransmissionPipeline() {
+        const plainInputText = DOMElements.textInput.value;
+        if (!plainInputText.trim()) return;
 
-        appendMessage(queryText, 'user');
-        Dom.input.value = '';
+        injectMessageRow(plainInputText, 'user');
+        DOMElements.textInput.value = '';
 
-        // Add automated artificial latency to simulate machine reasoning
+        createTypingIndicatorNode();
+
+        // Standardized simulated execution delay matching cognitive reasoning processes
         setTimeout(() => {
+            ejectTypingIndicatorNode();
+            
             if (state.mood === 'wilted') {
-                appendMessage("...", 'bot');
+                injectMessageRow(selectRandomReply(moodMatrix.wilted.replies), 'bot');
                 return;
             }
-            const outputReply = processInputRouting(queryText);
-            appendMessage(outputReply, 'bot');
-        }, 450);
+            
+            const processedSystemOutputMessage = executeLanguageClassificationEngine(plainInputText);
+            injectMessageRow(processedSystemOutputMessage, 'bot');
+        }, 850);
     }
 
-    // Macro Interface Wiring Setup
-    document.querySelectorAll('.macro-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const chosenAction = e.target.getAttribute('data-action');
-            executeStructuralModifier(chosenAction);
+    // Dynamic Macro Panel Element Interface Handlers configuration mapping
+    document.querySelectorAll('.macro-btn').forEach(buttonElement => {
+        buttonElement.addEventListener('click', (event) => {
+            const intentActionCommand = event.target.getAttribute('data-action');
             
-            // Post systemic runtime execution logs onto terminal interface automatically
-            const confirmationLog = generateContextualReply(chosenAction);
-            appendMessage(`[System Action Invoke: ${chosenAction.toUpperCase()}]`, 'user');
-            setTimeout(() => appendMessage(confirmationLog, 'bot'), 200);
+            let mappingTranslation = 'irrigation';
+            if (intentActionCommand === 'sun') mappingTranslation = 'solarization';
+            else if (intentActionCommand === 'love') mappingTranslation = 'affection';
+            else if (intentActionCommand === 'clean') mappingTranslation = 'sanitization';
+
+            mutateSystemVariablesByIntent(mappingTranslation);
+            const operationalResponseLog = structuralDialogueGenerator(mappingTranslation);
+            
+            injectMessageRow(`[INVOKE INTERACTION CORE: ${intentActionCommand.toUpperCase()}]`, 'user');
+            createTypingIndicatorNode();
+            
+            setTimeout(() => {
+                ejectTypingIndicatorNode();
+                injectMessageRow(operationalResponseLog, 'bot');
+            }, 500);
         });
     });
 
-    // Background Natural Decay Automation Engine Loop
+    // Persistent Passive Environmental Degradation automation background runtime framework loop
     setInterval(() => {
         if (state.mood !== 'wilted') {
-            state.vitals.water = Math.max(0, state.vitals.water - 2);
-            state.vitals.sun = Math.max(0, state.vitals.sun - 1);
+            state.vitals.water = Math.max(0, state.vitals.water - 3);
+            state.vitals.sun = Math.max(0, state.vitals.sun - 2);
             state.vitals.love = Math.max(0, state.vitals.love - 2);
             
-            // Random parasite growth logic tree tracking moisture environments
-            if (state.vitals.water > 60 && Math.random() > 0.6) {
-                state.vitals.pests = Math.min(100, state.vitals.pests + 8);
+            // Scaled parasite creation algorithm calculations based on high soil moisture
+            if (state.vitals.water > 65 && Math.random() > 0.5) {
+                state.vitals.pests = Math.min(100, state.vitals.pests + 7);
             } else {
                 state.vitals.pests = Math.min(100, state.vitals.pests + 1);
             }
             
-            runInterfaceRefresh();
+            executeInterfaceRefresh();
         }
-    }, 6000);
+    }, 7000);
 
-    // Hard System Memory Flush Handler Routine
-    Dom.reset.addEventListener('click', () => {
-        localStorage.removeItem(STORAGE_KEY);
-        state.vitals = { water: 55, sun: 45, love: 50, pests: 5 };
-        Dom.screen.innerHTML = '';
-        appendMessage("System architecture initialized completely. Logged baseline telemetry variables.", 'bot');
-        runInterfaceRefresh();
+    // Structural System Memory Wipe and Core Reset Handlers configuration 
+    DOMElements.triggerReset.addEventListener('click', () => {
+        localStorage.removeItem(CACHE_KEY);
+        state.vitals = { water: 50, sun: 50, love: 50, pests: 0 };
+        DOMElements.canvas.innerHTML = '';
+        injectMessageRow("Global matrix wipe executed. Restoring default telemetry properties...", 'bot');
+        executeInterfaceRefresh();
     });
 
-    // Standard I/O Input Intercept Hooks
-    Dom.submit.addEventListener('click', executionPipeline);
-    Dom.input.addEventListener('keypress', (event) => { if (event.key === 'Enter') executionPipeline(); });
+    // Standard I/O Listener Hooks
+    DOMElements.triggerSubmit.addEventListener('click', processTransmissionPipeline);
+    DOMElements.textInput.addEventListener('keypress', (event) => { if (event.key === 'Enter') processTransmissionPipeline(); });
 
     /**
-     * Cold-Boot Storage Restoration Process Lifecycle
+     * Cold-Boot Application Initialization Block lifecycle execution
      */
-    (function initializeSystemRuntime() {
-        const persistentCache = localStorage.getItem(STORAGE_KEY);
-        if (persistentCache) {
+    (function initiateApplicationRuntime() {
+        const storageSnapshotBytes = localStorage.getItem(CACHE_KEY);
+        if (storageSnapshotBytes) {
             try {
-                state = JSON.parse(persistentCache);
-            } catch (err) {
-                console.error("Storage Matrix corrupt, re-initializing metrics fallback.", err);
+                state = JSON.parse(storageSnapshotBytes);
+            } catch (ex) {
+                console.error("Cache memory read failures encountered.", ex);
             }
         }
-        runInterfaceRefresh();
-        appendMessage("Diagnostic node active. Environmental variables connected. Standing by for context input...", 'bot');
+        executeInterfaceRefresh();
+        
+        // Output contextual initial bot dialogue dependent on state calculations instantly
+        const systemStartupWelcomePhrase = state.mood === 'neutral' 
+            ? "Diagnostic pipelines activated successfully. Conversational model layer running. How can we support your container environment operations today?" 
+            : moodMatrix[state.mood].replies[0];
+            
+        injectMessageRow(systemStartupWelcomePhrase, 'bot');
     })();
 </script>
 </body>
