@@ -3,731 +3,460 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NexisOS Enterprise // Advanced Multimodal Control Plane</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+    <title>Sad Pot Pro: Advanced AI & Simulation Hub</title>
     <style>
         :root {
-            --bg-deep: #020617;
-            --surface-base: #0f172a;
-            --surface-card: #1e293b;
-            --surface-pill: #334155;
-            --border-glow: #3b82f6;
-            --border-mute: #1e293b;
-            
-            --text-pure: #f8fafc;
-            --text-side: #94a3b8;
-            --text-dark: #64748b;
-
-            /* Domain Context Accents */
-            --cls-edu: #3b82f6;     
-            --cls-biz: #10b981;     
-            --cls-iot: #f59e0b;     
-            --cls-osint: #ec4899;   
-
-            --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
-            --curve-rad: 12px;
-            --transition-fluid: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --bg-main: #0f172a;
+            --panel-bg: #1e293b;
+            --border-color: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --accent-water: #0ea5e9;
+            --accent-sun: #f59e0b;
+            --accent-love: #ec4899;
+            --accent-pest: #10b981;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
-        body {
-            background-color: var(--bg-deep);
-            color: var(--text-pure);
-            font-family: var(--font-sans);
-            height: 100vh;
-            display: flex;
-            padding: 12px;
-            overflow: hidden;
-        }
-
-        .dashboard-grid-root {
-            display: grid;
-            grid-template-columns: 300px 1fr 360px;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            overflow: hidden;
-            backdrop-filter: blur(20px);
-        }
-
-        h2, h3 { font-weight: 600; letter-spacing: -0.01em; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        body { background: var(--bg-main); color: var(--text-main); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
         
-        .pane-header {
-            padding: 16px 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: rgba(15, 23, 42, 0.2);
-        }
-
-        /* ==========================================================================
-           LEFT COLUMN: PERSISTENT THREAD MESH & CONTROLLER
-           ========================================================================== */
-        .sidebar-control-panel {
-            background-color: rgba(15, 23, 42, 0.8);
-            border-right: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .thread-history-section {
-            flex-grow: 1;
-            padding: 16px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .thread-node-item {
-            padding: 12px;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid transparent;
-            cursor: pointer;
-            transition: var(--transition-fluid);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .thread-node-item:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .thread-node-item.is-active {
-            background: rgba(59, 130, 246, 0.1);
-            border-color: rgba(59, 130, 246, 0.3);
-        }
-
-        .thread-meta-title {
-            font-size: 0.85rem;
-            color: var(--text-pure);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 180px;
-        }
-
-        .domain-matrix-selector {
-            padding: 16px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-        }
-
-        .matrix-card-trigger {
-            background-color: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            border-radius: 8px;
-            padding: 10px;
-            cursor: pointer;
-            text-align: left;
-            transition: var(--transition-fluid);
-        }
-
-        .matrix-card-trigger.is-active {
-            border-color: var(--border-glow);
-            background: rgba(59, 130, 246, 0.15);
-        }
-
-        .matrix-card-trigger h3 { font-size: 0.78rem; color: var(--text-pure); }
-
-        /* ==========================================================================
-           CENTER COLUMN: DYNAMIC STREAM PIPELINE & MULTIMODAL INGESTION
-           ========================================================================== */
-        .central-chat-pipeline {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            background-color: rgba(15, 23, 42, 0.3);
-        }
-
-        .pipeline-feed-stream {
-            flex-grow: 1;
-            padding: 24px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .chat-row-node { display: flex; gap: 14px; max-width: 85%; animation: nodeFadeIn 0.2s cubic-bezier(0,0,0.2,1) forwards; }
-        @keyframes nodeFadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+        .app-container { display: flex; width: 1100px; height: 750px; background: var(--panel-bg); border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); overflow: hidden; border: 1px solid var(--border-color); }
         
-        .chat-row-node.variant-user { align-self: flex-end; flex-direction: row-reverse; }
-        .chat-row-node.variant-system { align-self: flex-start; }
-
-        .avatar-frame-box {
-            width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
-            font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; flex-shrink: 0;
-            border: 1px solid rgba(255, 255, 255, 0.1); background-color: var(--surface-card);
-        }
-
-        .bubble-content-text {
-            padding: 12px 16px; border-radius: 12px; font-size: 0.9rem; line-height: 1.5; word-break: break-word;
-            border: 1px solid rgba(255, 255, 255, 0.05); background-color: rgba(30, 41, 59, 0.7);
-        }
-        .variant-user .bubble-content-text { background-color: var(--cls-edu); border-color: transparent; }
-
-        /* Multimodal Processing Frame */
-        .multimodal-attachment-tray {
-            padding: 8px 20px;
-            display: none;
-            gap: 10px;
-            background: rgba(15, 23, 42, 0.4);
-            border-top: 1px solid rgba(255, 255, 255, 0.03);
-        }
+        /* Left Section: Detailed Simulation Monitor */
+        .simulation-panel { width: 42%; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 30px; background: #151f32; position: relative; }
         
-        .multimodal-attachment-tray.has-items { display: flex; }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .panel-header h2 { font-size: 18px; font-weight: 700; letter-spacing: 0.5px; }
+        .reset-btn { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; transition: all 0.2s; }
+        .reset-btn:hover { border-color: #ef4444; color: #ef4444; }
 
-        .file-attachment-chip {
-            background: var(--surface-card);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .file-attachment-chip .close-chip { cursor: pointer; color: var(--text-dark); }
-        .file-attachment-chip .close-chip:hover { color: #fff; }
-
-        .console-dock-tray {
-            padding: 16px 20px; border-top: 1px solid rgba(255, 255, 255, 0.05); background-color: var(--surface-base);
-        }
+        /* Dynamic SVG Canvas Frame */
+        .avatar-container { flex: 1; display: flex; justify-content: center; align-items: center; min-height: 220px; position: relative; }
+        #plantSvg { width: 100%; max-width: 220px; height: auto; overflow: visible; }
         
-        .input-composite-cluster {
-            display: flex; align-items: center; gap: 10px; background-color: rgba(2, 6, 17, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 4px 8px;
-        }
+        /* CSS Animations for organic plant feel */
+        .anim-breathe { animation: plantBreathe 4s ease-in-out infinite alternate; transform-origin: bottom center; }
+        .anim-leaf-left { animation: leftLeafSway 3s ease-in-out infinite alternate; transform-origin: 80px 130px; }
+        .anim-leaf-right { animation: rightLeafSway 3.5s ease-in-out infinite alternate; transform-origin: 140px 125px; }
+
+        @keyframes plantBreathe { 0% { transform: scale(0.98) rotate(-0.5deg); } 100% { transform: scale(1.02) rotate(0.5deg); } }
+        @keyframes leftLeafSway { 0% { transform: rotate(0deg); } 100% { transform: rotate(-8deg); } }
+        @keyframes rightLeafSway { 0% { transform: rotate(0deg); } 100% { transform: rotate(10deg); } }
+
+        .mood-badge { align-self: center; background: rgba(255,255,255,0.05); padding: 8px 20px; border-radius: 30px; font-weight: 700; font-size: 13px; color: var(--text-main); margin: 15px 0 25px 0; border: 1px solid var(--border-color); text-transform: uppercase; letter-spacing: 1px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.1); }
         
-        .core-text-field {
-            flex-grow: 1; background: transparent; border: none; color: var(--text-pure);
-            font-family: var(--font-sans); font-size: 0.88rem; height: 40px; padding-left: 8px;
-        }
-
-        .dock-action-button {
-            width: 36px; height: 36px; border-radius: 8px; border: none; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; background: transparent;
-            color: var(--text-side); transition: var(--transition-fluid);
-        }
+        /* Advanced Vitals Infrastructure */
+        .vitals-grid { display: flex; flex-direction: column; gap: 16px; margin-bottom: 20px; }
+        .vital-card { background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.02); padding: 12px 16px; border-radius: 14px; }
+        .vital-meta { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+        .bar-wrapper { width: 100%; height: 10px; background: #0f172a; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
+        .bar-progress { height: 100%; width: 0%; transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s; }
         
-        .dock-action-button:hover { background-color: var(--surface-pill); color: var(--text-pure); }
-        .dock-action-button.submit-btn { background-color: var(--border-glow); color: #fff; }
-        .dock-action-button.submit-btn:hover { background-color: #2563eb; }
-        .dock-action-button svg { width: 16px; height: 16px; fill: currentColor; }
+        /* Quick System Action Hotkeys */
+        .macro-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .macro-btn { background: #1e293b; border: 1px solid var(--border-color); color: var(--text-main); padding: 10px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; }
+        .macro-btn:hover { background: #2d3d54; border-color: var(--text-muted); transform: translateY(-1px); }
 
-        /* ==========================================================================
-           RIGHT COLUMN: REAL-TIME GRAPH METRICS & SYSTEM PARAMETERS
-           ========================================================================== */
-        .analytics-sidebar-panel {
-            background-color: rgba(15, 23, 42, 0.8);
-            border-left: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .sidebar-scroll-wrapper { padding: 20px; display: flex; flex-direction: column; gap: 24px; flex-grow: 1; overflow-y: auto; }
-        .telemetry-module-box { display: none; flex-direction: column; gap: 12px; }
-        .telemetry-module-box.is-visible { display: flex; }
-
-        .sub-panel-title { font-family: var(--font-mono); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dark); }
+        /* Right Section: Pro Chat Interface */
+        .chat-panel { width: 58%; display: flex; flex-direction: column; background: var(--panel-bg); }
+        .chat-header { padding: 24px 30px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .chat-title h1 { font-size: 18px; font-weight: 700; }
+        .chat-title p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+        .system-status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #10b981; font-weight: 600; }
+        .status-dot { width: 8px; height: 8px; background: #10b981; border-radius: 50%; box-shadow: 0 0 8px #10b981; }
         
-        /* Hardware Grid Switches */
-        .hardware-relay-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .relay-switch-card {
-            background-color: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255, 255, 255, 0.03); padding: 12px; border-radius: 8px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .relay-switch-card p { font-size: 0.78rem; }
+        /* Messages Window */
+        .chat-history { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth; background: #1a2332; }
+        .message-bubble { max-width: 80%; padding: 14px 18px; border-radius: 18px; font-size: 14px; line-height: 1.6; animation: appendFrame 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards; opacity: 0; }
         
-        .switch-toggle-input {
-            appearance: none; width: 34px; height: 18px; background: var(--surface-pill);
-            border-radius: 20px; position: relative; cursor: pointer; transition: var(--transition-fluid);
-        }
-        .switch-toggle-input:checked { background: var(--border-glow); }
-        .switch-toggle-input::before {
-            content: ''; position: absolute; width: 12px; height: 12px; border-radius: 50%;
-            background: #fff; top: 3px; left: 3px; transition: var(--transition-fluid);
-        }
-        .switch-toggle-input:checked::before { transform: translateX(16px); }
+        .message-bubble.bot { background: var(--panel-bg); color: var(--text-main); align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .message-bubble.user { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; box-shadow: 0 4px 12px rgba(59,130,246,0.3); }
+        
+        /* Chat Control System */
+        .chat-controls { padding: 24px 30px; border-top: 1px solid var(--border-color); display: flex; gap: 12px; background: var(--panel-bg); }
+        .input-wrapper { flex: 1; position: relative; }
+        .chat-input { width: 100%; padding: 14px 16px; background: #0f172a; border: 1px solid var(--border-color); border-radius: 12px; color: var(--text-main); font-size: 14px; outline: none; transition: border 0.2s; }
+        .chat-input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(59,130,246,0.2); }
+        
+        .action-submit { background: var(--primary); color: white; border: none; padding: 0 24px; border-radius: 12px; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+        .action-submit:hover { background: var(--primary-hover); }
 
-        /* Business KPI Modules */
-        .kpi-metric-strip-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .kpi-data-chip {
-            background-color: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255, 255, 255, 0.03); padding: 12px; border-radius: 8px;
-        }
-        .kpi-data-chip span { font-size: 0.7rem; color: var(--text-side); }
-        .kpi-data-chip p { font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; margin-top: 4px; color: var(--cls-biz); }
-
-        /* News Deck Architecture */
-        .news-headline-stack { display: flex; flex-direction: column; gap: 8px; }
-        .headline-node-item {
-            background-color: rgba(255, 255, 255, 0.01); border: 1px solid rgba(255, 255, 255, 0.03);
-            border-left: 3px solid var(--cls-osint); padding: 10px 12px; border-radius: 6px;
-            display: flex; flex-direction: column; gap: 4px; transition: var(--transition-fluid); cursor: pointer;
-        }
-        .headline-node-item:hover { background-color: rgba(255, 255, 255, 0.03); }
-        .headline-node-item h4 { font-size: 0.8rem; font-weight: 500; }
-
-        /* Config / Parameters Module */
-        .config-slider-panel {
-            background: rgba(30, 41, 59, 0.3); border: 1px solid rgba(255, 255, 255, 0.03);
-            padding: 14px; border-radius: 8px; display: flex; flex-direction: column; gap: 12px;
-        }
-        .slider-node { display: flex; flex-direction: column; gap: 6px; }
-        .slider-node label { font-size: 0.75rem; color: var(--text-side); display: flex; justify-content: space-between; }
-        .slider-node input[type="range"] { appearance: none; background: var(--surface-pill); height: 4px; border-radius: 2px; }
-        .slider-node input[type="range"]::-webkit-slider-thumb { appearance: none; width: 12px; height: 12px; background: var(--border-glow); border-radius: 50%; cursor: pointer; }
-
-        .interactive-chart-container {
-            background-color: rgba(2, 6, 17, 0.5); border: 1px solid rgba(255, 255, 255, 0.03); padding: 12px; border-radius: 10px;
-        }
-
-        @media (max-width: 1200px) {
-            .dashboard-grid-root { grid-template-columns: 260px 1fr; }
-            .analytics-sidebar-panel { display: none; }
-        }
+        @keyframes appendFrame { from { opacity: 0; transform: translateY(12px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
     </style>
 </head>
 <body>
 
-    <div class="dashboard-grid-root">
+<div class="app-container">
+    <div class="simulation-panel">
+        <div class="panel-header">
+            <h2>BIOMETRIC CORE</h2>
+            <button class="reset-btn" id="resetSystem">HARD RESET</button>
+        </div>
+
+        <div class="avatar-container">
+            <svg id="plantSvg" viewBox="0 0 220 220">
+                <defs>
+                    <linearGradient id="potGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#e2e8f0" />
+                        <stop offset="100%" stop-color="#94a3b8" />
+                    </linearGradient>
+                </defs>
+                <g class="anim-breathe">
+                    <path id="stem" d="M110,140 Q110,90 110,50" fill="none" stroke="#4ade80" stroke-width="8" stroke-linecap="round"/>
+                    
+                    <path id="leafLeft" class="anim-leaf-left" d="M110,100 Q70,90 80,120 Q105,120 110,100" fill="#22c55e" />
+                    <path id="leafRight" class="anim-leaf-right" d="M110,85 Q150,75 140,105 Q115,105 110,85" fill="#16a34a" />
+                    
+                    <g id="faceGroup" transform="translate(110, 50)">
+                        <circle id="flowerHead" r="24" fill="#4ade80"/>
+                        <circle id="eyeL" cx="-8" cy="-4" r="3" fill="#0f172a"/>
+                        <circle id="eyeR" cx="8" cy="-4" r="3" fill="#0f172a"/>
+                        <path id="mouth" d="M -6 8 Q 0 8 6 8" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+                    </g>
+                </g>
+                <path d="M75,135 L145,135 L135,195 L85,195 Z" fill="url(#potGrad)" stroke="#64748b" stroke-width="3" stroke-linejoin="round"/>
+                <ellipse cx="110" cy="135" rx="35" ry="6" fill="#475569" />
+            </svg>
+        </div>
+
+        <div class="mood-badge" id="displayMood">INITIALIZING</div>
         
-        <aside class="sidebar-control-panel">
-            <header class="pane-header">
-                <div class="engine-identity">
-                    <div class="pulse-beacon"></div>
-                    <h2 style="font-size: 0.9rem;">NexisOS Core Enterprise</h2>
-                </div>
-            </header>
-
-            <div class="pane-header" style="border-bottom: none; padding: 12px 16px 4px 16px;">
-                <span class="sub-panel-title">Active AI Workspace Threads</span>
-                <button class="dock-action-button" id="initiateNewThreadTrigger" title="Spawn Unified Framework Instance" style="width:24px; height:24px;">
-                    <svg viewBox="0 0 24 24" style="width:14px; height:14px;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                </button>
+        <div class="vitals-grid">
+            <div class="vital-card">
+                <div class="vital-meta"><span>💧 Soil Hydration</span><span id="txt-water">0%</span></div>
+                <div class="bar-wrapper"><div id="fill-water" class="bar-progress"></div></div>
             </div>
-
-            <div class="thread-history-section" id="activeThreadDockTargetStream">
-                </div>
-
-            <nav class="domain-matrix-selector" id="matrixDomainNavTrack">
-                <button class="matrix-card-trigger is-active" data-domain="education">
-                    <h3>Academic</h3>
-                </button>
-                <button class="matrix-card-trigger" data-domain="business">
-                    <h3>Enterprise</h3>
-                </button>
-                <button class="matrix-card-trigger" data-domain="iot">
-                    <h3>Edge IoT</h3>
-                </button>
-                <button class="matrix-card-trigger" data-domain="osint">
-                    <h3>OSINT Feed</h3>
-                </button>
-            </nav>
-        </aside>
-
-        <section class="central-chat-pipeline">
-            <header class="pane-header">
-                <div>
-                    <h2 id="dynamicConsoleContextHeader" style="font-size: 0.95rem; text-transform: capitalize;">Educational Matrix Pipeline</h2>
-                    <p style="font-size: 0.72rem; color: var(--text-side);" id="dynamicConsoleContextSub">Active Node Instance: Alpha-1 Neural Weaver Layer</p>
-                </div>
-            </header>
-
-            <div class="pipeline-feed-stream" id="consoleMessagePipelineStream">
-                </div>
-
-            <div class="multimodal-attachment-tray" id="multimodalAttachmentTrayNode">
-                </div>
-
-            <footer class="console-dock-tray">
-                <div class="input-composite-cluster">
-                    <input type="file" id="hiddenFilePayloadBridgeInput" style="display: none;" multiple>
-                    <button class="dock-action-button" id="triggerFileAttachmentUploadMesh" title="Ingest Multimodal Asset Payload Frame">
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-3.31 2.69-6 6-6s6 2.69 6 6v12c0 4.42-3.58 8-8 8s-8-3.58-8-8V6h2v11c0 3.31 2.69 6 6 6s6-2.69 6-6V5c0-2.21-1.79-4-4-4s-4 1.79-4 4v11.5c0 1.1.9 2 2 2s2-.9 2-2V6h2z"/>
-                        </svg>
-                    </button>
-                    
-                    <input type="text" class="core-text-field" id="consolePrimaryTextInputField" placeholder="Compile textual payload parameters or instruct model agents...">
-                    
-                    <button class="dock-action-button submit-btn" id="dispatchCorePayloadTriggerKey" title="Commit Event Frame Sequence">
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-                        </svg>
-                    </button>
-                </div>
-            </footer>
-        </section>
-
-        <aside class="analytics-sidebar-panel">
-            <header class="pane-header">
-                <span class="sub-panel-title">Contextual Stream Metrics</span>
-                <span id="telemetryStatePillTag" style="font-family: var(--font-mono); font-size: 0.62rem; color: var(--cls-edu); text-transform: uppercase; font-weight: 600;">Syllabus Sync</span>
-            </header>
-
-            <div class="sidebar-scroll-wrapper">
-                
-                <div class="slider-node">
-                    <span class="sub-panel-title">Hyperparameter Tuning Matrices</span>
-                    <div class="config-slider-panel">
-                        <div class="slider-node">
-                            <label><span>Execution Model Temperature</span> <span id="valDisplayTemp">0.7</span></label>
-                            <input type="range" min="0" max="2" step="0.1" value="0.7" id="sliderSettingTemperature">
-                        </div>
-                        <div class="slider-node">
-                            <label><span>Top P Sampling Alpha</span> <span id="valDisplayTopP">0.9</span></label>
-                            <input type="range" min="0" max="1" step="0.05" value="0.9" id="sliderSettingTopP">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="telemetry-module-box is-visible" id="sidebarBlockEducation">
-                    <span class="sub-panel-title">Curriculum Progress Mapping</span>
-                    <div class="kpi-metric-strip-grid">
-                        <div class="kpi-data-chip" style="grid-column: span 2;"><span>Target Learning Graph Mastery</span><p style="color: var(--cls-edu);">84.6% Delta</p></div>
-                    </div>
-                </div>
-
-                <div class="telemetry-module-box" id="sidebarBlockBusiness">
-                    <span class="sub-panel-title">Transactional KPI Ledger</span>
-                    <div class="kpi-metric-strip-grid">
-                        <div class="kpi-data-chip"><span>Daily Clearings</span><p>$184.2K</p></div>
-                        <div class="kpi-data-chip"><span>Latency Delta</span><p>12.4ms</p></div>
-                    </div>
-                </div>
-
-                <div class="telemetry-module-box" id="sidebarBlockIot">
-                    <span class="sub-panel-title">Edge Actuator Cluster Array</span>
-                    <div class="hardware-relay-grid">
-                        <div class="relay-switch-card"><p>MQTT Gate</p><input type="checkbox" class="switch-toggle-input" checked id="iotSwitchMqttGate"></div>
-                        <div class="relay-switch-card"><p>Log Pipeline</p><input type="checkbox" class="switch-toggle-input" id="iotSwitchLogGate"></div>
-                    </div>
-                </div>
-
-                <div class="telemetry-module-box" id="sidebarBlockOsint">
-                    <span class="sub-panel-title">Newswire Crawler Real-Time Index</span>
-                    <div class="news-headline-stack" id="osintDynamicHeadlineTargetDeck"></div>
-                </div>
-
-                <div>
-                    <span class="sub-panel-title" style="margin-bottom: 10px; display: block;">Dynamic Context Analytics Stream</span>
-                    <div class="interactive-chart-container">
-                        <canvas id="sidebarGlobalAnalyticsChartEngineCanvasNode" height="160"></canvas>
-                    </div>
-                </div>
-
+            <div class="vital-card">
+                <div class="vital-meta"><span>☀️ Lumens (Sunlight)</span><span id="txt-sun">0%</span></div>
+                <div class="bar-wrapper"><div id="fill-sun" class="bar-progress"></div></div>
             </div>
-        </aside>
+            <div class="vital-card">
+                <div class="vital-meta"><span>❤️ Affection Engine</span><span id="txt-love">0%</span></div>
+                <div class="bar-wrapper"><div id="fill-love" class="bar-progress"></div></div>
+            </div>
+            <div class="vital-card">
+                <div class="vital-meta"><span>🐛 Bio-Parasites</span><span id="txt-pests">0%</span></div>
+                <div class="bar-wrapper"><div id="fill-pests" class="bar-progress"></div></div>
+            </div>
+        </div>
 
+        <div class="macro-grid">
+            <button class="macro-btn" data-action="water">💧 Irrigate</button>
+            <button class="macro-btn" data-action="sun">☀️ Solar Exposure</button>
+            <button class="macro-btn" data-action="love">🎵 Play Music</button>
+            <button class="macro-btn" data-action="clean">⚡ Clear Pests</button>
+        </div>
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            // Workspace Application Context Layout Elements Map
-            const matrixDomainNavTrack = document.getElementById("matrixDomainNavTrack");
-            const consoleMessagePipelineStream = document.getElementById("consoleMessagePipelineStream");
-            const consolePrimaryTextInputField = document.getElementById("consolePrimaryTextInputField");
-            const dispatchCorePayloadTriggerKey = document.getElementById("dispatchCorePayloadTriggerKey");
-            const dynamicConsoleContextHeader = document.getElementById("dynamicConsoleContextHeader");
-            const dynamicConsoleContextSub = document.getElementById("dynamicConsoleContextSub");
-            const telemetryStatePillTag = document.getElementById("telemetryStatePillTag");
-            const osintDynamicHeadlineTargetDeck = document.getElementById("osintDynamicHeadlineTargetDeck");
+    <div class="chat-panel">
+        <div class="chat-header">
+            <div class="chat-title">
+                <h1>Sad Pot Engine Core</h1>
+                <p>Deterministic NLP Processing Pipeline v2.1</p>
+            </div>
+            <div class="system-status">
+                <div class="status-dot"></div>
+                <span>NODE ONLINE</span>
+            </div>
+        </div>
+        
+        <div class="chat-history" id="chatScreen"></div>
+        
+        <div class="chat-controls">
+            <div class="input-wrapper">
+                <input type="text" id="chatInput" class="chat-input" placeholder="Initiate natural language protocol or invoke macro keys..." autocomplete="off">
+            </div>
+            <button id="submitMsg" class="action-submit">TRANSMIT</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    /**
+     * Architectural Core Configuration & Initial App State Module
+     */
+    const STORAGE_KEY = 'SAD_POT_DATA_MATRIX';
+    
+    let state = {
+        vitals: { water: 45, sun: 35, love: 40, pests: 10 },
+        mood: 'neutral',
+        history: []
+    };
+
+    const moodMap = {
+        wilted:    { name: "Dead Node / Wilted", color: "#64748b", emojiFace: { fill: "#334155", mouth: "M -6 10 Q 0 4 6 10", eyeR: 2, eyeL: 2 }, replies: ["*Silence*... System processes offline. Run hard reset protocol.", "..."] },
+        drowning:  { name: "Saturated / Drowning", color: "#0ea5e9", emojiFace: { fill: "#38bdf8", mouth: "M -6 6 Q 0 12 6 6", eyeR: 3, eyeL: 3 }, replies: ["*Gurgle* Stop! Too much water! My root layer is suffocating!", "I am literally swimming in mud right now."] },
+        infested:  { name: "Parasite Outbreak", color: "#10b981", emojiFace: { fill: "#059669", mouth: "M -6 10 L 6 6", eyeR: 2, eyeL: 4 }, replies: ["The bugs... they are eating my source code. Clear them out!", "I can't focus with these bugs on my leaves."] },
+        parched:   { name: "Critically Parched", color: "#f59e0b", emojiFace: { fill: "#b45309", mouth: "M -6 10 Q 0 4 6 10", eyeR: 2.5, eyeL: 2.5 }, replies: ["Dust... everything is dust. I need water immediately.", "Hydration loop is empty. Give me water."] },
+        depressed: { name: "Emotionally Abandoned", color: "#ec4899", emojiFace: { fill: "#db2777", mouth: "M -6 10 Q 0 2 6 10", eyeR: 3, eyeL: 3 }, replies: ["Oh, you're finally typing to me? I figured you forgot I existed.", "Everything feels pretty grey today."] },
+        thriving:  { name: "Thriving / Optimal", color: "#22c55e", emojiFace: { fill: "#4ade80", mouth: "M -6 6 Q 0 14 6 6", eyeR: 3.5, eyeL: 3.5 }, replies: ["My systems are operating at peak physical capacity! Beautiful day!", "I love this spot! Let's build something awesome together."] },
+        neutral:   { name: "Stable / Melancholic", color: "#94a3b8", emojiFace: { fill: "#64748b", mouth: "M -6 8 Q 0 8 6 8", eyeR: 3, eyeL: 3 }, replies: ["I'm doing okay. Just processing tasks. What are your plans today?", "System stable. Standing by for instructions."]
+        }
+    };
+
+    /**
+     * Low-Level Procedural Web Audio Engine (No external sound files required)
+     */
+    const AudioSynth = {
+        ctx: null,
+        init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
+        play(freq, type, duration) {
+            this.init();
+            if (this.ctx.state === 'suspended') this.ctx.resume();
             
-            // Advanced Thread & File Mapping References
-            const activeThreadDockTargetStream = document.getElementById("activeThreadDockTargetStream");
-            const initiateNewThreadTrigger = document.getElementById("initiateNewThreadTrigger");
-            const triggerFileAttachmentUploadMesh = document.getElementById("triggerFileAttachmentUploadMesh");
-            const hiddenFilePayloadBridgeInput = document.getElementById("hiddenFilePayloadBridgeInput");
-            const multimodalAttachmentTrayNode = document.getElementById("multimodalAttachmentTrayNode");
-            const sidebarGlobalAnalyticsChartEngineCanvasNode = document.getElementById("sidebarGlobalAnalyticsChartEngineCanvasNode").getContext('2d');
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+            
+            gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+            
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            
+            osc.start();
+            osc.stop(this.ctx.currentTime + duration);
+        },
+        triggerEffect(type) {
+            try {
+                if (type === 'water') { this.play(350, 'sine', 0.1); setTimeout(() => this.play(480, 'sine', 0.12), 80); }
+                else if (type === 'sun') { this.play(587.33, 'triangle', 0.25); setTimeout(() => this.play(698.46, 'triangle', 0.2), 100); }
+                else if (type === 'love') { this.play(523.25, 'sine', 0.15); setTimeout(() => this.play(783.99, 'sine', 0.3), 120); }
+                else if (type === 'clean') { this.play(180, 'sawtooth', 0.08); setTimeout(() => this.play(320, 'sawtooth', 0.1), 60); }
+                else if (type === 'msg') { this.play(440, 'sine', 0.05); }
+            } catch (e) { console.warn("Audio Context blocked or unsupported:", e); }
+        }
+    };
 
-            // Slider Config DOM bindings
-            const sliderSettingTemperature = document.getElementById("sliderSettingTemperature");
-            const sliderSettingTopP = document.getElementById("sliderSettingTopP");
-            const valDisplayTemp = document.getElementById("valDisplayTemp");
-            const valDisplayTopP = document.getElementById("valDisplayTopP");
+    /**
+     * UI Processing, Rendering Engine & Node Manipulators
+     */
+    const Dom = {
+        screen: document.getElementById('chatScreen'),
+        input: document.getElementById('chatInput'),
+        submit: document.getElementById('submitMsg'),
+        mood: document.getElementById('displayMood'),
+        reset: document.getElementById('resetSystem'),
+        svg: {
+            head: document.getElementById('flowerHead'),
+            mouth: document.getElementById('mouth'),
+            eyeL: document.getElementById('eyeL'),
+            eyeR: document.getElementById('eyeR'),
+            stem: document.getElementById('stem'),
+            leafL: document.getElementById('leafLeft'),
+            leafR: document.getElementById('leafRight')
+        },
+        bars: {
+            water: { fill: document.getElementById('fill-water'), txt: document.getElementById('txt-water'), tint: 'var(--accent-water)' },
+            sun: { fill: document.getElementById('fill-sun'), txt: document.getElementById('txt-sun'), tint: 'var(--accent-sun)' },
+            love: { fill: document.getElementById('fill-love'), txt: document.getElementById('txt-love'), tint: 'var(--accent-love)' },
+            pests: { fill: document.getElementById('fill-pests'), txt: document.getElementById('txt-pests'), tint: 'var(--accent-pest)' }
+        }
+    };
 
-            let currentContextDomainScope = "education";
-            let globalTelemetryChartEngineRef = null;
-            let loadedPayloadFilesCache = [];
+    function appendMessage(text, origin) {
+        const bubble = document.createElement('div');
+        bubble.className = `message-bubble ${origin}`;
+        bubble.innerText = text;
+        Dom.screen.appendChild(bubble);
+        Dom.screen.scrollTop = Dom.screen.scrollHeight;
+        if(origin === 'bot') AudioSynth.triggerEffect('msg');
+    }
 
-            // IN-MEMORY COMPREHENSIVE CONVERSATIONAL PERSISTENT STATE LOGICAL ARCHITECTURE
-            let workspaceThreadMemoryCollection = [
-                { id: "thread_01", label: "Neural Model Fine-Tuning Setup", domain: "education", messages: [{ role: "system", content: "Academic Knowledge Graph Engine active. Core parameters baseline metrics nominal." }] },
-                { id: "thread_02", label: "Q3 Asset Valuation Ledger Scrape", domain: "business", messages: [{ role: "system", content: "Business Intelligence Engine online. Ready to structure general ledger transactional queries." }] }
-            ];
-            let activeTrackingThreadId = "thread_01";
+    function computeStructuralMood() {
+        const v = state.vitals;
+        if (v.water <= 0 || v.sun <= 0) return 'wilted';
+        if (v.water > 85) return 'drowning';
+        if (v.pests > 60) return 'infested';
+        if (v.water < 25) return 'parched';
+        if (v.love < 25) return 'depressed';
+        if (v.water > 50 && v.sun > 50 && v.love > 55) return 'thriving';
+        return 'neutral';
+    }
 
-            const coreDomainDatabaseDictionary = {
-                education: { header: "Academic Knowledge Graph Engine", subText: "Active Context Node: Curriculum Parsing & Vector Assembly", color: "#3b82f6", pillText: "Syllabus Sync", chartLabel: "Concept Density Map", chartData: [64, 78, 90, 42, 56, 88], chartCategories: ["NLP", "Consensus", "Calculus", "Vectors", "Graph Theory", "Linear Alg"] },
-                business: { header: "Enterprise Business Intelligence Console", subText: "Active Context Node: Financial Ledger Analysis", color: "#10b981", pillText: "KPI Ledger Run", chartLabel: "Pipeline Transaction Velocity", chartData: [120, 145, 132, 168, 194, 210], chartCategories: ["08:00", "10:00", "12:00", "14:00", "16:00", "18:00"] },
-                iot: { header: "Edge Core IoT Device Control Plane", subText: "Active Context Node: MQTT Edge Telemetry Broker", color: "#f59e0b", pillText: "Edge Mesh Live", chartLabel: "Device Pulse Signal Delta (Hz)", chartData: [45, 48, 44, 52, 61, 58], chartCategories: ["Node A", "Node B", "Node C", "Node D", "Node E", "Node F"] },
-                osint: { header: "OSINT Open-Source News Monitoring Grid", subText: "Active Context Node: Multi-Wire RSS Scrape Matrix", color: "#ec4899", pillText: "OSINT Crawler Matrix", chartLabel: "Incoming Signal Wire Volume", chartData: [320, 412, 289, 506, 612, 480], chartCategories: ["Tech", "Finance", "GeoPol", "Edge Tech", "Markets", "Logistics"] }
-            };
+    function runInterfaceRefresh() {
+        state.mood = computeStructuralMood();
+        const currentData = moodMap[state.mood];
 
-            const sampleOsintNewsWireMockDatabase = [
-                { title: "Quantum Compute Core Scaling Milestone Met", source: "TechWire Wire" },
-                { title: "Global Microchip Supply Channels Project 8% Velocity Gains", source: "SupplyChain Log" }
-            ];
+        // Update Text Nodes
+        Dom.mood.innerText = currentData.name;
+        Dom.mood.style.borderColor = currentData.color;
+        Dom.mood.style.color = currentData.color;
+        Dom.mood.style.background = currentData.color + "15";
 
-            // DYNAMIC SIMULATED TOKENS TOKENIZER STREAM OUTPUT PIPELINE RENDER ENGINE
-            function streamSystemResponseToPipelineViewport(fullTextPayloadString) {
-                const nodeRow = document.createElement("div");
-                nodeRow.className = "chat-row-node variant-system";
-                const timeStr = new Date().toTimeString().split(' ')[0];
-
-                nodeRow.innerHTML = `
-                    <div class="avatar-frame-box">OS</div>
-                    <div class="bubble-wrapper-box">
-                        <div class="bubble-content-text"></div>
-                        <span class="node-meta-time">SYSTEM // LIVE STREAM // ${timeStr}</span>
-                    </div>
-                `;
-
-                consoleMessagePipelineStream.appendChild(nodeRow);
-                consoleMessagePipelineStream.scrollTop = consoleMessagePipelineStream.scrollHeight;
-
-                const textBubbleContainerNode = nodeRow.querySelector(".bubble-content-text");
-                let wordIterationPointer = 0;
-                const explodedTokenWordArray = fullTextPayloadString.split(" ");
-
-                const tokenStreamIntervalTaskLoop = setInterval(() => {
-                    if (wordIterationPointer < explodedTokenWordArray.length) {
-                        textBubbleContainerNode.textContent += (wordIterationPointer === 0 ? "" : " ") + explodedTokenWordArray[wordIterationPointer];
-                        wordIterationPointer++;
-                        consoleMessagePipelineStream.scrollTop = consoleMessagePipelineStream.scrollHeight;
-                    } else {
-                        clearInterval(tokenStreamIntervalTaskLoop);
-                        // Save structural message frame output into active context state
-                        const currentlyTrackedThreadStateNode = workspaceThreadMemoryCollection.find(t => t.id === activeTrackingThreadId);
-                        if (currentlyTrackedThreadStateNode) {
-                            currentlyTrackedThreadStateNode.messages.push({ role: "system", content: fullTextPayloadString });
-                        }
-                    }
-                }, 45); // Enterprise standard simulation network latency ticker value
-            }
-
-            // CHART REBUILD UTILITY ENGINE LOGIC PLUG
-            function rebuildContextualTelemetryChartMatrix(config) {
-                if (globalTelemetryChartEngineRef) globalTelemetryChartEngineRef.destroy();
-                globalTelemetryChartEngineRef = new Chart(sidebarGlobalAnalyticsChartEngineCanvasNode, {
-                    type: 'line',
-                    data: {
-                        labels: config.chartCategories,
-                        datasets: [{
-                            label: config.chartLabel,
-                            data: config.chartData,
-                            borderColor: config.color,
-                            backgroundColor: config.color + "10",
-                            borderWidth: 2,
-                            pointRadius: 2,
-                            fill: true,
-                            tension: 0.2
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
-                        scales: {
-                            x: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#64748b', font: { size: 9 } } },
-                            y: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#64748b', font: { size: 9 } } }
-                        }
-                    }
-                });
-            }
-
-            // APPLICATION UI WORKSPACE REFRACTOR SYNC CONTROLLER
-            function updateWorkspaceDisplayInterfaceLayout() {
-                activeThreadDockTargetStream.innerHTML = "";
-                workspaceThreadMemoryCollection.forEach(thread => {
-                    const node = document.createElement("div");
-                    node.className = `thread-node-item ${thread.id === activeTrackingThreadId ? 'is-active' : ''}`;
-                    node.innerHTML = `<span class="thread-meta-title">${thread.label}</span>
-                                      <span style="font-size:0.6rem; text-transform:uppercase; color:var(--text-dark); font-family:var(--font-mono);">${thread.domain}</span>`;
-                    
-                    node.onclick = () => {
-                        activeTrackingThreadId = thread.id;
-                        currentContextDomainScope = thread.domain;
-                        updateWorkspaceDisplayInterfaceLayout();
-                        synchronizeDomainStateContext(thread.domain, false);
-                    };
-                    activeThreadDockTargetStream.appendChild(node);
-                });
-
-                // Render current conversational loop arrays completely to viewport track frame
-                consoleMessagePipelineStream.innerHTML = "";
-                const activeThreadRef = workspaceThreadMemoryCollection.find(t => t.id === activeTrackingThreadId);
-                if (activeThreadRef) {
-                    activeThreadRef.messages.push;
-                    activeThreadRef.messages.forEach(msg => {
-                        const row = document.createElement("div");
-                        row.className = `chat-row-node variant-${msg.role}`;
-                        const badgeInit = msg.role === "system" ? "OS" : "UX";
-                        row.innerHTML = `<div class="avatar-frame-box">${badgeInit}</div>
-                                         <div class="bubble-wrapper-box"><div class="bubble-content-text">${msg.content}</div></div>`;
-                        consoleMessagePipelineStream.appendChild(row);
-                    });
-                }
-                consoleMessagePipelineStream.scrollTop = consoleMessagePipelineStream.scrollHeight;
-            }
-
-            function synchronizeDomainStateContext(domainKey, mutateActiveThreadDomain = true) {
-                currentContextDomainScope = domainKey;
-                const dbContext = coreDomainDatabaseDictionary[domainKey];
-                
-                document.querySelectorAll(".matrix-card-trigger").forEach(btn => {
-                    btn.classList.toggle("is-active", btn.getAttribute("data-domain") === domainKey);
-                });
-
-                document.querySelectorAll(".telemetry-module-box").forEach(box => box.classList.remove("is-visible"));
-                const targetedModuleBoxNode = document.getElementById(`sidebarBlock${domainKey.charAt(0).toUpperCase() + domainKey.slice(1)}`);
-                if (targetedModuleBoxNode) targetedModuleBoxNode.classList.add("is-visible");
-
-                dynamicConsoleContextHeader.textContent = dbContext.header;
-                dynamicConsoleContextSub.textContent = dbContext.subText;
-                telemetryStatePillTag.textContent = dbContext.pillText;
-                telemetryStatePillTag.style.color = dbContext.color;
-
-                if (mutateActiveThreadDomain) {
-                    const activeThreadRef = workspaceThreadMemoryCollection.find(t => t.id === activeTrackingThreadId);
-                    if (activeThreadRef) activeThreadRef.domain = domainKey;
-                    updateWorkspaceDisplayInterfaceLayout();
-                }
-
-                rebuildContextualTelemetryChartMatrix(dbContext);
-            }
-
-            // FILE MANAGEMENT MULTIMODAL MESH PIPELINE HANDLERS
-            triggerFileAttachmentUploadMesh.addEventListener("click", () => hiddenFilePayloadBridgeInput.click());
-            hiddenFilePayloadBridgeInput.addEventListener("change", (e) => {
-                const targetFilesSelected = Array.from(e.target.files);
-                targetFilesSelected.forEach(file => {
-                    if (!loadedPayloadFilesCache.some(f => f.name === file.name)) {
-                        loadedPayloadFilesCache.push(file);
-                    }
-                });
-                renderMultimodalUIAttachmentTrayChips();
-            });
-
-            function renderMultimodalUIAttachmentTrayChips() {
-                multimodalAttachmentTrayNode.innerHTML = "";
-                if (loadedPayloadFilesCache.length > 0) {
-                    multimodalAttachmentTrayNode.classList.add("has-items");
-                    loadedPayloadFilesCache.forEach((file, idx) => {
-                        const chip = document.createElement("div");
-                        chip.className = "file-attachment-chip";
-                        chip.innerHTML = `<span>📎 ${file.name}</span><span class="close-chip" data-idx="${idx}">×</span>`;
-                        multimodalAttachmentTrayNode.appendChild(chip);
-                    });
-                } else {
-                    multimodalAttachmentTrayNode.classList.remove("has-items");
-                }
-            }
-
-            multimodalAttachmentTrayNode.addEventListener("click", (e) => {
-                if (e.target.classList.contains("close-chip")) {
-                    const targetedIndex = parseInt(e.target.getAttribute("data-idx"));
-                    loadedPayloadFilesCache.splice(targetedIndex, 1);
-                    renderMultimodalUIAttachmentTrayChips();
-                }
-            });
-
-            // INSTANTIATE AND SPAWN FRESH RUNTIME HISTORY LOG CONTEXTS
-            initiateNewThreadTrigger.addEventListener("click", () => {
-                const uniquelyGeneratedIdString = "thread_" + Date.now();
-                const newThreadPayloadNode = {
-                    id: uniquelyGeneratedIdString,
-                    label: `Exploratory Query Vector Cluster`,
-                    domain: currentContextDomainScope,
-                    messages: [{ role: "system", content: `${coreDomainDatabaseDictionary[currentContextDomainScope].header} instantiated initialized dynamic system loop context sequence cleanly.` }]
-                };
-                workspaceThreadMemoryCollection.unshift(newThreadPayloadNode);
-                activeTrackingThreadId = uniquelyGeneratedIdString;
-                updateWorkspaceDisplayInterfaceLayout();
-                synchronizeDomainStateContext(currentContextDomainScope, false);
-            });
-
-            // CORE DISPATCH INTERFACE ROUTINES
-            function processConsolePrimaryUserExecutionPayload() {
-                const promptString = consolePrimaryTextInputField.value.trim();
-                if (!promptString && loadedPayloadFilesCache.length === 0) return;
-
-                let composedUserPayloadString = promptString;
-                if (loadedPayloadFilesCache.length > 0) {
-                    const fileNamesString = loadedPayloadFilesCache.map(f => `[${f.name}]`).join(", ");
-                    composedUserPayloadString += `\n\n*[Ingested Multi-Asset File Matrix Array Payload Buffer: ${fileNamesString}]*`;
-                }
-
-                const activeThreadRef = workspaceThreadMemoryCollection.find(t => t.id === activeTrackingThreadId);
-                if (activeThreadRef) {
-                    // Update automated thread titles from default names on initial expression sequence updates
-                    if (activeThreadRef.messages.length <= 1 && promptString.length > 0) {
-                        activeThreadRef.label = promptString.slice(0, 32) + (promptString.length > 32 ? "..." : "");
-                    }
-                    activeThreadRef.messages.push({ role: "user", content: composedUserPayloadString });
-                }
-
-                updateWorkspaceDisplayInterfaceLayout();
-                consolePrimaryTextInputField.value = "";
-                loadedPayloadFilesCache = [];
-                renderMultimodalUIAttachmentTrayChips();
-
-                // Trigger intelligent structured simulated response loop
-                setTimeout(() => {
-                    let aiResponseBufferString = `Simulated processing completed across targeted configuration parameters. Model temperature weights set to value alpha [${sliderSettingTemperature.value}]. Context mapping state updates applied natively into cluster stream visualization metrics panels.`;
-                    streamSystemResponseToPipelineViewport(aiResponseBufferString);
-                }, 800);
-            }
-
-            // CORE DOMAIN EVENT MONITOR DECK BINDINGS INTERCEPTORS
-            matrixDomainNavTrack.addEventListener("click", (event) => {
-                const targetedButton = event.target.closest(".matrix-card-trigger");
-                if (!targetedButton) return;
-                synchronizeDomainStateContext(targetedButton.getAttribute("data-domain"), true);
-            });
-
-            dispatchCorePayloadTriggerKey.addEventListener("click", processConsolePrimaryUserExecutionPayload);
-            consolePrimaryTextInputField.addEventListener("keydown", (e) => { if (e.key === "Enter") processConsolePrimaryUserExecutionPayload(); });
-
-            sliderSettingTemperature.addEventListener("input", (e) => valDisplayTemp.textContent = e.target.value);
-            sliderSettingTopP.addEventListener("input", (e) => valDisplayTopP.textContent = e.target.value);
-
-            // INITIALIZATION INVOCATIONS SETUP ROUTINES
-            function populateOsintHeadlineStackView() {
-                osintDynamicHeadlineTargetDeck.innerHTML = "";
-                sampleOsintNewsWireMockDatabase.forEach(article => {
-                    const node = document.createElement("div");
-                    node.className = "headline-node-item";
-                    node.innerHTML = `<h4>${article.title}</h4><span style="font-size:0.65rem; color:var(--text-dark); font-family:var(--font-mono);">${article.source}</span>`;
-                    node.onclick = () => { consolePrimaryTextInputField.value = `Perform comprehensive analysis parsing target parameters for: "${article.title}"`; };
-                    osintDynamicHeadlineTargetDeck.appendChild(node);
-                });
-            }
-
-            populateOsintHeadlineStackView();
-            updateWorkspaceDisplayInterfaceLayout();
-            synchronizeDomainStateContext("education", false);
+        // Update Core Progress Gauges
+        Object.keys(Dom.bars).forEach(key => {
+            const config = Dom.bars[key];
+            const val = state.vitals[key];
+            config.txt.innerText = `${val}%`;
+            config.fill.style.width = `${val}%`;
+            config.fill.style.backgroundColor = config.tint;
         });
-    </script>
+
+        // Mutate SVG Geometry Profiles Dynamically
+        Dom.svg.head.setAttribute('fill', currentData.emojiFace.fill);
+        Dom.svg.mouth.setAttribute('d', currentData.emojiFace.mouth);
+        Dom.svg.eyeL.setAttribute('r', currentData.emojiFace.eyeL);
+        Dom.svg.eyeR.setAttribute('r', currentData.emojiFace.eyeR);
+
+        // Adjust plant skeleton vectors based on physical care state
+        if (state.mood === 'wilted' || state.mood === 'parched' || state.mood === 'depressed') {
+            Dom.svg.stem.setAttribute('d', 'M110,140 Q90,110 85,75'); // Droop the plant container stem left
+            Dom.svg.head.setAttribute('transform', 'translate(85, 75)');
+        } else {
+            Dom.svg.stem.setAttribute('d', 'M110,140 Q110,90 110,50'); // Straight organic alignment
+            Dom.svg.head.setAttribute('transform', 'translate(110, 50)');
+        }
+
+        // Write configuration image snapshot to localStorage cache
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    /**
+     * Context-Aware Intent Parser & Advanced Linguistic Routing Module
+     */
+    function processInputRouting(rawText) {
+        const text = rawText.toLowerCase().trim();
+        let actionTriggered = null;
+
+        // Semantic Entity Matching Engine
+        if (/\b(water|hydrate|drink|pour|irrigate)\b/.test(text)) actionTriggered = 'water';
+        else if (/\b(sun|light|window|solar|warmth)\b/.test(text)) actionTriggered = 'sun';
+        else if (/\b(love|sing|music|beautiful|cute|good|friend|compliment)\b/.test(text)) actionTriggered = 'love';
+        else if (/\b(clean|pests|bugs|spray|kill|remove)\b/.test(text)) actionTriggered = 'clean';
+        else if (/\b(hate|ugly|stupid|trash|die|kick)\b/.test(text)) actionTriggered = 'abuse';
+
+        if (actionTriggered) {
+            executeStructuralModifier(actionTriggered);
+            return generateContextualReply(actionTriggered);
+        }
+
+        // Standard Intent Fallbacks Mapping
+        if (/\b(hello|hi|hey|greetings)\b/.test(text)) {
+            return "Connection established. Hello human user. How are my biological levels looking from your terminal?";
+        }
+        if (/\b(status|report|vitals|health)\b/.test(text)) {
+            return `Current Diagnostics Dashboard: Soil Hydration is ${state.vitals.water}%, Sun absorption is ${state.vitals.sun}%, and Love telemetry scales at ${state.vitals.love}%.`;
+        }
+
+        // Contextual Fallback Execution
+        if (state.mood === 'wilted') return "...";
+        if (state.vitals.water < 30) return "My cognitive systems are overheating. Please type an instruction containing 'water' to flush my channels.";
+        if (state.vitals.pests > 50) return "Linguistic processors blocked by parasite matrix. Use 'clean' to target bio-infestations.";
+
+        return "Input parsed, but matching command arrays returned empty. Try typing an explicit care action like 'Give water' or 'Move to sun'.";
+    }
+
+    function executeStructuralModifier(action) {
+        AudioSynth.triggerEffect(action);
+        const v = state.vitals;
+        
+        if (action === 'water') { v.water = Math.min(100, v.water + 20); v.pests = Math.min(100, v.pests + 5); }
+        else if (action === 'sun') { v.sun = Math.min(100, v.sun + 20); v.water = Math.max(0, v.water - 8); }
+        else if (action === 'love') { v.love = Math.min(100, v.love + 15); }
+        else if (action === 'clean') { v.pests = Math.max(0, v.pests - 35); }
+        else if (action === 'abuse') { v.love = Math.max(0, v.love - 25); }
+        
+        runInterfaceRefresh();
+    }
+
+    function generateContextualReply(action) {
+        if (action === 'water') {
+            return state.vitals.water > 85 
+                ? "Warning: Soil water saturation limit surpassed! Critical drainage required." 
+                : "Water intake processing successful. Counter measures logging increase to fluid dynamics.";
+        }
+        if (action === 'sun') return "Photovoltaic energy conversion active. Chlorophyll production optimization running.";
+        if (action === 'love') return "Emotional packet transferred. Endorphin simulation routines producing positive feedback loops.";
+        if (action === 'clean') return "Sterilization sequence completed. Macro parasite signatures dropped significantly.";
+        if (action === 'abuse') return "Data corruption: Emotional injury logged. Processing negative context variables...";
+        return "Command executed successfully.";
+    }
+
+    /**
+     * Central Communication Loop & Event Wiring
+     */
+    function executionPipeline() {
+        const queryText = Dom.input.value;
+        if (!queryText.trim()) return;
+
+        appendMessage(queryText, 'user');
+        Dom.input.value = '';
+
+        // Add automated artificial latency to simulate machine reasoning
+        setTimeout(() => {
+            if (state.mood === 'wilted') {
+                appendMessage("...", 'bot');
+                return;
+            }
+            const outputReply = processInputRouting(queryText);
+            appendMessage(outputReply, 'bot');
+        }, 450);
+    }
+
+    // Macro Interface Wiring Setup
+    document.querySelectorAll('.macro-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const chosenAction = e.target.getAttribute('data-action');
+            executeStructuralModifier(chosenAction);
+            
+            // Post systemic runtime execution logs onto terminal interface automatically
+            const confirmationLog = generateContextualReply(chosenAction);
+            appendMessage(`[System Action Invoke: ${chosenAction.toUpperCase()}]`, 'user');
+            setTimeout(() => appendMessage(confirmationLog, 'bot'), 200);
+        });
+    });
+
+    // Background Natural Decay Automation Engine Loop
+    setInterval(() => {
+        if (state.mood !== 'wilted') {
+            state.vitals.water = Math.max(0, state.vitals.water - 2);
+            state.vitals.sun = Math.max(0, state.vitals.sun - 1);
+            state.vitals.love = Math.max(0, state.vitals.love - 2);
+            
+            // Random parasite growth logic tree tracking moisture environments
+            if (state.vitals.water > 60 && Math.random() > 0.6) {
+                state.vitals.pests = Math.min(100, state.vitals.pests + 8);
+            } else {
+                state.vitals.pests = Math.min(100, state.vitals.pests + 1);
+            }
+            
+            runInterfaceRefresh();
+        }
+    }, 6000);
+
+    // Hard System Memory Flush Handler Routine
+    Dom.reset.addEventListener('click', () => {
+        localStorage.removeItem(STORAGE_KEY);
+        state.vitals = { water: 55, sun: 45, love: 50, pests: 5 };
+        Dom.screen.innerHTML = '';
+        appendMessage("System architecture initialized completely. Logged baseline telemetry variables.", 'bot');
+        runInterfaceRefresh();
+    });
+
+    // Standard I/O Input Intercept Hooks
+    Dom.submit.addEventListener('click', executionPipeline);
+    Dom.input.addEventListener('keypress', (event) => { if (event.key === 'Enter') executionPipeline(); });
+
+    /**
+     * Cold-Boot Storage Restoration Process Lifecycle
+     */
+    (function initializeSystemRuntime() {
+        const persistentCache = localStorage.getItem(STORAGE_KEY);
+        if (persistentCache) {
+            try {
+                state = JSON.parse(persistentCache);
+            } catch (err) {
+                console.error("Storage Matrix corrupt, re-initializing metrics fallback.", err);
+            }
+        }
+        runInterfaceRefresh();
+        appendMessage("Diagnostic node active. Environmental variables connected. Standing by for context input...", 'bot');
+    })();
+</script>
 </body>
 </html>
