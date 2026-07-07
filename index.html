@@ -3,41 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Enterprise Cognitive Operations Console</title>
+    <title>Advanced Multimodal AI Command Center</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
     <style>
         /* ==========================================================================
-           1. COMPOSITE GLOBAL THEME CONSTANTS & CSS VARIABLE MATRIX
+           1. MODERN METRIC THEME CONSTANTS & CSS VARIABLES
            ========================================================================== */
         :root {
-            --bg-main: #060913;
-            --panel-surface: #0e1726;
-            --panel-surface-elevated: #152238;
-            --panel-border: #1f2d47;
-            --panel-border-focus: #3b82f6;
+            --bg-base: #030712;
+            --surface-primary: #0b1329;
+            --surface-secondary: #111c44;
+            --surface-tertiary: #1c2a5e;
+            --border-color: #1e293b;
+            --border-glow: #3b82f6;
 
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --text-muted: #475569;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-dark: #475569;
 
-            /* State-Engine Functional Semantic Colors */
-            --state-idle: #3b82f6;
-            --state-idle-glow: rgba(59, 130, 246, 0.12);
-            --state-listening: #ef4444;
-            --state-listening-glow: rgba(239, 68, 68, 0.18);
-            --state-processing: #f59e0b;
-            --state-processing-glow: rgba(245, 158, 11, 0.12);
-            --state-executing: #10b981;
-            --state-executing-glow: rgba(16, 185, 129, 0.12);
-
-            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+            /* Visual Branding Accents */
+            --accent-blue: #3b82f6;
+            --accent-emerald: #10b981;
+            --accent-purple: #8b5cf6;
+            
+            --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
-            --easing-smooth: cubic-bezier(0.4, 0, 0.2, 1);
-            --shadow-hub: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
@@ -45,771 +40,718 @@
             padding: 0;
             box-sizing: border-box;
             outline: none;
-            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: var(--bg-main);
-            color: var(--text-primary);
+            background-color: var(--bg-base);
+            color: var(--text-main);
             font-family: var(--font-sans);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 24px;
+            padding: 20px;
             overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
         }
 
-        /* Webkit Scrollbar Controls */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--panel-border); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
         /* ==========================================================================
-           2. RESPONSIVE GRID LAYOUT AND ENGINE BOX STRUCTURAL MATRIX
+           2. OVERALL MASTER WORKSPACE LAYOUT
            ========================================================================== */
-        .console-workspace-card {
-            background-color: var(--panel-surface);
-            border: 1px solid var(--panel-border);
-            border-radius: 16px;
+        .app-workspace-container {
+            background-color: var(--surface-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
             width: 100%;
-            max-width: 1100px;
-            box-shadow: var(--shadow-hub);
-            overflow: hidden;
+            max-width: 1200px;
+            height: 850px;
             display: flex;
             flex-direction: column;
+            box-shadow: 0 25px 70px -10px rgba(0,0,0,0.7);
+            overflow: hidden;
             position: relative;
-            transition: border-color 0.3s var(--easing-smooth);
         }
 
-        /* Top Brand Configuration Panel Row */
-        .console-header-block {
-            padding: 20px 24px;
-            border-bottom: 1px solid var(--panel-border);
+        /* App Navbar Header */
+        .app-header-nav {
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.01), transparent);
-            gap: 16px;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.02), transparent);
         }
 
-        .header-meta h1 {
-            font-size: 1.15rem;
+        .brand-meta h1 {
+            font-size: 1.2rem;
             font-weight: 700;
-            color: var(--text-primary);
             letter-spacing: -0.02em;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
-        .header-meta h1 span {
-            font-family: var(--font-mono);
+        .brand-meta h1 span {
             font-size: 0.65rem;
-            text-transform: uppercase;
-            padding: 2px 6px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--panel-border);
-            color: var(--text-secondary);
-            border-radius: 4px;
-        }
-
-        .header-meta p {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-top: 2px;
-            transition: color 0.2s;
-        }
-
-        .language-orchestrator-tray {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .dropdown-select-control {
-            background-color: rgba(6, 9, 19, 0.6);
-            border: 1px solid var(--panel-border);
-            color: var(--text-primary);
-            padding: 8px 12px;
+            background-color: rgba(59, 130, 246, 0.15);
+            color: var(--accent-blue);
+            padding: 3px 8px;
             border-radius: 6px;
-            font-family: var(--font-sans);
-            font-size: 0.8rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s var(--easing-smooth);
-        }
-
-        .dropdown-select-control:hover { border-color: var(--text-secondary); }
-
-        /* Dynamic Telemetry Status Badge */
-        .telemetry-badge-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 14px;
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--panel-border);
-            border-radius: 30px;
-        }
-
-        .telemetry-pulse-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: var(--text-secondary);
-        }
-
-        .telemetry-lbl-node {
             font-family: var(--font-mono);
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: var(--text-secondary);
+            border: 1px solid rgba(59, 130, 246, 0.3);
         }
 
-        /* Hybrid Workspace Data View Splitter Container Matrix */
-        .console-runtime-split-body {
-            display: grid;
-            grid-template-columns: 1fr 340px;
-            background-color: rgba(0,0,0,0.15);
-            min-height: 400px;
+        .brand-meta p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 3px;
         }
 
         /* ==========================================================================
-           3. CHAT DISPLAY STREAM FEED LAYOUT
+           3. SPLIT RUNTIME CONSOLE WORKSPACE LAYOUT
            ========================================================================== */
-        .conversation-stream-panel {
+        .main-console-split {
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+
+        /* Left Chat Interface Container */
+        .chat-pipeline-section {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .message-feed-stream {
+            flex-grow: 1;
             padding: 24px;
-            height: 420px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 18px;
-            border-right: 1px solid var(--panel-border);
+            gap: 20px;
+            background-color: rgba(0,0,0,0.1);
         }
 
-        .chat-bubble-node {
+        /* Advanced Chat Bubble Mechanics */
+        .msg-bubble-card {
             display: flex;
-            gap: 12px;
+            gap: 16px;
             max-width: 85%;
-            animation: bubbleSlideIn 0.2s var(--easing-smooth) forwards;
+            animation: slideUpFade 0.3s var(--transition-smooth) forwards;
         }
 
-        @keyframes bubbleSlideIn {
-            0% { opacity: 0; transform: translateY(6px); }
+        @keyframes slideUpFade {
+            0% { opacity: 0; transform: translateY(10px); }
             100% { opacity: 1; transform: translateY(0); }
         }
 
-        .chat-bubble-node .avatar-frame {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
+        .msg-bubble-card.user-variant { align-self: flex-end; flex-direction: row-reverse; }
+        .msg-bubble-card.system-variant { align-self: flex-start; }
+
+        .avatar-circle-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             font-weight: 700;
             flex-shrink: 0;
             font-family: var(--font-mono);
         }
 
-        .chat-bubble-node.user-bubble { align-self: flex-end; flex-direction: row-reverse; }
-        .chat-bubble-node.user-bubble .avatar-frame { background: rgba(59, 130, 246, 0.15); color: var(--state-idle); border: 1px solid rgba(59, 130, 246, 0.3); }
+        .user-variant .avatar-circle-icon { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); border: 1px solid rgba(59, 130, 246, 0.3); }
+        .system-variant .avatar-circle-icon { background: rgba(139, 92, 246, 0.15); color: var(--accent-purple); border: 1px solid rgba(139, 92, 246, 0.3); }
+
+        .bubble-inner-content { display: flex; flex-direction: column; gap: 6px; }
         
-        .chat-bubble-node.system-bubble { align-self: flex-start; }
-        .chat-bubble-node.system-bubble .avatar-frame { background: rgba(16, 185, 129, 0.15); color: var(--state-executing); border: 1px solid rgba(16, 185, 129, 0.3); }
-
-        .bubble-content-block { display: flex; flex-direction: column; gap: 4px; }
-
-        .bubble-msg-wrapper {
-            padding: 12px 16px;
-            border-radius: 12px;
-            font-size: 0.9rem;
+        .bubble-text-block {
+            padding: 14px 18px;
+            border-radius: 14px;
+            font-size: 0.92rem;
             line-height: 1.5;
+            word-break: break-word;
         }
 
-        .user-bubble .bubble-msg-wrapper {
-            background-color: var(--panel-surface-elevated);
-            color: var(--text-primary);
-            border: 1px solid var(--panel-border);
-            border-top-right-radius: 0;
+        .user-variant .bubble-text-block { background-color: var(--surface-secondary); border: 1px solid var(--border-color); border-top-right-radius: 0; }
+        .system-variant .bubble-text-block { background-color: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-top-left-radius: 0; }
+
+        /* Integrated Inline Image Cards Inside System Bubbles */
+        .inline-image-grid-node {
+            margin-top: 8px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            max-width: 500px;
         }
 
-        .system-bubble .bubble-msg-wrapper {
-            background-color: rgba(255,255,255,0.02);
-            color: var(--text-primary);
-            border: 1px solid var(--panel-border);
-            border-top-left-radius: 0;
+        .inline-image-card {
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            position: relative;
+            cursor: pointer;
+            aspect-ratio: 16 / 10;
+            background-color: rgba(0,0,0,0.3);
         }
 
-        .bubble-meta-timestamp {
-            font-family: var(--font-mono);
-            font-size: 0.65rem;
-            color: var(--text-secondary);
+        .inline-image-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition-smooth);
         }
-        .user-bubble .bubble-meta-timestamp { text-align: right; }
+
+        .inline-image-card:hover img { transform: scale(1.05); }
+
+        .inline-image-card .image-overlay-lbl {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            padding: 8px;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.8);
+            font-weight: 500;
+        }
+
+        .msg-timestamp-log { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-dark); }
+        .user-variant .msg-timestamp-log { text-align: right; }
 
         /* ==========================================================================
-           4. RIGHT ALIGNED DIAGNOSTIC TERMINAL LOG VIEWPORT PANEL
+           4. RIGHT ALIGNED MEDIA ENGINE PREVIEW SIDEBAR
            ========================================================================== */
-        .diagnostic-sidebar-panel {
+        .media-gallery-sidebar {
             padding: 24px;
+            background-color: rgba(4, 9, 24, 0.4);
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            background-color: rgba(3, 6, 15, 0.3);
+            gap: 18px;
+            overflow-y: auto;
         }
 
-        .terminal-header-title {
-            font-family: var(--font-mono);
-            font-size: 0.7rem;
+        .sidebar-section-title {
+            font-size: 0.75rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.08em;
             color: var(--text-muted);
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
         }
 
-        .terminal-output-viewport {
-            background-color: #03060f;
-            border: 1px solid var(--panel-border);
+        .sidebar-section-title span {
+            background-color: var(--surface-tertiary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            color: var(--accent-blue);
+        }
+
+        .media-showcase-rack {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .rack-item-thumb {
             border-radius: 8px;
-            padding: 14px;
-            font-family: var(--font-mono);
-            font-size: 0.75rem;
-            flex-grow: 1;
-            height: 100%;
-            overflow-y: auto;
-            color: #10b981;
-            white-space: pre-wrap;
-            line-height: 1.6;
-            box-shadow: inset 0 2px 8px rgba(0,0,0,0.8);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            aspect-ratio: 1;
+            cursor: pointer;
+            position: relative;
         }
 
-        .terminal-output-viewport .log-err { color: var(--state-listening); }
-        .terminal-output-viewport .log-warn { color: var(--state-processing); }
-        .terminal-output-viewport .log-info { color: #38bdf8; }
+        .rack-item-thumb img { width: 100%; height: 100%; object-fit: cover; transition: var(--transition-smooth); }
+        .rack-item-thumb:hover img { transform: scale(1.08); border-color: var(--accent-blue); }
+
+        /* Prompt Suggestions Matrix */
+        .multimodal-suggestions-deck {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .suggestion-chip-btn {
+            background-color: var(--surface-secondary);
+            border: 1px solid var(--border-color);
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            color: var(--text-main);
+            text-align: left;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .suggestion-chip-btn:hover {
+            border-color: var(--accent-blue);
+            background-color: var(--surface-tertiary);
+            transform: translateX(4px);
+        }
 
         /* ==========================================================================
-           5. INTERACTIVE TRANSACTION CONTROLS TRIMS PANEL DOCK
+           5. INTERACTIVE INSTRUMENT INPUT PANEL DOCK
            ========================================================================== */
-        .interactive-dock-panel {
+        .dock-input-tray {
             padding: 20px 24px;
-            border-top: 1px solid var(--panel-border);
-            background: linear-gradient(to top, rgba(255,255,255,0.01), transparent);
+            border-top: 1px solid var(--border-color);
+            background-color: var(--surface-primary);
         }
 
-        .input-composite-group {
+        /* Upload Previews Container Layer */
+        .image-attachment-preview-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .image-attachment-preview-bar:empty { margin-bottom: 0; }
+
+        .attached-preview-node {
+            width: 54px;
+            height: 54px;
+            border-radius: 8px;
+            border: 1px solid var(--accent-blue);
+            position: relative;
+            overflow: hidden;
+            animation: scaleUp 0.2s var(--transition-smooth);
+        }
+
+        @keyframes scaleUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        .attached-preview-node img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .attached-preview-node .remove-node-overlay {
+            position: absolute;
+            top: 2px; right: 2px;
+            background: rgba(239, 68, 68, 0.8);
+            border: none; color: white;
+            width: 16px; height: 16px;
+            border-radius: 50%; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.6rem; font-weight: bold;
+        }
+
+        .input-composite-wrapper {
             display: flex;
             align-items: center;
             gap: 12px;
-            background-color: rgba(0, 0, 0, 0.25);
-            border: 1px solid var(--panel-border);
-            padding: 6px 6px 6px 16px;
-            border-radius: 12px;
-            transition: all 0.2s var(--easing-smooth);
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            padding: 6px 6px 6px 14px;
+            border-radius: 14px;
         }
 
-        .input-composite-group:focus-within {
-            border-color: var(--panel-border-focus);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        .input-composite-wrapper:focus-within {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
         }
 
-        .text-control-field {
+        .console-text-input {
             flex-grow: 1;
             background: transparent;
             border: none;
-            color: var(--text-primary);
+            color: var(--text-main);
             font-family: var(--font-sans);
             font-size: 0.9rem;
-            height: 38px;
+            height: 40px;
         }
 
-        .text-control-field::placeholder { color: var(--text-muted); }
-
-        .dock-trigger-action-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
+        .action-icon-trigger-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
             border: 1px solid transparent;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s var(--easing-smooth);
-            flex-shrink: 0;
+            transition: var(--transition-smooth);
+            color: var(--text-muted);
+            background: transparent;
         }
 
-        .audio-mic-btn {
-            background-color: rgba(255, 255, 255, 0.03);
-            border-color: var(--panel-border);
-            color: var(--text-secondary);
-        }
-
-        .audio-mic-btn:hover { background-color: var(--panel-surface-elevated); color: var(--text-primary); }
+        .action-icon-trigger-btn:hover { background-color: var(--surface-secondary); color: var(--text-main); }
         
-        .audio-mic-btn.is-active-recording {
-            background-color: var(--state-listening-glow);
-            border-color: var(--state-listening);
-            color: var(--state-listening);
-            animation: activeMicPulse 1.5s infinite var(--easing-smooth);
-        }
+        .action-icon-trigger-btn.submit-variant { background-color: var(--accent-blue); color: #ffffff; }
+        .action-icon-trigger-btn.submit-variant:hover { background-color: #2563eb; }
 
-        @keyframes activeMicPulse {
-            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-            70% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-        }
-
-        .text-dispatch-submit-btn { background-color: var(--state-idle); color: #fff; }
-        .text-dispatch-submit-btn:hover { background-color: #1d4ed8; }
-
-        .dock-trigger-action-btn svg { width: 16px; height: 16px; fill: currentColor; }
-
-        /* Dynamic State Mapping Animations Matrix Extensions */
-        .console-workspace-card[data-state="idle"] .telemetry-badge-container { background: var(--state-idle-glow); border-color: rgba(59, 130, 246, 0.2); }
-        .console-workspace-card[data-state="idle"] .telemetry-pulse-dot { background-color: var(--state-idle); }
-        .console-workspace-card[data-state="idle"] .telemetry-lbl-node { color: var(--state-idle); }
-
-        .console-workspace-card[data-state="listening"] .telemetry-badge-container { background: var(--state-listening-glow); border-color: rgba(239, 68, 68, 0.2); }
-        .console-workspace-card[data-state="listening"] .telemetry-pulse-dot { background-color: var(--state-listening); animation: telemetryFlash 1s infinite alternate; }
-        .console-workspace-card[data-state="listening"] .telemetry-lbl-node { color: var(--state-listening); }
-
-        .console-workspace-card[data-state="processing"] .telemetry-badge-container { background: var(--state-processing-glow); border-color: rgba(245, 158, 11, 0.2); }
-        .console-workspace-card[data-state="processing"] .telemetry-pulse-dot { background-color: var(--state-processing); animation: telemetryFlash 0.5s infinite alternate; }
-        .console-workspace-card[data-state="processing"] .telemetry-lbl-node { color: var(--state-processing); }
-
-        .console-workspace-card[data-state="executing"] .telemetry-badge-container { background: var(--state-executing-glow); border-color: rgba(16, 185, 129, 0.2); }
-        .console-workspace-card[data-state="executing"] .telemetry-pulse-dot { background-color: var(--state-executing); }
-        .console-workspace-card[data-state="executing"] .telemetry-lbl-node { color: var(--state-executing); }
-
-        @keyframes telemetryFlash {
-            0% { opacity: 0.4; }
-            100% { opacity: 1; box-shadow: 0 0 6px currentColor; }
-        }
+        .action-icon-trigger-btn svg { width: 18px; height: 18px; fill: currentColor; }
 
         /* ==========================================================================
-           6. COMPREHENSIVE RESPONSIVE DESIGN MEDIA QUERIES (MOBILE FIX MATRIX)
+           6. LIGHTBOX MODAL COMPONENT (FULL SCREEN PREVIEW)
            ========================================================================== */
-        @media (max-width: 868px) {
-            body { padding: 12px; }
-            
-            .console-workspace-card { border-radius: 12px; }
-
-            .console-header-block {
-                padding: 16px;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 14px;
-            }
-
-            .language-orchestrator-tray {
-                width: 100%;
-                justify-content: space-between;
-            }
-
-            .dropdown-select-control {
-                flex-grow: 1;
-                max-width: 60%;
-            }
-
-            .console-runtime-split-body {
-                grid-template-columns: 1fr;
-            }
-
-            .conversation-stream-panel {
-                height: 360px;
-                padding: 16px;
-                border-right: none;
-                border-bottom: 1px solid var(--panel-border);
-            }
-
-            .chat-bubble-node { max-width: 92%; }
-
-            .diagnostic-sidebar-panel {
-                height: 160px;
-                padding: 16px;
-                background-color: rgba(3, 6, 15, 0.5);
-            }
-
-            .terminal-output-viewport { max-height: 120px; }
-            .interactive-dock-panel { padding: 14px; }
-            .input-composite-group { padding: 4px 4px 4px 12px; border-radius: 10px; }
-            .text-control-field { font-size: 0.85rem; height: 42px; }
-            .dock-trigger-action-btn { width: 42px; height: 42px; }
+        .lightbox-modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: rgba(3, 7, 18, 0.95);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
         }
 
-        @media (max-width: 480px) {
-            .header-meta p { display: none; }
-            .telemetry-lbl-node { font-size: 0.65rem; }
+        .lightbox-modal-overlay.is-visible { opacity: 1; pointer-events: auto; }
+
+        .lightbox-wrapper-content {
+            position: relative;
+            max-width: 85%;
+            max-height: 85%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .lightbox-wrapper-content img {
+            max-width: 100%;
+            max-height: 75vh;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+
+        .lightbox-caption-text {
+            color: var(--text-main);
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .lightbox-close-btn {
+            position: absolute;
+            top: -40px; right: 0;
+            background: transparent; border: none;
+            color: var(--text-muted); font-size: 1.5rem;
+            cursor: pointer; transition: color 0.2s;
+        }
+        .lightbox-close-btn:hover { color: var(--text-main); }
+
+        /* ==========================================================================
+           7. MEDIA QUERY RESPONSIVENESS MATRIX
+           ========================================================================== */
+        @media (max-width: 992px) {
+            body { padding: 10px; }
+            .app-workspace-container { height: calc(100vh - 20px); border-radius: 14px; }
+            .main-console-split { grid-template-columns: 1fr; }
+            .media-gallery-sidebar { display: none; } /* Hide sidebar gallery on tablets/mobile */
+        }
+
+        @media (max-width: 576px) {
+            .app-header-nav { padding: 14px; }
+            .brand-meta p { display: none; }
+            .message-feed-stream { padding: 14px; }
+            .msg-bubble-card { max-width: 95%; }
+            .inline-image-grid-node { grid-template-columns: 1fr; }
+            .dock-input-tray { padding: 14px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="console-workspace-card" id="globalWorkspaceAppNode" data-state="idle">
+    <div class="app-workspace-container">
         
-        <header class="console-header-block">
-            <div class="header-meta">
-                <h1 id="uiMainTitle">Cognitive Interface System <span>v2.5</span></h1>
-                <p id="uiSubTitle">Unified multimodal conversational pipeline controller engine.</p>
-            </div>
-
-            <div class="language-orchestrator-tray">
-                <select id="pipelineLanguageSelector" class="dropdown-select-control" title="Change Operational Pipeline Language Model Layer Context">
-                    <optgroup label="International Engines">
-                        <option value="en-US" selected>English (US)</option>
-                        <option value="es-ES">Español (Spanish)</option>
-                        <option value="fr-FR">Français (French)</option>
-                        <option value="de-DE">Deutsch (German)</option>
-                        <option value="zh-CN">Mandarin (Chinese)</option>
-                        <option value="ar-SA">العربية (Arabic)</option>
-                    </optgroup>
-                    <optgroup label="Indian Regional Engines">
-                        <option value="hi-IN">हिन्दी (Hindi)</option>
-                        <option value="ta-IN">தமிழ் (Tamil)</option>
-                        <option value="te-IN">తెలుగు (Telugu)</option>
-                        <option value="kn-IN">ಕನ್ನಡ (Kannada)</option>
-                        <option value="ml-IN">മലയാളം (Malayalam)</option>
-                        <option value="bn-IN">বাংলা (Bengali)</option>
-                        <option value="mr-IN">मराठी (Marathi)</option>
-                        <option value="gu-IN">ગુજરાતી (Gujarati)</option>
-                    </optgroup>
-                </select>
-                
-                <div class="telemetry-badge-container" aria-live="polite">
-                    <div class="telemetry-pulse-dot"></div>
-                    <span class="telemetry-lbl-node" id="telemetryStatusLabel">Ready</span>
-                </div>
+        <!-- App Navbar Header -->
+        <header class="app-header-nav">
+            <div class="brand-meta">
+                <h1>Multimodal Vision Command Center <span>v3.0 Pro</span></h1>
+                <p>Advanced conversational layout supporting cross-platform object recognition and image diagnostics.</p>
             </div>
         </header>
 
-        <main class="console-runtime-split-body">
+        <!-- Main Workspace Interface Splitting Splitter Grid -->
+        <div class="main-console-split">
             
-            <section class="conversation-stream-panel" id="chatMessageStreamViewport" aria-label="Conversation History Logs">
-                <div class="chat-bubble-node system-bubble">
-                    <div class="avatar-frame">AI</div>
-                    <div class="bubble-content-block">
-                        <div class="bubble-msg-wrapper" id="uiWelcomeMessage">
-                            Core operational framework context initialized safely. Standing by for text queries or automated audio voice input commands.
+            <!-- Left Chat Column -->
+            <section class="chat-pipeline-section">
+                <div class="message-feed-stream" id="chatMessageStreamViewport">
+                    
+                    <!-- Welcome System Message -->
+                    <div class="msg-bubble-card system-variant">
+                        <div class="avatar-circle-icon">AI</div>
+                        <div class="bubble-inner-content">
+                            <div class="bubble-text-block">
+                                Core vision analytics layer linked up successfully. Drop text prompts or attach rich imagery data assets to process analytical workflows.
+                            </div>
+                            <span class="msg-timestamp-log">SYSTEM // ONLINE</span>
                         </div>
-                        <span class="bubble-meta-timestamp">SYSTEM // READY</span>
+                    </div>
+
+                </div>
+
+                <!-- Input Panel Matrix Dock -->
+                <footer class="dock-input-tray">
+                    <!-- Target box for file attachment previews -->
+                    <div class="image-attachment-preview-bar" id="imagePreviewContainerRow"></div>
+
+                    <div class="input-composite-wrapper">
+                        <!-- Hidden File Native Handle -->
+                        <input type="file" id="hiddenFileAttachmentNativeControl" accept="image/*" multiple style="display: none;">
+                        
+                        <button class="action-icon-trigger-btn" id="triggerAttachmentHookKey" title="Attach Multimodal Image Asset">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c0 1.1.9-2 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+                            </svg>
+                        </button>
+
+                        <input type="text" class="console-text-input" id="chatSystemInputFieldNode" placeholder="Ask a question or analyze vision matrices...">
+                        
+                        <button class="action-icon-trigger-btn submit-variant" id="dispatchQueryActionKey" title="Send Payload">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </footer>
+            </section>
+
+            <!-- Right Asset / Suggestions Gallery Sidebar -->
+            <aside class="media-gallery-sidebar">
+                
+                <div>
+                    <div class="sidebar-section-title" style="margin-bottom: 12px;">
+                        <span>Image Inspection Rack</span>
+                        <span>4 Active</span>
+                    </div>
+                    <div class="media-showcase-rack" id="sidebarAssetRackContainer">
+                        <!-- Preloaded asset cards -->
+                        <div class="rack-item-thumb" data-caption="Neural Core Schematics Grid">
+                            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=200&q=80" alt="Asset 1">
+                        </div>
+                        <div class="rack-item-thumb" data-caption="Cybernetic Render Engine Matrix">
+                            <img src="https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=200&q=80" alt="Asset 2">
+                        </div>
+                        <div class="rack-item-thumb" data-caption="Bio-metric Compute Server Hub">
+                            <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=200&q=80" alt="Asset 3">
+                        </div>
+                        <div class="rack-item-thumb" data-caption="Automated Data Pattern Array">
+                            <img src="https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=200&q=80" alt="Asset 4">
+                        </div>
                     </div>
                 </div>
-            </section>
 
-            <section class="diagnostic-sidebar-panel">
-                <div class="terminal-header-title">
-                    <span id="uiTerminalTitle">System IO Logs</span>
-                    <span style="color: var(--text-muted); font-size: 0.65rem;">IO://OK</span>
+                <hr style="border: none; border-top: 1px solid var(--border-color); margin: 6px 0;">
+
+                <div class="multimodal-suggestions-deck">
+                    <div class="sidebar-section-title" style="margin-bottom: 8px;">
+                        <span>Multimodal Preset Diagnostics</span>
+                    </div>
+                    <button class="suggestion-chip-btn" data-prompt="Generate synthetic rendering engine prototypes.">
+                        ⚡ Generate Rendering Prototypes
+                    </button>
+                    <button class="suggestion-chip-btn" data-prompt="Analyze active rack assets for structural network pattern anomalies.">
+                        🔍 Scan Network System Rack Logs
+                    </button>
+                    <button class="suggestion-chip-btn" data-prompt="Provide breakdown analysis of structural data matrices.">
+                        📊 Extract Matrix Telemetry
+                    </button>
                 </div>
-                <div class="terminal-output-viewport" id="diagnosticTerminalOutputContainer">Workspace pipeline online. Initializing responsive media client interface hooks...</div>
-            </section>
 
-        </main>
+            </aside>
 
-        <footer class="interactive-dock-panel">
-            <div class="input-composite-group">
-                <button class="dock-trigger-action-btn audio-mic-btn" id="audioTranscriptionTriggerKey" title="Toggle Speech Capture">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/>
-                    </svg>
-                </button>
+        </div>
+    </div>
 
-                <input type="text" class="text-control-field" id="textConsoleFieldInputField" placeholder="Type query or trigger audio stream input...">
-                
-                <button class="dock-trigger-action-btn text-dispatch-submit-btn" id="manualTextPipelineSubmitKey" title="Commit Input Query">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-                    </svg>
-                </button>
-            </div>
-        </footer>
+    <!-- Master Lightbox Modal Structure -->
+    <div class="lightbox-modal-overlay" id="globalLightboxComponentOverlay" aria-hidden="true">
+        <div class="lightbox-wrapper-content">
+            <button class="lightbox-close-btn" id="closeLightboxComponentAction" title="Exit Preview">&times;</button>
+            <img id="lightboxTargetMediaElement" src="" alt="Active View Zoom">
+            <div class="lightbox-caption-text" id="lightboxTargetCaptionLabel">Asset Inspection</div>
+        </div>
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const appRootContainer = document.getElementById("globalWorkspaceAppNode");
-            const statusLabelNode = document.getElementById("telemetryStatusLabel");
-            const speechEngineTriggerKey = document.getElementById("audioTranscriptionTriggerKey");
-            const manualTextFormSubmitKey = document.getElementById("manualTextPipelineSubmitKey");
-            const inlineTextInputField = document.getElementById("textConsoleFieldInputField");
-            const dynamicChatStreamPanelViewport = document.getElementById("chatMessageStreamViewport");
-            const debugDiagnosticTerminalConsole = document.getElementById("diagnosticTerminalOutputContainer");
-            const pipelineLanguageSelector = document.getElementById("pipelineLanguageSelector");
+            const chatMessageStreamViewport = document.getElementById("chatMessageStreamViewport");
+            const chatSystemInputFieldNode = document.getElementById("chatSystemInputFieldNode");
+            const dispatchQueryActionKey = document.getElementById("dispatchQueryActionKey");
+            const triggerAttachmentHookKey = document.getElementById("triggerAttachmentHookKey");
+            const hiddenFileAttachmentNativeControl = document.getElementById("hiddenFileAttachmentNativeControl");
+            const imagePreviewContainerRow = document.getElementById("imagePreviewContainerRow");
+            const sidebarAssetRackContainer = document.getElementById("sidebarAssetRackContainer");
 
-            // UI Elements for Live Dynamic Translations
-            const uiMainTitle = document.getElementById("uiMainTitle");
-            const uiSubTitle = document.getElementById("uiSubTitle");
-            const uiWelcomeMessage = document.getElementById("uiWelcomeMessage");
-            const uiTerminalTitle = document.getElementById("uiTerminalTitle");
+            // Lightbox Modal References
+            const globalLightboxComponentOverlay = document.getElementById("globalLightboxComponentOverlay");
+            const lightboxTargetMediaElement = document.getElementById("lightboxTargetMediaElement");
+            const lightboxTargetCaptionLabel = document.getElementById("lightboxTargetCaptionLabel");
+            const closeLightboxComponentAction = document.getElementById("closeLightboxComponentAction");
 
-            const BrowserNativeSpeechEngineLink = window.SpeechRecognition || window.webkitSpeechRecognition;
-            let activelyListeningSpeechState = false;
-            let speechOperationalMatrixInstance = null;
+            // Memory Cache for Active Attached Images
+            let volatileImageUploadBin = [];
 
-            // Comprehensive Dynamic UI Localization Engine Dictionary
-            const uiLocalizationEngine = {
-                "en-US": {
-                    title: "Cognitive Interface System", subtitle: "Unified multimodal conversational pipeline controller engine.",
-                    welcome: "Core operational framework context initialized safely. Standing by for text queries or automated audio voice input commands.",
-                    terminal: "System IO Logs", placeholder: "Type query or trigger audio stream input...",
-                    response: "Processed text command successfully. Orchestration event execution sequence launched across production clusters."
-                },
-                "es-ES": {
-                    title: "Sistema de Interfaz Cognitiva", subtitle: "Motor de controlador de canal de conversación multimodal unificado.",
-                    welcome: "Contexto del marco operativo central inicializado de forma segura. En espera de comandos de voz o texto.",
-                    terminal: "Registros de E/S del sistema", placeholder: "Escriba una consulta o active el flujo de audio...",
-                    response: "Comando de texto procesado con éxito. Secuencia de ejecución iniciada."
-                },
-                "fr-FR": {
-                    title: "Système d'Interface Cognitive", subtitle: "Moteur de contrôleur de pipeline conversationnel multimodal unifié.",
-                    welcome: "Contexte du cadre opérationnel central initialisé en toute sécurité. En attente de requêtes textuelles ou vocales.",
-                    terminal: "Journaux d'E/S du système", placeholder: "Tapez votre requête ou lancez le flux audio...",
-                    response: "Commande textuelle traitée avec succès. Séquence d'exécution lancée."
-                },
-                "de-DE": {
-                    title: "Kognitives Schnittstellensystem", subtitle: "Einheitliche multimodale Konversations-Pipeline-Controller-Engine.",
-                    welcome: "Kernbetriebsrahmen-Kontext sicher initialisiert. Bereit für Text- oder Audio-Befehle.",
-                    terminal: "System-E/A-Protokolle", placeholder: "Abfrage eingeben oder Audio-Stream starten...",
-                    response: "Textbefehl erfolgreich verarbeitet. Ausführungssequenz gestartet."
-                },
-                "zh-CN": {
-                    title: "认知接口系统", subtitle: "统一的多模态对话管道控制引擎。",
-                    welcome: "核心运行框架上下文安全初始化。正在等待文本查询或自动音频语音输入命令。",
-                    terminal: "系统输入/输出日志", placeholder: "输入查询或触发音频流...",
-                    response: "文本命令处理成功。生成编排事件链条。"
-                },
-                "ar-SA": {
-                    title: "نظام الواجهة الإدراكية", subtitle: "محرك تحكم موحد لتدفق المحادثات متعددة الوسائط.",
-                    welcome: "تم تهيئة سياق الإطار التشغيلي الأساسي بأمان. في انتظار الأوامر النصية أو الصوتية.",
-                    terminal: "سجلات الإدخال والإخراج", placeholder: "اكتب استعلامًا أو نشّط دفق الصوت...",
-                    response: "تم معالجة أمر النص بنجاح. تم إطلاق تسلسل التنفيذ البرمجي."
-                },
-                "hi-IN": {
-                    title: "संज्ञानात्मक इंटरफ़ेस प्रणाली", subtitle: "एकीकृत मल्टीमॉडल संवादात्मक पाइपलाइन नियंत्रक इंजन।",
-                    welcome: "कोर परिचालन ढांचा सुरक्षित रूप से प्रारंभ हुआ। टेक्स्ट या ऑडियो वॉयस इनपुट कमांड की प्रतीक्षा है।",
-                    terminal: "सिस्टम आईओ लॉग", placeholder: "क्वेरी टाइप करें या ऑडियो स्ट्रीम शुरू करें...",
-                    response: "टेक्स्ट कमांड को सफलतापूर्वक संसाधित किया गया। क्लस्टर निष्पादन अनुक्रम शुरू हो गया है।"
-                },
-                "ta-IN": {
-                    title: "அறிவாற்றல் இடைமுக அமைப்பு", subtitle: "ஒருங்கிணைந்த மல்டிமாடல் உரையாடல் பைப்லைன் கட்டுப்பாட்டு எஞ்சின்.",
-                    welcome: "முக்கிய செயல்பாட்டுக் கட்டமைப்பு பாதுகாப்பாகத் தொடங்கப்பட்டது. உரை அல்லது ஆடியோ உள்ளீட்டுக் கட்டளைகளுக்காகக் காத்திருக்கிறது.",
-                    terminal: "கணினி உள்ளீடு/வெளியீடு பதிவுகள்", placeholder: "கேள்வியைத் தட்டச்சு செய்யவும் அல்லது ஆடியோவை இயக்கவும்...",
-                    response: "உரை கட்டளை வெற்றிகரமாக செயலாக்கப்பட்டது. உற்பத்தி கிளஸ்டர்களில் நிகழ்வு வரிசை தொடங்கப்பட்டது."
-                },
-                "te-IN": {
-                    title: "కాగ్నిటివ్ ఇంటర్‌ఫేస్ సిస్టమ్", subtitle: "యూనిఫైడ్ మల్టీమోడల్ సంభాషణ పైప్‌లైన్ కంట్రోలర్ ఇంజిన్.",
-                    welcome: "కోర్ కార్యాచరణ ఫ్రేమ్‌వర్క్ సురక్షితంగా ప్రారంభించబడింది. టెక్స్ట్ లేదా ఆడియో వాయిస్ ఇన్‌పుట్ కోసం వేచి ఉంది.",
-                    terminal: "సిస్టమ్ ఐఓ లాగ్‌లు", placeholder: "ప్రశ్నను టైప్ చేయండి లేదా ఆడియోను ప్రారంభించండి...",
-                    response: "టెక్స్ట్ కమాండ్ విజయవంతంగా ప్రాసెస్ చేయబడింది. ఎగ్జిక్యూషన్ సీక్వెన్స్ ప్రారంభించబడింది."
-                },
-                "kn-IN": {
-                    title: "ಕಾಗ್ನಿಟಿವ್ ಇಂಟರ್ಫೇಸ್ ಸಿಸ್ಟಮ್", subtitle: "ಏಕೀಕೃತ ಮಲ್ಟಿಮೋಡಲ್ ಸಂಭಾಷಣೆ ಪೈಪ್‌ಲೈನ್ ನಿಯಂತ್ರಕ ಎಂಜಿನ್.",
-                    welcome: "ಕೋರ್ ಆಪರೇಷನಲ್ ಫ್ರೇಮ್‌ವರ್ಕ್ ಯಶಸ್ವಿಯಾಗಿ ಚಾಲನೆಗೊಂಡಿದೆ. ಪಠ್ಯ ಅಥವಾ ಆಡಿಯೊ ಧ್ವನಿ ಇನ್‌ಪುಟ್‌ಗಾಗಿ ಕಾಯಲಾಗುತ್ತಿದೆ.",
-                    terminal: "ಸಿಸ್ಟಮ್ ಐಒ ಲಾಗ್‌ಗಳು", placeholder: "ಪ್ರಶ್ನೆಯನ್ನು ಟೈಪ್ ಮಾಡಿ ಅಥವಾ ಆಡಿಯೊ ಸ್ಟ್ರೀಮ್ ಮಾಡಿ...",
-                    response: "ಪಠ್ಯ ಆಜ್ಞೆಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಪ್ರಕ್ರಿಯೆಗೊಳಿಸಲಾಗಿದೆ. ಕ್ಲಸ್ಟರ್ ಎಕ್ಸಿಕ್ಯೂಶನ್ ಸರಣಿ ಪ್ರಾರಂಭವಾಗಿದೆ."
-                },
-                "ml-IN": {
-                    title: "കോഗ്നിറ്റീവ് ഇന്റർഫേസ് സിസ്റ്റം", subtitle: "ഏകീകൃത മൾട്ടിമോഡൽ സംഭാഷണ പൈപ്പ്‌ലൈൻ കൺട്രോളർ എഞ്ചിൻ.",
-                    welcome: "കോർ অপারেশন ഫ്രെയിംവർക്ക് സുരക്ഷിതമായി ആരംഭിച്ചു. ടെക്സ്റ്റ് അല്ലെങ്കിൽ ഓഡിയോ വോയ്സ് കമാൻഡുകൾക്കായി കാത്തിരിക്കുന്നു.",
-                    terminal: "സിസ്റ്റം ഐഒ ലോഗുകൾ", placeholder: "ടൈപ്പ് ചെയ്യുക അല്ലെങ്കിൽ ഓഡിയോ സ്ട്രീം ചെയ്യുക...",
-                    response: "ടെക്സ്റ്റ് കമാൻഡ് വിജയകരമായി പ്രോസസ്സ് ചെയ്തു. എക്സിക്യൂഷൻ സീക്വൻസ് ആരംഭിച്ചു."
-                },
-                "bn-IN": {
-                    title: "কগনিটিভ ইন্টারফেস সিস্টেম", subtitle: "ইউনিফাইড মাল্টিমোডাল কথোপকথন পাইপলাইন কন্ট্রোলার ইঞ্জিন।",
-                    welcome: "কোর অপারেশনাল ফ্রেমওয়ার্ক নিরাপদে শুরু করা হয়েছে। টেক্সট বা অডিও ভয়েস ইনपुटের জন্য অপেক্ষা করা হচ্ছে।",
-                    terminal: "সিস্টেম আইও লগ", placeholder: "টাইপ করুন বা অডিও স্ট্রিম চালু করুন...",
-                    response: "টেক্সট কমান্ড সফলভাবে প্রক্রিয়া সম্পন্ন হয়েছে। এক্সিকিউশন সিকোয়েন্স শুরু করা হয়েছে।"
-                },
-                "mr-IN": {
-                    title: "कॉग्निटिव्ह इंटरफेस सिस्टम", subtitle: "युनिफाइड मल्टीमॉडल संभाषण पाईपलाईन कंट्रोलर इंजिन.",
-                    welcome: "कोअर ऑपरेशनल फ्रेमवर्क सुरक्षितपणे सुरू झाले. मजकूर किंवा ऑडिओ व्हॉइस इनपुट कमांडची प्रतीक्षा आहे.",
-                    terminal: "सिस्टम आयओ लॉग", placeholder: "टाईप करा किंवा ऑडिओ स्ट्रीम सुरू करा...",
-                    response: "मजकूर कमांड यशस्वीरित्या प्रक्रिया केली. एक्झिक्युशन सीक्वेन्स सुरू झाला."
-                },
-                "gu-IN": {
-                    title: "કોગ્નિટિવ ઇન્ટરફેસ સિસ્ટમ", subtitle: "યુનિફાઇડ મલ્ટીમોડલ કન્વર્સેશનલ પાઇપલાઇન કંટ્રોલર એન્જિન.",
-                    welcome: "કોર ઓપરેશનલ ફ્રેમવર્ક સુરક્ષિત રીતે શરૂ થયું. ટેક્સ્ટ અથવા ઓડિયો વૉઇસ ઇનપુટ કમાન્ડની રાહ જોવાઈ રહી છે.",
-                    terminal: "સિસ્ટમ આઇઓ લોગ", placeholder: "ટાઇપ કરો અથવા ઓડિયો સ્ટ્રીમ શરૂ કરો...",
-                    response: "ટેક્સ્ટ કમાન્ડ સફળતાપૂર્વક પ્રક્રિયા કરવામાં આવી છે. એક્ઝિક્યુશન સિક્વન્સ શરૂ થઈ ગઈ છે।"
-                }
-            };
-
-            // Dynamic UI Core Synchronizer Engine
-            function synchronizedUiLanguageLayout(targetLangCode) {
-                const dataset = uiLocalizationEngine[targetLangCode] || uiLocalizationEngine["en-US"];
-                
-                uiMainTitle.childNodes[0].textContent = dataset.title + " ";
-                uiSubTitle.textContent = dataset.subtitle;
-                uiWelcomeMessage.textContent = dataset.welcome;
-                uiTerminalTitle.textContent = dataset.terminal;
-                inlineTextInputField.placeholder = dataset.placeholder;
-
-                appendTerminalDiagnosticLog(`UI Layout translated into runtime locale context: [${targetLangCode}]`, "info");
+            // Trigger Image Lightbox Modal Viewports
+            function launchLightboxPreviewInstance(imageSourceUrl, captionString = "Asset Verification View") {
+                lightboxTargetMediaElement.src = imageSourceUrl;
+                lightboxTargetCaptionLabel.textContent = captionString;
+                globalLightboxComponentOverlay.classList.add("is-visible");
+                globalLightboxComponentOverlay.setAttribute("aria-hidden", "false");
             }
 
-            if (!BrowserNativeSpeechEngineLink) {
-                appendTerminalDiagnosticLog("Device environment native SpeechRecognition missing. Audio mic locked down.", "error");
-                speechEngineTriggerKey.disabled = true;
-                speechEngineTriggerKey.style.opacity = "0.3";
-                speechEngineTriggerKey.style.cursor = "not-allowed";
-            } else {
-                speechOperationalMatrixInstance = new BrowserNativeSpeechEngineLink();
-                speechOperationalMatrixInstance.continuous = false;
-                speechOperationalMatrixInstance.interimResults = false;
-
-                speechOperationalMatrixInstance.onstart = () => {
-                    mutateWorkspaceGlobalSystemState("listening");
-                    appendTerminalDiagnosticLog(`Audio capturing pipeline active: [${pipelineLanguageSelector.value}].`, "info");
-                };
-
-                speechOperationalMatrixInstance.onerror = (exceptionEvent) => {
-                    appendTerminalDiagnosticLog(`Driver Interface Error: ${exceptionEvent.error}`, "error");
-                    mutateWorkspaceGlobalSystemState("idle");
-                    tearDownVoiceRecordingUIContext();
-                };
-
-                speechOperationalMatrixInstance.onend = () => { tearDownVoiceRecordingUIContext(); };
-
-                speechOperationalMatrixInstance.onresult = (streamResultDataPackage) => {
-                    const compiledRawStringTextOutput = streamResultDataPackage.results[0][0].transcript;
-                    appendTerminalDiagnosticLog(`Resolved string audio payload: "${compiledRawStringTextOutput}"`, "info");
-                    injectChatMessageBubbleNode(compiledRawStringTextOutput, "user");
-                    dispatchUpstreamTransactionPayload(compiledRawStringTextOutput);
-                };
+            function shutdownLightboxPreviewInstance() {
+                globalLightboxComponentOverlay.classList.remove("is-visible");
+                globalLightboxComponentOverlay.setAttribute("aria-hidden", "true");
+                lightboxTargetMediaElement.src = "";
             }
 
-            speechEngineTriggerKey.addEventListener("click", () => {
-                if (!speechOperationalMatrixInstance) return;
-                if (activelyListeningSpeechState) {
-                    speechOperationalMatrixInstance.stop();
-                    tearDownVoiceRecordingUIContext();
-                } else {
-                    window.speechSynthesis.cancel();
-                    inlineTextInputField.value = "";
-                    speechOperationalMatrixInstance.lang = pipelineLanguageSelector.value;
-                    try {
-                        speechOperationalMatrixInstance.start();
-                        activelyListeningSpeechState = true;
-                        speechEngineTriggerKey.classList.add("is-active-recording");
-                    } catch (err) {
-                        appendTerminalDiagnosticLog(`Initialization Fault: ${err.message}`, "error");
-                    }
-                }
+            closeLightboxComponentAction.addEventListener("click", shutdownLightboxPreviewInstance);
+            globalLightboxComponentOverlay.addEventListener("click", (e) => {
+                if (e.target === globalLightboxComponentOverlay) shutdownLightboxPreviewInstance();
             });
 
-            // Fire translation synchronization engine upon select element adjustments
-            pipelineLanguageSelector.addEventListener("change", (e) => {
-                const targetLang = e.target.value;
-                synchronizedUiLanguageLayout(targetLang);
-                if (activelyListeningSpeechState) speechOperationalMatrixInstance.stop();
+            // Initialize Static Document Sidebar Image Elements Click Mappings
+            document.querySelectorAll(".rack-item-thumb").forEach(item => {
+                item.addEventListener("click", () => {
+                    const src = item.querySelector("img").src.replace("&w=200", "&w=1000");
+                    const caption = item.getAttribute("data-caption");
+                    launchLightboxPreviewInstance(src, caption);
+                });
             });
 
-            manualTextFormSubmitKey.addEventListener("click", () => { commitInputTextFieldStringEvent(); });
-            inlineTextInputField.addEventListener("keydown", (e) => { if (e.key === "Enter") commitInputTextFieldStringEvent(); });
-
-            function commitInputTextFieldStringEvent() {
-                const targetSanitizedStringPayloadValue = inlineTextInputField.value.trim();
-                if (!targetSanitizedStringPayloadValue) return;
-
-                if (activelyListeningSpeechState) {
-                    speechOperationalMatrixInstance.stop();
-                    tearDownVoiceRecordingUIContext();
-                }
-                window.speechSynthesis.cancel();
-
-                injectChatMessageBubbleNode(targetSanitizedStringPayloadValue, "user");
-                inlineTextInputField.value = "";
-                dispatchUpstreamTransactionPayload(targetSanitizedStringPayloadValue);
-            }
-
-            function tearDownVoiceRecordingUIContext() {
-                activelyListeningSpeechState = false;
-                speechEngineTriggerKey.classList.remove("is-active-recording");
-            }
-
-            function executeAITextToSpeechSynthesis(targetMessageStringPayload, targetLocaleISO) {
-                if ('speechSynthesis' in window) {
-                    const syntheticVoiceEnvelope = new SpeechSynthesisUtterance(targetMessageStringPayload);
-                    syntheticVoiceEnvelope.lang = targetLocaleISO;
-                    const appropriateMatchedVoiceNode = window.speechSynthesis.getVoices().find(v => v.lang.includes(targetLocaleISO));
-                    if (appropriateMatchedVoiceNode) syntheticVoiceEnvelope.voice = appropriateMatchedVoiceNode;
+            // Re-render Selected Attachment Previews Row Layout
+            function synchronizeAttachmentPreviewsBar() {
+                imagePreviewContainerRow.innerHTML = "";
+                volatileImageUploadBin.forEach((fileObj, index) => {
+                    const node = document.createElement("div");
+                    node.className = "attached-preview-node";
                     
-                    window.speechSynthesis.speak(syntheticVoiceEnvelope);
-                }
+                    const img = document.createElement("img");
+                    img.src = URL.createObjectURL(fileObj);
+                    node.appendChild(img);
+                    
+                    const removeBtn = document.createElement("button");
+                    removeBtn.className = "remove-node-overlay";
+                    removeBtn.innerHTML = "&times;";
+                    removeBtn.onclick = () => {
+                        volatileImageUploadBin.splice(index, 1);
+                        synchronizeAttachmentPreviewsBar();
+                    };
+                    
+                    node.appendChild(removeBtn);
+                    imagePreviewContainerRow.appendChild(node);
+                });
             }
 
-            async function dispatchUpstreamTransactionPayload(rawCommandStringText) {
-                mutateWorkspaceGlobalSystemState("processing");
-                const currentSelectedLocaleCode = pipelineLanguageSelector.value;
+            // Bind Native Attachment Input System Triggers
+            triggerAttachmentHookKey.addEventListener("click", () => hiddenFileAttachmentNativeControl.click());
+            
+            hiddenFileAttachmentNativeControl.addEventListener("change", (e) => {
+                const identifiedFiles = Array.from(e.target.files);
+                volatileImageUploadBin = [...volatileImageUploadBin, ...identifiedFiles];
+                synchronizeAttachmentPreviewsBar();
+                hiddenFileAttachmentNativeControl.value = ""; // clear selector native handle
+            });
+
+            // Dynamically build message bubble cards inside feed viewport container
+            function commitMessageToFeedStream(messageText, authorType = "system", embeddedImagesArray = []) {
+                const bubbleCard = document.createElement("div");
+                bubbleCard.className = `msg-bubble-card ${authorType}-variant`;
                 
-                appendTerminalDiagnosticLog(`Processing parameters via background thread...`, "info");
-
-                setTimeout(() => {
-                    mutateWorkspaceGlobalSystemState("executing");
-                    appendTerminalDiagnosticLog("[HTTP RESPONSE 200 OK] -> Language pipeline resolved execution.", "info");
-                    
-                    let simulatedActionMessageResponse = uiLocalizationEngine[currentSelectedLocaleCode]?.response || uiLocalizationEngine["en-US"].response;
-                    
-                    injectChatMessageBubbleNode(simulatedActionMessageResponse, "system");
-                    executeAITextToSpeechSynthesis(simulatedActionMessageResponse, currentSelectedLocaleCode);
-                    
-                    setTimeout(() => { mutateWorkspaceGlobalSystemState("idle"); }, 1000);
-                }, 1200); 
-            }
-
-            function escapeHtmlMarkupContentEncodingString(rawStringData) {
-                return rawStringData.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            }
-
-            function injectChatMessageBubbleNode(renderedStringMessageText, targetedBubbleOriginClassificationType) {
-                const dynamicRenderedBubbleWrapperNode = document.createElement("div");
-                dynamicRenderedBubbleWrapperNode.className = `chat-bubble-node ${targetedBubbleOriginClassificationType}-bubble`;
+                const initials = authorType === "system" ? "AI" : "UR";
+                const timeStr = new Date().toTimeString().split(' ')[0];
                 
-                const calculatedSystemFormattedCurrentTimeString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                const computedAvatarLabelTextDisplayString = targetedBubbleOriginClassificationType === "user" ? "US" : "AI";
-                const computedMetaRowSubTextDisplayString = targetedBubbleOriginClassificationType === "user" ? `USER // ${calculatedSystemFormattedCurrentTimeString}` : `SYSTEM // ${calculatedSystemFormattedCurrentTimeString}`;
+                let imageGridHtml = "";
+                if (embeddedImagesArray.length > 0) {
+                    imageGridHtml = `<div class="inline-image-grid-node">`;
+                    embeddedImagesArray.forEach((imgSrc, idx) => {
+                        imageGridHtml += `
+                            <div class="inline-image-card" data-idx="${idx}">
+                                <img src="${imgSrc}" alt="Embedded Image Node">
+                                <div class="image-overlay-lbl">ANALYTICS_IMAGE_0${idx+1}.PNG</div>
+                            </div>
+                        `;
+                    });
+                    imageGridHtml += `</div>`;
+                }
 
-                dynamicRenderedBubbleWrapperNode.innerHTML = `
-                    <div class="avatar-frame">${computedAvatarLabelTextDisplayString}</div>
-                    <div class="bubble-content-block">
-                        <div class="bubble-msg-wrapper">${escapeHtmlMarkupContentEncodingString(renderedStringMessageText)}</div>
-                        <span class="bubble-meta-timestamp">${computedMetaRowSubTextDisplayString}</span>
+                bubbleCard.innerHTML = `
+                    <div class="avatar-circle-icon">${initials}</div>
+                    <div class="bubble-inner-content">
+                        <div class="bubble-text-block">${messageText}</div>
+                        ${imageGridHtml}
+                        <span class="msg-timestamp-log">${authorType.toUpperCase()} // ${timeStr}</span>
                     </div>
                 `;
 
-                dynamicChatStreamPanelViewport.appendChild(dynamicRenderedBubbleWrapperNode);
-                dynamicChatStreamPanelViewport.scrollTop = dynamicChatStreamPanelViewport.scrollHeight;
+                // Set up lightbox triggers for freshly appended inline custom image nodes
+                bubbleCard.querySelectorAll(".inline-image-card").forEach(card => {
+                    card.addEventListener("click", () => {
+                        const targetImgSrc = card.querySelector("img").src;
+                        launchLightboxPreviewInstance(targetImgSrc, "Dynamic Inline Node Inspection Layer");
+                    });
+                });
+
+                chatMessageStreamViewport.appendChild(bubbleCard);
+                chatMessageStreamViewport.scrollTop = chatMessageStreamViewport.scrollHeight;
             }
 
-            function appendTerminalDiagnosticLog(rawLogMessageTextContentTextString, severityLevelClassStyleString = "info") {
-                const calculatedSystemFormattedCurrentTimeString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                const structuralSpanLineWrapper = document.createElement("span");
-                structuralSpanLineWrapper.className = `log-${severityLevelClassStyleString}`;
-                structuralSpanLineWrapper.textContent = `\n[${calculatedSystemFormattedCurrentTimeString}] [${severityLevelClassStyleString.toUpperCase()}] ${rawLogMessageTextContentTextString}`;
+            // Mock Intelligent Automation Processing Engine
+            function simulateVisionEnginePipelineResponse(hasUserImages = false) {
+                setTimeout(() => {
+                    // Responses dynamically pull sample visual artwork to demonstrate rich picture capabilities
+                    const outputMockText = hasUserImages 
+                        ? "Multimodal array data analysis complete. Core neural weights detect layered structures, abstract gradient curves, and high-frequency pixel variations matching systemic design profiles."
+                        : "Synthetic render matrices generated across cluster pipelines successfully. Review the inline graphical breakdowns below.";
+                    
+                    // Mock generated rich imagery responses from Unsplash
+                    const mockGeneratedGraphics = hasUserImages ? [] : [
+                        "https://images.unsplash.com/photo-1614741118887-7a4ee193a5fa?auto=format&fit=crop&w=600&q=80",
+                        "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?auto=format&fit=crop&w=600&q=80"
+                    ];
+
+                    commitMessageToFeedStream(outputMockText, "system", mockGeneratedGraphics);
+                }, 1500);
+            }
+
+            // Core Execution Process Hook for User Actions
+            function handleUserPayloadSubmission() {
+                const rawText = chatSystemInputFieldNode.value.trim();
+                if (!rawText && volatileImageUploadBin.length === 0) return;
+
+                // Map attached object file objects into runtime local strings for viewport injection
+                const processStringsArray = volatileImageUploadBin.map(file => URL.createObjectURL(file));
+                const userHadImages = processStringsArray.length > 0;
+
+                commitMessageToFeedStream(rawText || "Processing attached image elements...", "user", processStringsArray);
                 
-                debugDiagnosticTerminalConsole.appendChild(structuralSpanLineWrapper);
-                debugDiagnosticTerminalConsole.scrollTop = debugDiagnosticTerminalConsole.scrollHeight;
+                // Clear state caches
+                chatSystemInputFieldNode.value = "";
+                volatileImageUploadBin = [];
+                synchronizeAttachmentPreviewsBar();
+
+                simulateVisionEnginePipelineResponse(userHadImages);
             }
 
-            function mutateWorkspaceGlobalSystemState(targetEngineContextStateAttributeValue) {
-                appRootContainer.setAttribute("data-state", targetEngineContextStateAttributeValue);
-                statusLabelNode.textContent = targetEngineContextStateAttributeValue;
-            }
+            dispatchQueryActionKey.addEventListener("click", handleUserPayloadSubmission);
+            chatSystemInputFieldNode.addEventListener("keydown", (e) => {
+                if (e.key === "Enter") handleUserPayloadSubmission();
+            });
 
-            if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
-                speechSynthesis.onvoiceschanged = () => { appendTerminalDiagnosticLog("System synthesis channels updated.", "info"); };
-            }
-
-            // Initial execution on boot to guarantee perfect alignment
-            synchronizedUiLanguageLayout(pipelineLanguageSelector.value);
+            // Bind Prompt Preset Suggestions Deck
+            document.querySelectorAll(".suggestion-chip-btn").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const targetedPrompt = btn.getAttribute("data-prompt");
+                    chatSystemInputFieldNode.value = targetedPrompt;
+                    handleUserPayloadSubmission();
+                });
+            });
         });
     </script>
 </body>
