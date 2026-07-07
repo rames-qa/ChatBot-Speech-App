@@ -2,7 +2,7 @@
 
 A dynamic, multilingual AI chat companion designed to seamlessly bridge human speech and text inputs. It instantly translates, displays, and speaks back responses in your chosen language—fully synchronized for both mobile and desktop screens.
 
-Key Capabilities
+***Key Capabilities***
 
 Dual-Input Modality (Voice & Text): Integrates native browser speech recognition engines to process live vocal input on the fly, alongside a traditional, clean text-command console.
 
