@@ -33,8 +33,6 @@
             --state-processing-glow: rgba(245, 158, 11, 0.12);
             --state-executing: #10b981;
             --state-executing-glow: rgba(16, 185, 129, 0.12);
-            --state-busy: #8b5cf6;
-            --state-busy-glow: rgba(139, 92, 246, 0.18);
 
             --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
@@ -77,7 +75,7 @@
             border: 1px solid var(--panel-border);
             border-radius: 16px;
             width: 100%;
-            max-width: 1100px; /* Expanded out to gracefully fit split view structures on widescreen */
+            max-width: 1100px;
             box-shadow: var(--shadow-hub);
             overflow: hidden;
             display: flex;
@@ -122,6 +120,7 @@
             font-size: 0.8rem;
             color: var(--text-secondary);
             margin-top: 2px;
+            transition: color 0.2s;
         }
 
         .language-orchestrator-tray {
@@ -175,7 +174,7 @@
         /* Hybrid Workspace Data View Splitter Container Matrix */
         .console-runtime-split-body {
             display: grid;
-            grid-template-columns: 1fr 340px; /* Dual column design pattern by default on desktop view */
+            grid-template-columns: 1fr 340px;
             background-color: rgba(0,0,0,0.15);
             min-height: 400px;
         }
@@ -420,7 +419,6 @@
                 max-width: 60%;
             }
 
-            /* Shift layout engine from side-by-side split grid into layered stack formatting block */
             .console-runtime-split-body {
                 grid-template-columns: 1fr;
             }
@@ -441,18 +439,14 @@
             }
 
             .terminal-output-viewport { max-height: 120px; }
-
             .interactive-dock-panel { padding: 14px; }
-            
             .input-composite-group { padding: 4px 4px 4px 12px; border-radius: 10px; }
-
             .text-control-field { font-size: 0.85rem; height: 42px; }
-
             .dock-trigger-action-btn { width: 42px; height: 42px; }
         }
 
         @media (max-width: 480px) {
-            .header-meta p { display: none; } /* Drop minor descriptive clutter on small mobile screen heights */
+            .header-meta p { display: none; }
             .telemetry-lbl-node { font-size: 0.65rem; }
         }
     </style>
@@ -461,11 +455,10 @@
 
     <div class="console-workspace-card" id="globalWorkspaceAppNode" data-state="idle">
         
-        <!-- Header Controls Layout -->
         <header class="console-header-block">
             <div class="header-meta">
-                <h1>Cognitive Interface System <span>v2.5</span></h1>
-                <p>Unified multimodal conversational pipeline controller engine.</p>
+                <h1 id="uiMainTitle">Cognitive Interface System <span>v2.5</span></h1>
+                <p id="uiSubTitle">Unified multimodal conversational pipeline controller engine.</p>
             </div>
 
             <div class="language-orchestrator-tray">
@@ -490,22 +483,20 @@
                     </optgroup>
                 </select>
                 
-                <div class="telemetry-badge-container" aria-live="polite" title="Current Engine Loop State Matrix Status">
+                <div class="telemetry-badge-container" aria-live="polite">
                     <div class="telemetry-pulse-dot"></div>
                     <span class="telemetry-lbl-node" id="telemetryStatusLabel">Ready</span>
                 </div>
             </div>
         </header>
 
-        <!-- Runtime Adaptive Split Body Panel Container -->
         <main class="console-runtime-split-body">
             
-            <!-- Left Side Conversational Feed Panel Grid -->
             <section class="conversation-stream-panel" id="chatMessageStreamViewport" aria-label="Conversation History Logs">
                 <div class="chat-bubble-node system-bubble">
                     <div class="avatar-frame">AI</div>
                     <div class="bubble-content-block">
-                        <div class="bubble-msg-wrapper">
+                        <div class="bubble-msg-wrapper" id="uiWelcomeMessage">
                             Core operational framework context initialized safely. Standing by for text queries or automated audio voice input commands.
                         </div>
                         <span class="bubble-meta-timestamp">SYSTEM // READY</span>
@@ -513,10 +504,9 @@
                 </div>
             </section>
 
-            <!-- Right Side Live Telemetry Sidebar Terminal Output Grid -->
             <section class="diagnostic-sidebar-panel">
                 <div class="terminal-header-title">
-                    <span>System IO Logs</span>
+                    <span id="uiTerminalTitle">System IO Logs</span>
                     <span style="color: var(--text-muted); font-size: 0.65rem;">IO://OK</span>
                 </div>
                 <div class="terminal-output-viewport" id="diagnosticTerminalOutputContainer">Workspace pipeline online. Initializing responsive media client interface hooks...</div>
@@ -524,10 +514,9 @@
 
         </main>
 
-        <!-- Dynamic Control Dock Tray Frame -->
         <footer class="interactive-dock-panel">
             <div class="input-composite-group">
-                <button class="dock-trigger-action-btn audio-mic-btn" id="audioTranscriptionTriggerKey" title="Toggle Speech Capture Interface Frame Buffer Node">
+                <button class="dock-trigger-action-btn audio-mic-btn" id="audioTranscriptionTriggerKey" title="Toggle Speech Capture">
                     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/>
                     </svg>
@@ -535,7 +524,7 @@
 
                 <input type="text" class="text-control-field" id="textConsoleFieldInputField" placeholder="Type query or trigger audio stream input...">
                 
-                <button class="dock-trigger-action-btn text-dispatch-submit-btn" id="manualTextPipelineSubmitKey" title="Commit Input Query Event Core Pipeline Execution">
+                <button class="dock-trigger-action-btn text-dispatch-submit-btn" id="manualTextPipelineSubmitKey" title="Commit Input Query">
                     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
                     </svg>
@@ -544,7 +533,6 @@
         </footer>
     </div>
 
-    <!-- Core Process Automation Business Engine Execution Script Logic Layer Module -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const appRootContainer = document.getElementById("globalWorkspaceAppNode");
@@ -556,26 +544,116 @@
             const debugDiagnosticTerminalConsole = document.getElementById("diagnosticTerminalOutputContainer");
             const pipelineLanguageSelector = document.getElementById("pipelineLanguageSelector");
 
+            // UI Elements for Live Dynamic Translations
+            const uiMainTitle = document.getElementById("uiMainTitle");
+            const uiSubTitle = document.getElementById("uiSubTitle");
+            const uiWelcomeMessage = document.getElementById("uiWelcomeMessage");
+            const uiTerminalTitle = document.getElementById("uiTerminalTitle");
+
             const BrowserNativeSpeechEngineLink = window.SpeechRecognition || window.webkitSpeechRecognition;
             let activelyListeningSpeechState = false;
             let speechOperationalMatrixInstance = null;
 
-            const localizedMockDatabase = {
-                "en-US": "Processed text command successfully. Orchestration event execution sequence launched across production clusters.",
-                "es-ES": "Comando de texto procesado con éxito. Secuencia de ejecución iniciada.",
-                "fr-FR": "Commande textuelle traitée avec succès. Séquence d'exécution lancée.",
-                "de-DE": "Textbefehl erfolgreich verarbeitet. Ausführungssequenz gestartet.",
-                "zh-CN": "文本命令处理成功。生成编排事件链条。",
-                "ar-SA": "تم معالجة أمر النص بنجاح. تم إطلاق تسلسل التنفيذ البرمجي.",
-                "hi-IN": "टेक्स्ट कमांड को सफलतापूर्वक संसाधित किया गया। क्लस्टर निष्पादन अनुक्रम शुरू हो गया है।",
-                "ta-IN": "உரை கட்டளை வெற்றிகரமாக செயலாக்கப்பட்டது. உற்பத்தி கிளஸ்டர்களில் நிகழ்வு வரிசை தொடங்கப்பட்டது.",
-                "te-IN": "టెక్స్ట్ కమాండ్ విజయవంతంగా ప్రాసెస్ చేయబడింది. ఎగ్జిక్యూషన్ సీక్వెన్స్ ప్రారంభించబడింది.",
-                "kn-IN": "ಪಠ್ಯ ಆಜ್ಞೆಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಪ್ರಕ್ರಿಯೆಗೊಳಿಸಲಾಗಿದೆ. ಕ್ಲಸ್ಟರ್ ಎಕ್ಸಿಕ್ಯೂಶನ್ ಸರಣಿ ಪ್ರಾರಂಭವಾಗಿದೆ.",
-                "ml-IN": "ടെക്സ്റ്റ് കമാൻഡ് വിജയകരമായി പ്രോസസ്സ് ചെയ്തു. എക്സിക്യൂഷൻ സീക്വൻസ് ആരംഭിച്ചു.",
-                "bn-IN": "টেক্সট কমান্ড সফলভাবে প্রক্রিয়া সম্পন্ন হয়েছে। এক্সিকিউশন সিকোয়েন্স শুরু করা হয়েছে।",
-                "mr-IN": "मजकूर कमांड यशस्वीरित्या प्रक्रिया केली. एक्झिक्युशन सीक्वेन्स सुरू झाला.",
-                "gu-IN": "ટેક્સ્ટ કમાન્ડ સફળતાપૂર્વક પ્રક્રિયા કરવામાં આવી છે. એક્ઝિક્યુશન સિક્વન્સ શરૂ થઈ ગઈ છે."
+            // Comprehensive Dynamic UI Localization Engine Dictionary
+            const uiLocalizationEngine = {
+                "en-US": {
+                    title: "Cognitive Interface System", subtitle: "Unified multimodal conversational pipeline controller engine.",
+                    welcome: "Core operational framework context initialized safely. Standing by for text queries or automated audio voice input commands.",
+                    terminal: "System IO Logs", placeholder: "Type query or trigger audio stream input...",
+                    response: "Processed text command successfully. Orchestration event execution sequence launched across production clusters."
+                },
+                "es-ES": {
+                    title: "Sistema de Interfaz Cognitiva", subtitle: "Motor de controlador de canal de conversación multimodal unificado.",
+                    welcome: "Contexto del marco operativo central inicializado de forma segura. En espera de comandos de voz o texto.",
+                    terminal: "Registros de E/S del sistema", placeholder: "Escriba una consulta o active el flujo de audio...",
+                    response: "Comando de texto procesado con éxito. Secuencia de ejecución iniciada."
+                },
+                "fr-FR": {
+                    title: "Système d'Interface Cognitive", subtitle: "Moteur de contrôleur de pipeline conversationnel multimodal unifié.",
+                    welcome: "Contexte du cadre opérationnel central initialisé en toute sécurité. En attente de requêtes textuelles ou vocales.",
+                    terminal: "Journaux d'E/S du système", placeholder: "Tapez votre requête ou lancez le flux audio...",
+                    response: "Commande textuelle traitée avec succès. Séquence d'exécution lancée."
+                },
+                "de-DE": {
+                    title: "Kognitives Schnittstellensystem", subtitle: "Einheitliche multimodale Konversations-Pipeline-Controller-Engine.",
+                    welcome: "Kernbetriebsrahmen-Kontext sicher initialisiert. Bereit für Text- oder Audio-Befehle.",
+                    terminal: "System-E/A-Protokolle", placeholder: "Abfrage eingeben oder Audio-Stream starten...",
+                    response: "Textbefehl erfolgreich verarbeitet. Ausführungssequenz gestartet."
+                },
+                "zh-CN": {
+                    title: "认知接口系统", subtitle: "统一的多模态对话管道控制引擎。",
+                    welcome: "核心运行框架上下文安全初始化。正在等待文本查询或自动音频语音输入命令。",
+                    terminal: "系统输入/输出日志", placeholder: "输入查询或触发音频流...",
+                    response: "文本命令处理成功。生成编排事件链条。"
+                },
+                "ar-SA": {
+                    title: "نظام الواجهة الإدراكية", subtitle: "محرك تحكم موحد لتدفق المحادثات متعددة الوسائط.",
+                    welcome: "تم تهيئة سياق الإطار التشغيلي الأساسي بأمان. في انتظار الأوامر النصية أو الصوتية.",
+                    terminal: "سجلات الإدخال والإخراج", placeholder: "اكتب استعلامًا أو نشّط دفق الصوت...",
+                    response: "تم معالجة أمر النص بنجاح. تم إطلاق تسلسل التنفيذ البرمجي."
+                },
+                "hi-IN": {
+                    title: "संज्ञानात्मक इंटरफ़ेस प्रणाली", subtitle: "एकीकृत मल्टीमॉडल संवादात्मक पाइपलाइन नियंत्रक इंजन।",
+                    welcome: "कोर परिचालन ढांचा सुरक्षित रूप से प्रारंभ हुआ। टेक्स्ट या ऑडियो वॉयस इनपुट कमांड की प्रतीक्षा है।",
+                    terminal: "सिस्टम आईओ लॉग", placeholder: "क्वेरी टाइप करें या ऑडियो स्ट्रीम शुरू करें...",
+                    response: "टेक्स्ट कमांड को सफलतापूर्वक संसाधित किया गया। क्लस्टर निष्पादन अनुक्रम शुरू हो गया है।"
+                },
+                "ta-IN": {
+                    title: "அறிவாற்றல் இடைமுக அமைப்பு", subtitle: "ஒருங்கிணைந்த மல்டிமாடல் உரையாடல் பைப்லைன் கட்டுப்பாட்டு எஞ்சின்.",
+                    welcome: "முக்கிய செயல்பாட்டுக் கட்டமைப்பு பாதுகாப்பாகத் தொடங்கப்பட்டது. உரை அல்லது ஆடியோ உள்ளீட்டுக் கட்டளைகளுக்காகக் காத்திருக்கிறது.",
+                    terminal: "கணினி உள்ளீடு/வெளியீடு பதிவுகள்", placeholder: "கேள்வியைத் தட்டச்சு செய்யவும் அல்லது ஆடியோவை இயக்கவும்...",
+                    response: "உரை கட்டளை வெற்றிகரமாக செயலாக்கப்பட்டது. உற்பத்தி கிளஸ்டர்களில் நிகழ்வு வரிசை தொடங்கப்பட்டது."
+                },
+                "te-IN": {
+                    title: "కాగ్నిటివ్ ఇంటర్‌ఫేస్ సిస్టమ్", subtitle: "యూనిఫైడ్ మల్టీమోడల్ సంభాషణ పైప్‌లైన్ కంట్రోలర్ ఇంజిన్.",
+                    welcome: "కోర్ కార్యాచరణ ఫ్రేమ్‌వర్క్ సురక్షితంగా ప్రారంభించబడింది. టెక్స్ట్ లేదా ఆడియో వాయిస్ ఇన్‌పుట్ కోసం వేచి ఉంది.",
+                    terminal: "సిస్టమ్ ఐఓ లాగ్‌లు", placeholder: "ప్రశ్నను టైప్ చేయండి లేదా ఆడియోను ప్రారంభించండి...",
+                    response: "టెక్స్ట్ కమాండ్ విజయవంతంగా ప్రాసెస్ చేయబడింది. ఎగ్జిక్యూషన్ సీక్వెన్స్ ప్రారంభించబడింది."
+                },
+                "kn-IN": {
+                    title: "ಕಾಗ್ನಿಟಿವ್ ಇಂಟರ್ಫೇಸ್ ಸಿಸ್ಟಮ್", subtitle: "ಏಕೀಕೃತ ಮಲ್ಟಿಮೋಡಲ್ ಸಂಭಾಷಣೆ ಪೈಪ್‌ಲೈನ್ ನಿಯಂತ್ರಕ ಎಂಜಿನ್.",
+                    welcome: "ಕೋರ್ ಆಪರೇಷನಲ್ ಫ್ರೇಮ್‌ವರ್ಕ್ ಯಶಸ್ವಿಯಾಗಿ ಚಾಲನೆಗೊಂಡಿದೆ. ಪಠ್ಯ ಅಥವಾ ಆಡಿಯೊ ಧ್ವನಿ ಇನ್‌ಪುಟ್‌ಗಾಗಿ ಕಾಯಲಾಗುತ್ತಿದೆ.",
+                    terminal: "ಸಿಸ್ಟಮ್ ಐಒ ಲಾಗ್‌ಗಳು", placeholder: "ಪ್ರಶ್ನೆಯನ್ನು ಟೈಪ್ ಮಾಡಿ ಅಥವಾ ಆಡಿಯೊ ಸ್ಟ್ರೀಮ್ ಮಾಡಿ...",
+                    response: "ಪಠ್ಯ ಆಜ್ಞೆಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಪ್ರಕ್ರಿಯೆಗೊಳಿಸಲಾಗಿದೆ. ಕ್ಲಸ್ಟರ್ ಎಕ್ಸಿಕ್ಯೂಶನ್ ಸರಣಿ ಪ್ರಾರಂಭವಾಗಿದೆ."
+                },
+                "ml-IN": {
+                    title: "കോഗ്നിറ്റീവ് ഇന്റർഫേസ് സിസ്റ്റം", subtitle: "ഏകീകൃത മൾട്ടിമോഡൽ സംഭാഷണ പൈപ്പ്‌ലൈൻ കൺട്രോളർ എഞ്ചിൻ.",
+                    welcome: "കോർ অপারেশন ഫ്രെയിംവർക്ക് സുരക്ഷിതമായി ആരംഭിച്ചു. ടെക്സ്റ്റ് അല്ലെങ്കിൽ ഓഡിയോ വോയ്സ് കമാൻഡുകൾക്കായി കാത്തിരിക്കുന്നു.",
+                    terminal: "സിസ്റ്റം ഐഒ ലോഗുകൾ", placeholder: "ടൈപ്പ് ചെയ്യുക അല്ലെങ്കിൽ ഓഡിയോ സ്ട്രീം ചെയ്യുക...",
+                    response: "ടെക്സ്റ്റ് കമാൻഡ് വിജയകരമായി പ്രോസസ്സ് ചെയ്തു. എക്സിക്യൂഷൻ സീക്വൻസ് ആരംഭിച്ചു."
+                },
+                "bn-IN": {
+                    title: "কগনিটিভ ইন্টারফেস সিস্টেম", subtitle: "ইউনিফাইড মাল্টিমোডাল কথোপকথন পাইপলাইন কন্ট্রোলার ইঞ্জিন।",
+                    welcome: "কোর অপারেশনাল ফ্রেমওয়ার্ক নিরাপদে শুরু করা হয়েছে। টেক্সট বা অডিও ভয়েস ইনपुटের জন্য অপেক্ষা করা হচ্ছে।",
+                    terminal: "সিস্টেম আইও লগ", placeholder: "টাইপ করুন বা অডিও স্ট্রিম চালু করুন...",
+                    response: "টেক্সট কমান্ড সফলভাবে প্রক্রিয়া সম্পন্ন হয়েছে। এক্সিকিউশন সিকোয়েন্স শুরু করা হয়েছে।"
+                },
+                "mr-IN": {
+                    title: "कॉग्निटिव्ह इंटरफेस सिस्टम", subtitle: "युनिफाइड मल्टीमॉडल संभाषण पाईपलाईन कंट्रोलर इंजिन.",
+                    welcome: "कोअर ऑपरेशनल फ्रेमवर्क सुरक्षितपणे सुरू झाले. मजकूर किंवा ऑडिओ व्हॉइस इनपुट कमांडची प्रतीक्षा आहे.",
+                    terminal: "सिस्टम आयओ लॉग", placeholder: "टाईप करा किंवा ऑडिओ स्ट्रीम सुरू करा...",
+                    response: "मजकूर कमांड यशस्वीरित्या प्रक्रिया केली. एक्झिक्युशन सीक्वेन्स सुरू झाला."
+                },
+                "gu-IN": {
+                    title: "કોગ્નિટિવ ઇન્ટરફેસ સિસ્ટમ", subtitle: "યુનિફાઇડ મલ્ટીમોડલ કન્વર્સેશનલ પાઇપલાઇન કંટ્રોલર એન્જિન.",
+                    welcome: "કોર ઓપરેશનલ ફ્રેમવર્ક સુરક્ષિત રીતે શરૂ થયું. ટેક્સ્ટ અથવા ઓડિયો વૉઇસ ઇનપુટ કમાન્ડની રાહ જોવાઈ રહી છે.",
+                    terminal: "સિસ્ટમ આઇઓ લોગ", placeholder: "ટાઇપ કરો અથવા ઓડિયો સ્ટ્રીમ શરૂ કરો...",
+                    response: "ટેક્સ્ટ કમાન્ડ સફળતાપૂર્વક પ્રક્રિયા કરવામાં આવી છે. એક્ઝિક્યુશન સિક્વન્સ શરૂ થઈ ગઈ છે।"
+                }
             };
+
+            // Dynamic UI Core Synchronizer Engine
+            function synchronizedUiLanguageLayout(targetLangCode) {
+                const dataset = uiLocalizationEngine[targetLangCode] || uiLocalizationEngine["en-US"];
+                
+                uiMainTitle.childNodes[0].textContent = dataset.title + " ";
+                uiSubTitle.textContent = dataset.subtitle;
+                uiWelcomeMessage.textContent = dataset.welcome;
+                uiTerminalTitle.textContent = dataset.terminal;
+                inlineTextInputField.placeholder = dataset.placeholder;
+
+                appendTerminalDiagnosticLog(`UI Layout translated into runtime locale context: [${targetLangCode}]`, "info");
+            }
 
             if (!BrowserNativeSpeechEngineLink) {
                 appendTerminalDiagnosticLog("Device environment native SpeechRecognition missing. Audio mic locked down.", "error");
@@ -589,7 +667,7 @@
 
                 speechOperationalMatrixInstance.onstart = () => {
                     mutateWorkspaceGlobalSystemState("listening");
-                    appendTerminalDiagnosticLog(`Audio stream active: [${pipelineLanguageSelector.value}].`, "info");
+                    appendTerminalDiagnosticLog(`Audio capturing pipeline active: [${pipelineLanguageSelector.value}].`, "info");
                 };
 
                 speechOperationalMatrixInstance.onerror = (exceptionEvent) => {
@@ -602,7 +680,7 @@
 
                 speechOperationalMatrixInstance.onresult = (streamResultDataPackage) => {
                     const compiledRawStringTextOutput = streamResultDataPackage.results[0][0].transcript;
-                    appendTerminalDiagnosticLog(`Resolved string audio stream payload: "${compiledRawStringTextOutput}"`, "info");
+                    appendTerminalDiagnosticLog(`Resolved string audio payload: "${compiledRawStringTextOutput}"`, "info");
                     injectChatMessageBubbleNode(compiledRawStringTextOutput, "user");
                     dispatchUpstreamTransactionPayload(compiledRawStringTextOutput);
                 };
@@ -627,8 +705,10 @@
                 }
             });
 
+            // Fire translation synchronization engine upon select element adjustments
             pipelineLanguageSelector.addEventListener("change", (e) => {
-                appendTerminalDiagnosticLog(`Language matrix target switched -> ${e.target.value}`, "info");
+                const targetLang = e.target.value;
+                synchronizedUiLanguageLayout(targetLang);
                 if (activelyListeningSpeechState) speechOperationalMatrixInstance.stop();
             });
 
@@ -662,7 +742,6 @@
                     const appropriateMatchedVoiceNode = window.speechSynthesis.getVoices().find(v => v.lang.includes(targetLocaleISO));
                     if (appropriateMatchedVoiceNode) syntheticVoiceEnvelope.voice = appropriateMatchedVoiceNode;
                     
-                    syntheticVoiceEnvelope.onstart = () => appendTerminalDiagnosticLog(`TTS Speech active over system audio channel layer.`, "info");
                     window.speechSynthesis.speak(syntheticVoiceEnvelope);
                 }
             }
@@ -671,17 +750,14 @@
                 mutateWorkspaceGlobalSystemState("processing");
                 const currentSelectedLocaleCode = pipelineLanguageSelector.value;
                 
-                appendTerminalDiagnosticLog(`Pushing parameters to background parsing thread...`, "info");
+                appendTerminalDiagnosticLog(`Processing parameters via background thread...`, "info");
 
                 setTimeout(() => {
                     mutateWorkspaceGlobalSystemState("executing");
-                    appendTerminalDiagnosticLog("[HTTP RESPONSE 200 OK] -> Pipeline resolved execution stream layout bounds.", "info");
+                    appendTerminalDiagnosticLog("[HTTP RESPONSE 200 OK] -> Language pipeline resolved execution.", "info");
                     
-                    let simulatedActionMessageResponse = localizedMockDatabase[currentSelectedLocaleCode] || localizedMockDatabase["en-US"];
-                    if (rawCommandStringText.toLowerCase().includes("status") || rawCommandStringText.toLowerCase().includes("check")) {
-                        simulatedActionMessageResponse = "Telemetry core check complete: Matrix node clusters active. Systems operational.";
-                    }
-
+                    let simulatedActionMessageResponse = uiLocalizationEngine[currentSelectedLocaleCode]?.response || uiLocalizationEngine["en-US"].response;
+                    
                     injectChatMessageBubbleNode(simulatedActionMessageResponse, "system");
                     executeAITextToSpeechSynthesis(simulatedActionMessageResponse, currentSelectedLocaleCode);
                     
@@ -731,6 +807,9 @@
             if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
                 speechSynthesis.onvoiceschanged = () => { appendTerminalDiagnosticLog("System synthesis channels updated.", "info"); };
             }
+
+            // Initial execution on boot to guarantee perfect alignment
+            synchronizedUiLanguageLayout(pipelineLanguageSelector.value);
         });
     </script>
 </body>
