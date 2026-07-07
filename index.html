@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Enterprise Cognitive Operations Console</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,15 +26,15 @@
 
             /* State-Engine Functional Semantic Colors */
             --state-idle: #3b82f6;
-            --state-idle-glow: rgba(59, 130, 246, 0.15);
+            --state-idle-glow: rgba(59, 130, 246, 0.12);
             --state-listening: #ef4444;
-            --state-listening-glow: rgba(239, 68, 68, 0.2);
+            --state-listening-glow: rgba(239, 68, 68, 0.18);
             --state-processing: #f59e0b;
-            --state-processing-glow: rgba(245, 158, 11, 0.15);
+            --state-processing-glow: rgba(245, 158, 11, 0.12);
             --state-executing: #10b981;
-            --state-executing-glow: rgba(16, 185, 129, 0.15);
+            --state-executing-glow: rgba(16, 185, 129, 0.12);
             --state-busy: #8b5cf6;
-            --state-busy-glow: rgba(139, 92, 246, 0.2);
+            --state-busy-glow: rgba(139, 92, 246, 0.18);
 
             --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
@@ -47,6 +47,7 @@
             padding: 0;
             box-sizing: border-box;
             outline: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -69,39 +70,41 @@
         ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
 
         /* ==========================================================================
-           2. COGNITIVE HUB CARD STRUCTURAL GRID MESH
+           2. RESPONSIVE GRID LAYOUT AND ENGINE BOX STRUCTURAL MATRIX
            ========================================================================== */
         .console-workspace-card {
             background-color: var(--panel-surface);
             border: 1px solid var(--panel-border);
             border-radius: 16px;
             width: 100%;
-            max-width: 750px;
+            max-width: 1100px; /* Expanded out to gracefully fit split view structures on widescreen */
             box-shadow: var(--shadow-hub);
             overflow: hidden;
             display: flex;
             flex-direction: column;
             position: relative;
+            transition: border-color 0.3s var(--easing-smooth);
         }
 
-        /* Upper Brand Control Row */
+        /* Top Brand Configuration Panel Row */
         .console-header-block {
-            padding: 24px 32px;
+            padding: 20px 24px;
             border-bottom: 1px solid var(--panel-border);
             display: flex;
             justify-content: space-between;
             align-items: center;
             background: linear-gradient(to bottom, rgba(255,255,255,0.01), transparent);
+            gap: 16px;
         }
 
         .header-meta h1 {
-            font-size: 1.25rem;
+            font-size: 1.15rem;
             font-weight: 700;
             color: var(--text-primary);
             letter-spacing: -0.02em;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .header-meta h1 span {
@@ -113,25 +116,44 @@
             border: 1px solid var(--panel-border);
             color: var(--text-secondary);
             border-radius: 4px;
-            vertical-align: middle;
         }
 
         .header-meta p {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--text-secondary);
-            margin-top: 4px;
+            margin-top: 2px;
         }
 
-        /* Dynamic Engine Telemetry State Monitor Component */
+        .language-orchestrator-tray {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .dropdown-select-control {
+            background-color: rgba(6, 9, 19, 0.6);
+            border: 1px solid var(--panel-border);
+            color: var(--text-primary);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: var(--font-sans);
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s var(--easing-smooth);
+        }
+
+        .dropdown-select-control:hover { border-color: var(--text-secondary); }
+
+        /* Dynamic Telemetry Status Badge */
         .telemetry-badge-container {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             padding: 8px 14px;
             background: rgba(0, 0, 0, 0.2);
             border: 1px solid var(--panel-border);
             border-radius: 30px;
-            transition: all 0.3s var(--easing-smooth);
         }
 
         .telemetry-pulse-dot {
@@ -139,68 +161,47 @@
             height: 8px;
             border-radius: 50%;
             background-color: var(--text-secondary);
-            position: relative;
-            transition: background-color 0.3s linear;
         }
 
         .telemetry-lbl-node {
             font-family: var(--font-mono);
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.06em;
             color: var(--text-secondary);
-            transition: color 0.3s linear;
         }
 
-        /* State Mapping Logic Extensions */
-        .console-workspace-card[data-state="idle"] .telemetry-badge-container { background: var(--state-idle-glow); border-color: rgba(59, 130, 246, 0.3); }
-        .console-workspace-card[data-state="idle"] .telemetry-pulse-dot { background-color: var(--state-idle); }
-        .console-workspace-card[data-state="idle"] .telemetry-lbl-node { color: var(--state-idle); }
-
-        .console-workspace-card[data-state="listening"] .telemetry-badge-container { background: var(--state-listening-glow); border-color: rgba(239, 68, 68, 0.3); }
-        .console-workspace-card[data-state="listening"] .telemetry-pulse-dot { background-color: var(--state-listening); animation: telemetryFlash 1s infinite alternate; }
-        .console-workspace-card[data-state="listening"] .telemetry-lbl-node { color: var(--state-listening); }
-
-        .console-workspace-card[data-state="processing"] .telemetry-badge-container { background: var(--state-processing-glow); border-color: rgba(245, 158, 11, 0.3); }
-        .console-workspace-card[data-state="processing"] .telemetry-pulse-dot { background-color: var(--state-processing); animation: telemetryFlash 0.5s infinite alternate; }
-        .console-workspace-card[data-state="processing"] .telemetry-lbl-node { color: var(--state-processing); }
-
-        .console-workspace-card[data-state="executing"] .telemetry-badge-container { background: var(--state-executing-glow); border-color: rgba(16, 185, 129, 0.3); }
-        .console-workspace-card[data-state="executing"] .telemetry-pulse-dot { background-color: var(--state-executing); }
-        .console-workspace-card[data-state="executing"] .telemetry-lbl-node { color: var(--state-executing); }
-
-        .console-workspace-card[data-state="busy"] .telemetry-badge-container { background: var(--state-busy-glow); border-color: rgba(139, 92, 246, 0.3); }
-        .console-workspace-card[data-state="busy"] .telemetry-pulse-dot { background-color: var(--state-busy); animation: telemetryFlash 0.4s infinite alternate; }
-        .console-workspace-card[data-state="busy"] .telemetry-lbl-node { color: var(--state-busy); }
-
-        @keyframes telemetryFlash {
-            0% { opacity: 0.3; transform: scale(0.95); }
-            100% { opacity: 1; transform: scale(1.15); box-shadow: 0 0 8px currentColor; }
+        /* Hybrid Workspace Data View Splitter Container Matrix */
+        .console-runtime-split-body {
+            display: grid;
+            grid-template-columns: 1fr 340px; /* Dual column design pattern by default on desktop view */
+            background-color: rgba(0,0,0,0.15);
+            min-height: 400px;
         }
 
         /* ==========================================================================
            3. CHAT DISPLAY STREAM FEED LAYOUT
            ========================================================================== */
         .conversation-stream-panel {
-            padding: 32px;
-            height: 320px;
+            padding: 24px;
+            height: 420px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            background-color: rgba(0,0,0,0.1);
+            gap: 18px;
+            border-right: 1px solid var(--panel-border);
         }
 
         .chat-bubble-node {
             display: flex;
-            gap: 14px;
+            gap: 12px;
             max-width: 85%;
-            animation: bubbleSlideIn 0.25s var(--easing-smooth) forwards;
+            animation: bubbleSlideIn 0.2s var(--easing-smooth) forwards;
         }
 
         @keyframes bubbleSlideIn {
-            0% { opacity: 0; transform: translateY(8px); }
+            0% { opacity: 0; transform: translateY(6px); }
             100% { opacity: 1; transform: translateY(0); }
         }
 
@@ -223,16 +224,12 @@
         .chat-bubble-node.system-bubble { align-self: flex-start; }
         .chat-bubble-node.system-bubble .avatar-frame { background: rgba(16, 185, 129, 0.15); color: var(--state-executing); border: 1px solid rgba(16, 185, 129, 0.3); }
 
-        .bubble-content-block {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
+        .bubble-content-block { display: flex; flex-direction: column; gap: 4px; }
 
         .bubble-msg-wrapper {
             padding: 12px 16px;
             border-radius: 12px;
-            font-size: 0.92rem;
+            font-size: 0.9rem;
             line-height: 1.5;
         }
 
@@ -252,37 +249,77 @@
 
         .bubble-meta-timestamp {
             font-family: var(--font-mono);
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: var(--text-secondary);
         }
         .user-bubble .bubble-meta-timestamp { text-align: right; }
 
         /* ==========================================================================
-           4. COMPLEX CONTROLS INTERFACE COMPONENT TRAY
+           4. RIGHT ALIGNED DIAGNOSTIC TERMINAL LOG VIEWPORT PANEL
            ========================================================================== */
-        .interactive-dock-panel {
-            padding: 24px 32px 32px 32px;
-            border-top: 1px solid var(--panel-border);
-            background: linear-gradient(to top, rgba(255,255,255,0.01), transparent);
+        .diagnostic-sidebar-panel {
+            padding: 24px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 12px;
+            background-color: rgba(3, 6, 15, 0.3);
+        }
+
+        .terminal-header-title {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .terminal-output-viewport {
+            background-color: #03060f;
+            border: 1px solid var(--panel-border);
+            border-radius: 8px;
+            padding: 14px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            flex-grow: 1;
+            height: 100%;
+            overflow-y: auto;
+            color: #10b981;
+            white-space: pre-wrap;
+            line-height: 1.6;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.8);
+        }
+
+        .terminal-output-viewport .log-err { color: var(--state-listening); }
+        .terminal-output-viewport .log-warn { color: var(--state-processing); }
+        .terminal-output-viewport .log-info { color: #38bdf8; }
+
+        /* ==========================================================================
+           5. INTERACTIVE TRANSACTION CONTROLS TRIMS PANEL DOCK
+           ========================================================================== */
+        .interactive-dock-panel {
+            padding: 20px 24px;
+            border-top: 1px solid var(--panel-border);
+            background: linear-gradient(to top, rgba(255,255,255,0.01), transparent);
         }
 
         .input-composite-group {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
             background-color: rgba(0, 0, 0, 0.25);
             border: 1px solid var(--panel-border);
-            padding: 8px 8px 8px 20px;
+            padding: 6px 6px 6px 16px;
             border-radius: 12px;
             transition: all 0.2s var(--easing-smooth);
         }
 
         .input-composite-group:focus-within {
             border-color: var(--panel-border-focus);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
         .text-control-field {
@@ -291,15 +328,15 @@
             border: none;
             color: var(--text-primary);
             font-family: var(--font-sans);
-            font-size: 0.92rem;
+            font-size: 0.9rem;
+            height: 38px;
         }
 
         .text-control-field::placeholder { color: var(--text-muted); }
 
-        /* Unified High-Fidelity Audio Control Trigger Key */
         .dock-trigger-action-btn {
-            width: 44px;
-            height: 44px;
+            width: 40px;
+            height: 40px;
             border-radius: 8px;
             border: 1px solid transparent;
             cursor: pointer;
@@ -316,7 +353,7 @@
             color: var(--text-secondary);
         }
 
-        .audio-mic-btn:hover { background-color: var(--panel-surface-elevated); color: var(--text-primary); border-color: var(--text-secondary); }
+        .audio-mic-btn:hover { background-color: var(--panel-surface-elevated); color: var(--text-primary); }
         
         .audio-mic-btn.is-active-recording {
             background-color: var(--state-listening-glow);
@@ -327,88 +364,168 @@
 
         @keyframes activeMicPulse {
             0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-            70% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+            70% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
             100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
 
         .text-dispatch-submit-btn { background-color: var(--state-idle); color: #fff; }
-        .text-dispatch-submit-btn:hover { background-color: #1d4ed8; transform: translateY(-1px); }
-        .text-dispatch-submit-btn:active { transform: translateY(0); }
+        .text-dispatch-submit-btn:hover { background-color: #1d4ed8; }
 
-        .dock-trigger-action-btn svg { width: 18px; height: 18px; fill: currentColor; }
+        .dock-trigger-action-btn svg { width: 16px; height: 16px; fill: currentColor; }
+
+        /* Dynamic State Mapping Animations Matrix Extensions */
+        .console-workspace-card[data-state="idle"] .telemetry-badge-container { background: var(--state-idle-glow); border-color: rgba(59, 130, 246, 0.2); }
+        .console-workspace-card[data-state="idle"] .telemetry-pulse-dot { background-color: var(--state-idle); }
+        .console-workspace-card[data-state="idle"] .telemetry-lbl-node { color: var(--state-idle); }
+
+        .console-workspace-card[data-state="listening"] .telemetry-badge-container { background: var(--state-listening-glow); border-color: rgba(239, 68, 68, 0.2); }
+        .console-workspace-card[data-state="listening"] .telemetry-pulse-dot { background-color: var(--state-listening); animation: telemetryFlash 1s infinite alternate; }
+        .console-workspace-card[data-state="listening"] .telemetry-lbl-node { color: var(--state-listening); }
+
+        .console-workspace-card[data-state="processing"] .telemetry-badge-container { background: var(--state-processing-glow); border-color: rgba(245, 158, 11, 0.2); }
+        .console-workspace-card[data-state="processing"] .telemetry-pulse-dot { background-color: var(--state-processing); animation: telemetryFlash 0.5s infinite alternate; }
+        .console-workspace-card[data-state="processing"] .telemetry-lbl-node { color: var(--state-processing); }
+
+        .console-workspace-card[data-state="executing"] .telemetry-badge-container { background: var(--state-executing-glow); border-color: rgba(16, 185, 129, 0.2); }
+        .console-workspace-card[data-state="executing"] .telemetry-pulse-dot { background-color: var(--state-executing); }
+        .console-workspace-card[data-state="executing"] .telemetry-lbl-node { color: var(--state-executing); }
+
+        @keyframes telemetryFlash {
+            0% { opacity: 0.4; }
+            100% { opacity: 1; box-shadow: 0 0 6px currentColor; }
+        }
 
         /* ==========================================================================
-           5. LOW-LEVEL DIAGNOSTIC TERMINAL FIELD OUTPUT
+           6. COMPREHENSIVE RESPONSIVE DESIGN MEDIA QUERIES (MOBILE FIX MATRIX)
            ========================================================================== */
-        .diagnostic-terminal-block {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+        @media (max-width: 868px) {
+            body { padding: 12px; }
+            
+            .console-workspace-card { border-radius: 12px; }
+
+            .console-header-block {
+                padding: 16px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 14px;
+            }
+
+            .language-orchestrator-tray {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .dropdown-select-control {
+                flex-grow: 1;
+                max-width: 60%;
+            }
+
+            /* Shift layout engine from side-by-side split grid into layered stack formatting block */
+            .console-runtime-split-body {
+                grid-template-columns: 1fr;
+            }
+
+            .conversation-stream-panel {
+                height: 360px;
+                padding: 16px;
+                border-right: none;
+                border-bottom: 1px solid var(--panel-border);
+            }
+
+            .chat-bubble-node { max-width: 92%; }
+
+            .diagnostic-sidebar-panel {
+                height: 160px;
+                padding: 16px;
+                background-color: rgba(3, 6, 15, 0.5);
+            }
+
+            .terminal-output-viewport { max-height: 120px; }
+
+            .interactive-dock-panel { padding: 14px; }
+            
+            .input-composite-group { padding: 4px 4px 4px 12px; border-radius: 10px; }
+
+            .text-control-field { font-size: 0.85rem; height: 42px; }
+
+            .dock-trigger-action-btn { width: 42px; height: 42px; }
         }
 
-        .terminal-header-title {
-            font-family: var(--font-mono);
-            font-size: 0.72rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--text-muted);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        @media (max-width: 480px) {
+            .header-meta p { display: none; } /* Drop minor descriptive clutter on small mobile screen heights */
+            .telemetry-lbl-node { font-size: 0.65rem; }
         }
-
-        .terminal-output-viewport {
-            background-color: #03060f;
-            border: 1px solid var(--panel-border);
-            border-radius: 8px;
-            padding: 14px 18px;
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
-            min-height: 100px;
-            max-height: 140px;
-            overflow-y: auto;
-            color: #10b981;
-            white-space: pre-wrap;
-            line-height: 1.6;
-            box-shadow: inset 0 2px 8px rgba(0,0,0,0.8);
-        }
-
-        .terminal-output-viewport .log-err { color: var(--state-listening); }
-        .terminal-output-viewport .log-warn { color: var(--state-processing); }
-        .terminal-output-viewport .log-info { color: #38bdf8; }
     </style>
 </head>
 <body>
 
     <div class="console-workspace-card" id="globalWorkspaceAppNode" data-state="idle">
         
+        <!-- Header Controls Layout -->
         <header class="console-header-block">
             <div class="header-meta">
-                <h1>Cognitive Interface System <span>v2.4-PRO</span></h1>
+                <h1>Cognitive Interface System <span>v2.5</span></h1>
                 <p>Unified multimodal conversational pipeline controller engine.</p>
             </div>
-            
-            <div class="telemetry-badge-container" aria-live="polite" title="Current Engine Loop State Matrix Status">
-                <div class="telemetry-pulse-dot"></div>
-                <span class="telemetry-lbl-node" id="telemetryStatusLabel">Ready</span>
+
+            <div class="language-orchestrator-tray">
+                <select id="pipelineLanguageSelector" class="dropdown-select-control" title="Change Operational Pipeline Language Model Layer Context">
+                    <optgroup label="International Engines">
+                        <option value="en-US" selected>English (US)</option>
+                        <option value="es-ES">Español (Spanish)</option>
+                        <option value="fr-FR">Français (French)</option>
+                        <option value="de-DE">Deutsch (German)</option>
+                        <option value="zh-CN">Mandarin (Chinese)</option>
+                        <option value="ar-SA">العربية (Arabic)</option>
+                    </optgroup>
+                    <optgroup label="Indian Regional Engines">
+                        <option value="hi-IN">हिन्दी (Hindi)</option>
+                        <option value="ta-IN">தமிழ் (Tamil)</option>
+                        <option value="te-IN">తెలుగు (Telugu)</option>
+                        <option value="kn-IN">ಕನ್ನಡ (Kannada)</option>
+                        <option value="ml-IN">മലയാളം (Malayalam)</option>
+                        <option value="bn-IN">বাংলা (Bengali)</option>
+                        <option value="mr-IN">मराठी (Marathi)</option>
+                        <option value="gu-IN">ગુજરાતી (Gujarati)</option>
+                    </optgroup>
+                </select>
+                
+                <div class="telemetry-badge-container" aria-live="polite" title="Current Engine Loop State Matrix Status">
+                    <div class="telemetry-pulse-dot"></div>
+                    <span class="telemetry-lbl-node" id="telemetryStatusLabel">Ready</span>
+                </div>
             </div>
         </header>
 
-        <section class="conversation-stream-panel" id="chatMessageStreamViewport" aria-label="Conversation History Logs">
-            <div class="chat-bubble-node system-bubble">
-                <div class="avatar-frame">AI</div>
-                <div class="bubble-content-block">
-                    <div class="bubble-msg-wrapper">
-                        Core operational framework context initialized safely. Standing by for text queries or automated audio voice input commands.
-                    </div>
-                    <span class="bubble-meta-timestamp">SYSTEM // READY</span>
-                </div>
-            </div>
-        </section>
-
-        <footer class="interactive-dock-panel">
+        <!-- Runtime Adaptive Split Body Panel Container -->
+        <main class="console-runtime-split-body">
             
+            <!-- Left Side Conversational Feed Panel Grid -->
+            <section class="conversation-stream-panel" id="chatMessageStreamViewport" aria-label="Conversation History Logs">
+                <div class="chat-bubble-node system-bubble">
+                    <div class="avatar-frame">AI</div>
+                    <div class="bubble-content-block">
+                        <div class="bubble-msg-wrapper">
+                            Core operational framework context initialized safely. Standing by for text queries or automated audio voice input commands.
+                        </div>
+                        <span class="bubble-meta-timestamp">SYSTEM // READY</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Side Live Telemetry Sidebar Terminal Output Grid -->
+            <section class="diagnostic-sidebar-panel">
+                <div class="terminal-header-title">
+                    <span>System IO Logs</span>
+                    <span style="color: var(--text-muted); font-size: 0.65rem;">IO://OK</span>
+                </div>
+                <div class="terminal-output-viewport" id="diagnosticTerminalOutputContainer">Workspace pipeline online. Initializing responsive media client interface hooks...</div>
+            </section>
+
+        </main>
+
+        <!-- Dynamic Control Dock Tray Frame -->
+        <footer class="interactive-dock-panel">
             <div class="input-composite-group">
                 <button class="dock-trigger-action-btn audio-mic-btn" id="audioTranscriptionTriggerKey" title="Toggle Speech Capture Interface Frame Buffer Node">
                     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -416,7 +533,7 @@
                     </svg>
                 </button>
 
-                <input type="text" class="text-control-field" id="textConsoleFieldInputField" placeholder="Type administrative transaction or dispatch voice loop protocol...">
+                <input type="text" class="text-control-field" id="textConsoleFieldInputField" placeholder="Type query or trigger audio stream input...">
                 
                 <button class="dock-trigger-action-btn text-dispatch-submit-btn" id="manualTextPipelineSubmitKey" title="Commit Input Query Event Core Pipeline Execution">
                     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -424,21 +541,12 @@
                     </svg>
                 </button>
             </div>
-
-            <div class="diagnostic-terminal-block">
-                <div class="terminal-header-title">
-                    <span>System Telemetry Output Stream Logs</span>
-                    <span style="color: var(--text-muted); font-size: 0.65rem;" id="terminalTimestampCounter">IO://OK</span>
-                </div>
-                <div class="terminal-output-viewport" id="diagnosticTerminalOutputContainer">Workspace pipeline online. Initializing client interface hooks...</div>
-            </div>
-
         </footer>
     </div>
 
+    <!-- Core Process Automation Business Engine Execution Script Logic Layer Module -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            // Document Element Context DOM Extraction Hook Mappings
             const appRootContainer = document.getElementById("globalWorkspaceAppNode");
             const statusLabelNode = document.getElementById("telemetryStatusLabel");
             const speechEngineTriggerKey = document.getElementById("audioTranscriptionTriggerKey");
@@ -446,14 +554,31 @@
             const inlineTextInputField = document.getElementById("textConsoleFieldInputField");
             const dynamicChatStreamPanelViewport = document.getElementById("chatMessageStreamViewport");
             const debugDiagnosticTerminalConsole = document.getElementById("diagnosticTerminalOutputContainer");
+            const pipelineLanguageSelector = document.getElementById("pipelineLanguageSelector");
 
-            // Instantiation Core Parameters of Web Speech Integration Wrapper API Logic
             const BrowserNativeSpeechEngineLink = window.SpeechRecognition || window.webkitSpeechRecognition;
             let activelyListeningSpeechState = false;
             let speechOperationalMatrixInstance = null;
 
+            const localizedMockDatabase = {
+                "en-US": "Processed text command successfully. Orchestration event execution sequence launched across production clusters.",
+                "es-ES": "Comando de texto procesado con éxito. Secuencia de ejecución iniciada.",
+                "fr-FR": "Commande textuelle traitée avec succès. Séquence d'exécution lancée.",
+                "de-DE": "Textbefehl erfolgreich verarbeitet. Ausführungssequenz gestartet.",
+                "zh-CN": "文本命令处理成功。生成编排事件链条。",
+                "ar-SA": "تم معالجة أمر النص بنجاح. تم إطلاق تسلسل التنفيذ البرمجي.",
+                "hi-IN": "टेक्स्ट कमांड को सफलतापूर्वक संसाधित किया गया। क्लस्टर निष्पादन अनुक्रम शुरू हो गया है।",
+                "ta-IN": "உரை கட்டளை வெற்றிகரமாக செயலாக்கப்பட்டது. உற்பத்தி கிளஸ்டர்களில் நிகழ்வு வரிசை தொடங்கப்பட்டது.",
+                "te-IN": "టెక్స్ట్ కమాండ్ విజయవంతంగా ప్రాసెస్ చేయబడింది. ఎగ్జిక్యూషన్ సీక్వెన్స్ ప్రారంభించబడింది.",
+                "kn-IN": "ಪಠ್ಯ ಆಜ್ಞೆಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಪ್ರಕ್ರಿಯೆಗೊಳಿಸಲಾಗಿದೆ. ಕ್ಲಸ್ಟರ್ ಎಕ್ಸಿಕ್ಯೂಶನ್ ಸರಣಿ ಪ್ರಾರಂಭವಾಗಿದೆ.",
+                "ml-IN": "ടെക്സ്റ്റ് കമാൻഡ് വിജയകരമായി പ്രോസസ്സ് ചെയ്തു. എക്സിക്യൂഷൻ സീക്വൻസ് ആരംഭിച്ചു.",
+                "bn-IN": "টেক্সট কমান্ড সফলভাবে প্রক্রিয়া সম্পন্ন হয়েছে। এক্সিকিউশন সিকোয়েন্স শুরু করা হয়েছে।",
+                "mr-IN": "मजकूर कमांड यशस्वीरित्या प्रक्रिया केली. एक्झिक्युशन सीक्वेन्स सुरू झाला.",
+                "gu-IN": "ટેક્સ્ટ કમાન્ડ સફળતાપૂર્વક પ્રક્રિયા કરવામાં આવી છે. એક્ઝિક્યુશન સિક્વન્સ શરૂ થઈ ગઈ છે."
+            };
+
             if (!BrowserNativeSpeechEngineLink) {
-                appendTerminalDiagnosticLog("Browser runtime environment missing native access privileges to SpeechRecognition API. Disabling peripheral audio drivers.", "error");
+                appendTerminalDiagnosticLog("Device environment native SpeechRecognition missing. Audio mic locked down.", "error");
                 speechEngineTriggerKey.disabled = true;
                 speechEngineTriggerKey.style.opacity = "0.3";
                 speechEngineTriggerKey.style.cursor = "not-allowed";
@@ -461,149 +586,120 @@
                 speechOperationalMatrixInstance = new BrowserNativeSpeechEngineLink();
                 speechOperationalMatrixInstance.continuous = false;
                 speechOperationalMatrixInstance.interimResults = false;
-                speechOperationalMatrixInstance.lang = 'en-US';
 
-                // Life-Cycle Event Hook Listeners for Voice Engine Core Routing
                 speechOperationalMatrixInstance.onstart = () => {
                     mutateWorkspaceGlobalSystemState("listening");
-                    appendTerminalDiagnosticLog("Audio capture stream pipeline interface context instantiated successfully. Recording live environment buffer loop...", "info");
+                    appendTerminalDiagnosticLog(`Audio stream active: [${pipelineLanguageSelector.value}].`, "info");
                 };
 
                 speechOperationalMatrixInstance.onerror = (exceptionEvent) => {
-                    appendTerminalDiagnosticLog(`Speech Interface Engine Driver Error Trap: ${exceptionEvent.error}`, "error");
+                    appendTerminalDiagnosticLog(`Driver Interface Error: ${exceptionEvent.error}`, "error");
                     mutateWorkspaceGlobalSystemState("idle");
                     tearDownVoiceRecordingUIContext();
                 };
 
-                speechOperationalMatrixInstance.onend = () => {
-                    tearDownVoiceRecordingUIContext();
-                };
+                speechOperationalMatrixInstance.onend = () => { tearDownVoiceRecordingUIContext(); };
 
                 speechOperationalMatrixInstance.onresult = (streamResultDataPackage) => {
-                    const compiledRawStringTextTextOutput = streamResultDataPackage.results[0][0].transcript;
-                    appendTerminalDiagnosticLog(`Speech capture data conversion array resolved payload text string: "${compiledRawStringTextTextOutput}"`, "info");
-                    
-                    // Route directly out to Chat bubble log arrays and remote server engine endpoints
-                    injectChatMessageBubbleNode(compiledRawStringTextTextOutput, "user");
-                    dispatchUpstreamTransactionPayload(compiledRawStringTextTextOutput);
+                    const compiledRawStringTextOutput = streamResultDataPackage.results[0][0].transcript;
+                    appendTerminalDiagnosticLog(`Resolved string audio stream payload: "${compiledRawStringTextOutput}"`, "info");
+                    injectChatMessageBubbleNode(compiledRawStringTextOutput, "user");
+                    dispatchUpstreamTransactionPayload(compiledRawStringTextOutput);
                 };
             }
 
-            /* Event Handling Action Hook Routine: Microphone Audio Click Logic */
             speechEngineTriggerKey.addEventListener("click", () => {
                 if (!speechOperationalMatrixInstance) return;
-                
                 if (activelyListeningSpeechState) {
                     speechOperationalMatrixInstance.stop();
                     tearDownVoiceRecordingUIContext();
                 } else {
+                    window.speechSynthesis.cancel();
                     inlineTextInputField.value = "";
-                    appendTerminalDiagnosticLog("Opening physical mic device audio capture route interface buffers...", "info");
-                    
+                    speechOperationalMatrixInstance.lang = pipelineLanguageSelector.value;
                     try {
                         speechOperationalMatrixInstance.start();
                         activelyListeningSpeechState = true;
                         speechEngineTriggerKey.classList.add("is-active-recording");
-                    } catch (fatalExceptionMemoryAllocationError) {
-                        appendTerminalDiagnosticLog(`Failed to start recognition process context structure error: ${fatalExceptionMemoryAllocationError.message}`, "error");
+                    } catch (err) {
+                        appendTerminalDiagnosticLog(`Initialization Fault: ${err.message}`, "error");
                     }
                 }
             });
 
-            /* Event Handling Action Hook Routine: Manual Text Execution Entry Click Logic */
-            manualTextFormSubmitKey.addEventListener("click", () => {
-                commitInputTextFieldStringEvent();
+            pipelineLanguageSelector.addEventListener("change", (e) => {
+                appendTerminalDiagnosticLog(`Language matrix target switched -> ${e.target.value}`, "info");
+                if (activelyListeningSpeechState) speechOperationalMatrixInstance.stop();
             });
 
-            /* Input Element Keypress Observer: Listen for Standard Return Key Strike */
-            inlineTextInputField.addEventListener("keydown", (keyboardEventContextData) => {
-                if (keyboardEventContextData.key === "Enter") {
-                    commitInputTextFieldStringEvent();
-                }
-            });
+            manualTextFormSubmitKey.addEventListener("click", () => { commitInputTextFieldStringEvent(); });
+            inlineTextInputField.addEventListener("keydown", (e) => { if (e.key === "Enter") commitInputTextFieldStringEvent(); });
 
-            /* Helper Functional Core Module: Commit and Flush Form Inputs */
             function commitInputTextFieldStringEvent() {
                 const targetSanitizedStringPayloadValue = inlineTextInputField.value.trim();
                 if (!targetSanitizedStringPayloadValue) return;
 
-                // Immediately stop speech engine frames safely if active user types instead
                 if (activelyListeningSpeechState) {
                     speechOperationalMatrixInstance.stop();
                     tearDownVoiceRecordingUIContext();
                 }
+                window.speechSynthesis.cancel();
 
                 injectChatMessageBubbleNode(targetSanitizedStringPayloadValue, "user");
                 inlineTextInputField.value = "";
                 dispatchUpstreamTransactionPayload(targetSanitizedStringPayloadValue);
             }
 
-            /* Helper Functional Core Module: Reset Voice UI Controls */
             function tearDownVoiceRecordingUIContext() {
                 activelyListeningSpeechState = false;
                 speechEngineTriggerKey.classList.remove("is-active-recording");
             }
 
-            /* Core Logic Engine Data Marshalling Handler: Dispatches Query Data Models to the Server Framework */
+            function executeAITextToSpeechSynthesis(targetMessageStringPayload, targetLocaleISO) {
+                if ('speechSynthesis' in window) {
+                    const syntheticVoiceEnvelope = new SpeechSynthesisUtterance(targetMessageStringPayload);
+                    syntheticVoiceEnvelope.lang = targetLocaleISO;
+                    const appropriateMatchedVoiceNode = window.speechSynthesis.getVoices().find(v => v.lang.includes(targetLocaleISO));
+                    if (appropriateMatchedVoiceNode) syntheticVoiceEnvelope.voice = appropriateMatchedVoiceNode;
+                    
+                    syntheticVoiceEnvelope.onstart = () => appendTerminalDiagnosticLog(`TTS Speech active over system audio channel layer.`, "info");
+                    window.speechSynthesis.speak(syntheticVoiceEnvelope);
+                }
+            }
+
             async function dispatchUpstreamTransactionPayload(rawCommandStringText) {
                 mutateWorkspaceGlobalSystemState("processing");
-                appendTerminalDiagnosticLog(`Building abstract payload model map routing downstream -> data string length count: [${rawCommandStringText.length}]`, "info");
-                appendTerminalDiagnosticLog("Executing POST transaction envelope handshake protocol to upstream endpoint gateway: `/api/command`", "info");
+                const currentSelectedLocaleCode = pipelineLanguageSelector.value;
+                
+                appendTerminalDiagnosticLog(`Pushing parameters to background parsing thread...`, "info");
 
-                // Simulated Network Fallback Suite Module Implementation Block
                 setTimeout(() => {
-                    // Random probability selection logic to simulate production edge scenarios (including 423 Locked States)
-                    const computedSimulationRandomCoefficient = Math.random();
-
-                    if (computedSimulationRandomCoefficient > 0.82) {
-                        /* Edge Case Simulation Failure Block: 423 System Concurrency Locking Mechanics Trigger */
-                        mutateWorkspaceGlobalSystemState("busy");
-                        appendTerminalDiagnosticLog("[HTTP EXCEPTION MATRIX STATUS RESPONSE: 423 LOCKED] -> Operational database pipeline context is currently locked by a concurrent background task script process routine.", "error");
-                        injectChatMessageBubbleNode("System processing framework is currently engaged in background operational telemetry maintenance routines. Transaction rejected. Please try again shortly.", "system");
-                        
-                        setTimeout(() => mutateWorkspaceGlobalSystemState("idle"), 3500);
-                        return;
-                    }
-
-                    if (computedSimulationRandomCoefficient < 0.15) {
-                        /* Mock Scenario Failure Block: Unrecognized Action Mapping Exception Pipeline */
-                        mutateWorkspaceGlobalSystemState("idle");
-                        appendTerminalDiagnosticLog("[HTTP EXCEPTION MATRIX STATUS RESPONSE: 400 BAD REQUEST] -> Ambiguous intent context mapping matrix structural resolution failure.", "warn");
-                        injectChatMessageBubbleNode(`Command text parser exception matching query intent string properties. Verify administrative syntax formatting accuracy.`, "system");
-                        return;
-                    }
-
-                    /* General Flow Standard Path: 200 OK Context Stream Mapping Successful Resolution Run */
                     mutateWorkspaceGlobalSystemState("executing");
-                    appendTerminalDiagnosticLog("[HTTP DISPATCH TRANSACTION COMPLETE: 200 OK] -> Route intent resolved successfully. Action pipeline execution scheduled.", "info");
+                    appendTerminalDiagnosticLog("[HTTP RESPONSE 200 OK] -> Pipeline resolved execution stream layout bounds.", "info");
                     
-                    let simulatedActionMessageResponse = `Processed text command successfully. Orchestration event execution sequence launched across production clusters.`;
-                    
-                    // Context-aware dynamic output formatting simulation injection
+                    let simulatedActionMessageResponse = localizedMockDatabase[currentSelectedLocaleCode] || localizedMockDatabase["en-US"];
                     if (rawCommandStringText.toLowerCase().includes("status") || rawCommandStringText.toLowerCase().includes("check")) {
-                        simulatedActionMessageResponse = "Telemetric network status query returned: All microservice node clusters operational. Health Index: 99.87%. No active critical incidents detected.";
-                    } else if (rawCommandStringText.toLowerCase().includes("clear") || rawCommandStringText.toLowerCase().includes("reset")) {
-                        simulatedActionMessageResponse = "Terminal panel system console logs cleared. Interface view state properties reset to factory configuration matrices.";
+                        simulatedActionMessageResponse = "Telemetry core check complete: Matrix node clusters active. Systems operational.";
                     }
 
                     injectChatMessageBubbleNode(simulatedActionMessageResponse, "system");
+                    executeAITextToSpeechSynthesis(simulatedActionMessageResponse, currentSelectedLocaleCode);
                     
-                    setTimeout(() => {
-                        mutateWorkspaceGlobalSystemState("idle");
-                        appendTerminalDiagnosticLog("Asynchronous operation thread pool routine complete. Returning execution loop state parameters safely to idle standard.", "info");
-                    }, 1500);
-
-                }, 1400); 
+                    setTimeout(() => { mutateWorkspaceGlobalSystemState("idle"); }, 1000);
+                }, 1200); 
             }
 
-            /* UI Presentation Helper Module: Append Custom Structured Message Bubble Elements Inline */
+            function escapeHtmlMarkupContentEncodingString(rawStringData) {
+                return rawStringData.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            }
+
             function injectChatMessageBubbleNode(renderedStringMessageText, targetedBubbleOriginClassificationType) {
                 const dynamicRenderedBubbleWrapperNode = document.createElement("div");
                 dynamicRenderedBubbleWrapperNode.className = `chat-bubble-node ${targetedBubbleOriginClassificationType}-bubble`;
                 
-                const calculatedSystemFormattedCurrentTimeString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                const calculatedSystemFormattedCurrentTimeString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                 const computedAvatarLabelTextDisplayString = targetedBubbleOriginClassificationType === "user" ? "US" : "AI";
-                const computedMetaRowSubTextDisplayString = targetedBubbleOriginClassificationType === "user" ? `CLIENT USER // ${calculatedSystemFormattedCurrentTimeString}` : `COGNITIVE SYSTEM // ${calculatedSystemFormattedCurrentTimeString}`;
+                const computedMetaRowSubTextDisplayString = targetedBubbleOriginClassificationType === "user" ? `USER // ${calculatedSystemFormattedCurrentTimeString}` : `SYSTEM // ${calculatedSystemFormattedCurrentTimeString}`;
 
                 dynamicRenderedBubbleWrapperNode.innerHTML = `
                     <div class="avatar-frame">${computedAvatarLabelTextDisplayString}</div>
@@ -614,12 +710,9 @@
                 `;
 
                 dynamicChatStreamPanelViewport.appendChild(dynamicRenderedBubbleWrapperNode);
-                
-                // Immediately force fluid scroll tracking down to capture newest element node entries
                 dynamicChatStreamPanelViewport.scrollTop = dynamicChatStreamPanelViewport.scrollHeight;
             }
 
-            /* Logging Presentation Helper Module: Write Application Metrics Direct to Virtual Component Canvas Screen Terminal */
             function appendTerminalDiagnosticLog(rawLogMessageTextContentTextString, severityLevelClassStyleString = "info") {
                 const calculatedSystemFormattedCurrentTimeString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
                 const structuralSpanLineWrapper = document.createElement("span");
@@ -630,21 +723,13 @@
                 debugDiagnosticTerminalConsole.scrollTop = debugDiagnosticTerminalConsole.scrollHeight;
             }
 
-            /* Global Context State Control Loop Management Engine Mutator Utility Routine */
             function mutateWorkspaceGlobalSystemState(targetEngineContextStateAttributeValue) {
                 appRootContainer.setAttribute("data-state", targetEngineContextStateAttributeValue);
                 statusLabelNode.textContent = targetEngineContextStateAttributeValue;
-                appendTerminalDiagnosticLog(`Global App Engine state properties mutated context definition -> [${targetEngineContextStateAttributeValue.toUpperCase()}]`, "info");
             }
 
-            /* Data Sanitization Guardrail: Prevent Script Injection Errors inside User-facing Elements */
-            function escapeHtmlMarkupContentEncodingString(rawIncomingStringTextValue) {
-                return rawIncomingStringTextValue
-                    .replace(/&/g, "&amp;")
-                    .replace(/</g, "&lt;")
-                    .replace(/>/g, "&gt;")
-                    .replace(/"/g, "&quot;")
-                    .replace(/'/g, "&#039;");
+            if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = () => { appendTerminalDiagnosticLog("System synthesis channels updated.", "info"); };
             }
         });
     </script>
