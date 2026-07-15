@@ -348,6 +348,8 @@
     const registerLatency = document.getElementById('register-latency');
     const chatInput = document.getElementById('chat-input');
     const modelSelector = document.getElementById('model-selector');
+    const sendButton = document.getElementById('send-button');
+    const sendIcon = document.getElementById('send-icon');
 
     // Init Application
     window.addEventListener('DOMContentLoaded', () => {
@@ -469,7 +471,7 @@
         }
 
         const avatar = isUser ? '' : `
-            <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white text-xs shrink-0 shadow-lg shadow-indigo-500/10">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white text-xs shrink-0 shadow-lg shadow-indigo-500/20">
                 <i class="fa-solid fa-robot"></i>
             </div>
         `;
@@ -628,6 +630,44 @@
         chatScroller.scrollTo({ top: chatScroller.scrollHeight, behavior: 'smooth' });
     }
 
+    function toggleSendButtonState(disable) {
+        if (disable) {
+            sendButton.disabled = true;
+            sendButton.classList.add('opacity-50', 'cursor-not-allowed');
+            sendIcon.className = 'fa-solid fa-spinner animate-spin text-sm';
+        } else {
+            sendButton.disabled = false;
+            sendButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            sendIcon.className = 'fa-solid fa-arrow-up text-sm';
+        }
+    }
+
+    function handleInputKeyPress(event) {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            submitUserMessage();
+        }
+    }
+
+    function copyCodePayload(id) {
+        const codeElement = document.getElementById(id);
+        if (codeElement) {
+            navigator.clipboard.writeText(codeElement.innerText).then(() => {
+                alert("Code block payload copied to clipboard!");
+            });
+        }
+    }
+
+    function exportJSONState() {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(channels[activeChannelId]));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", `nexus_state_${activeChannelId}.json`);
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+    }
+
     // Live Streaming Simulator
     function executeResponsePipeline(query) {
         isStreaming = true;
@@ -637,168 +677,127 @@
         registerIntent.innerText = "evaluating_query...";
         registerConfidence.innerText = (0.89 + Math.random() * 0.10).toFixed(2);
         
-        // Append Streaming Bubble Shell
-        const streamId = 'stream-' + Date.now();
+        // Setup empty container for live output
+        const messageId = Date.now();
         const bubbleWrapper = document.createElement('div');
-        bubbleWrapper.className = "flex items-start space-x-3 max-w-[85%] md:max-w-[75%] my-2";
+        bubbleWrapper.className = 'flex items-start space-x-3 max-w-[85%] md:max-w-[75%] my-2';
         
         bubbleWrapper.innerHTML = `
-            <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white text-xs shrink-0 shadow-lg shadow-indigo-500/10">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white text-xs shrink-0 shadow-lg shadow-indigo-500/20">
                 <i class="fa-solid fa-robot"></i>
             </div>
-            <div class="space-y-1 text-left">
+            <div class="space-y-1 text-left w-full">
                 <div class="flex items-center space-x-2">
                     <span class="text-xs font-bold text-slate-200">NexusAgent</span>
-                    <span class="text-[9px] bg-indigo-950/80 text-indigo-400 px-1.5 py-0.5 rounded border border-indigo-900 font-mono">STREAMING</span>
+                    <span class="text-[9px] bg-indigo-950/80 text-indigo-400 px-1.5 py-0.5 rounded border border-indigo-900 font-mono">SYS_BOT</span>
                 </div>
-                <div class="bg-slate-900 border border-slate-800/80 text-slate-300 rounded-tl-none rounded-2xl p-4 text-xs leading-relaxed shadow-sm">
-                    <div id="${streamId}" class="prose prose-invert max-w-none text-left leading-relaxed space-y-2 cursor-blink"></div>
+                <div class="bg-slate-900 border border-slate-800/80 text-slate-300 rounded-2xl rounded-tl-none p-4 text-xs leading-relaxed shadow-sm">
+                    <div id="stream-${messageId}" class="prose prose-invert max-w-none text-left leading-relaxed space-y-2 cursor-blink"></div>
                 </div>
-                <span class="text-[9px] text-slate-600 font-mono block pl-1">Processing stream...</span>
+                <span class="text-[9px] text-slate-600 font-mono block pl-1">Streaming...</span>
             </div>
         `;
+        
         chatScroller.appendChild(bubbleWrapper);
         chatScroller.scrollTo({ top: chatScroller.scrollHeight, behavior: 'smooth' });
-
-        const streamTarget = document.getElementById(streamId);
         
-        // Select logic payload based on user input
-        let finalPayload = "";
-        const lower = query.toLowerCase();
-
-        if (lower.includes('bengaluru') || lower.includes('bangalore') || lower.includes('temperature') || lower.includes('weather')) {
-            registerIntent.innerText = "weather_api_resolved";
-            finalPayload = `### 🌤️ Live Weather Telemetry: Bengaluru, India\n\n` +
-                           `Here is the accurate, real-time meteorological weather report for Bengaluru:\n\n` +
-                           `* **Current Temperature:** 23°C (Feels like 25°C)\n` +
-                           `* **Conditions:** Mainly cloudy with light winds\n` +
-                           `* **Sustained Winds:** 8 mph from the West\n` +
-                           `* **Relative Humidity:** 71%\n` +
-                           `* **Precipitation Chance:** 10%\n\n` +
-                           `> **System Status:** This query parsed and resolved directly using live database coordinate integrations.`;
-        } else if (lower.includes('api') || lower.includes('explain')) {
-            registerIntent.innerText = "api_explanation";
-            finalPayload = `### Asynchronous API Integrations\n\n` +
-                           `In standard engineering, **async processing** enables applications to spin off API tasks without pausing standard user interfaces:\n\n` +
-                           `* **Non-Blocking Loop execution:** Functions execute dynamically in the background.\n` +
-                           `* **Improved UI Performance:** Buttons and interface pages remain live and scrollable during processes.\n\n` +
-                           `Here is how you handle standard async parameters in your applications:\n\n` +
-                           `\`\`\`javascript\n` +
-                           `async function fetchEndpointData(url) {\n` +
-                           `    try {\n` +
-                           `        const res = await fetch(url);\n` +
-                           `        return await res.json();\n` +
-                           `    } catch (err) {\n` +
-                           `        console.error("API Fetch Error:", err);\n` +
-                           `    }\n` +
-                           `}\n` +
-                           `\`\`\``;
-        } else if (lower.includes('css') || lower.includes('layout')) {
-            registerIntent.innerText = "css_hero_generator";
-            finalPayload = `### Responsive Hero Section Layout\n\n` +
-                           `Here is a streamlined, optimized layout built in pure Tailwind CSS:\n\n` +
-                           `\`\`\`html\n` +
-                           `<section class="relative bg-slate-950 py-24 px-6 text-center overflow-hidden">\n` +
-                           `  <div class="max-w-4xl mx-auto space-y-6 relative z-10">\n` +
-                           `    <h1 class="text-4xl md:text-6xl font-extrabold text-white tracking-tight">Modern Interface Design</h1>\n` +
-                           `    <p class="text-slate-400 text-sm md:text-lg">Deploy secure applications inside robust sandboxes instantly.</p>\n` +
-                           `  </div>\n` +
-                           `</section>\n` +
-                           `\`\`\``;
-        } else {
-            registerIntent.innerText = "general_query";
-            finalPayload = `**NexusAI Process Pipeline Executed Successfully.**\n\n` +
-                           `* Active pipeline: **${activeChannelId}**\n` +
-                           `* Evaluation Target: *"${query}"*\n\n` +
-                           `Describe your software configurations or integration needs to evaluate further automation structures.`;
-        }
-
-        // Stream Output Simulation Character-by-Character
-        let index = 0;
-        const streamInterval = setInterval(() => {
-            if (index < finalPayload.length) {
-                // Peek ahead to grab chunks to speed up code block outputs
-                const chunkLength = finalPayload.substr(index, 4).includes('`') ? 1 : 3;
-                index += chunkLength;
-                
-                streamTarget.innerHTML = parseMarkdown(finalPayload.substr(0, index));
+        const targetDiv = document.getElementById(`stream-${messageId}`);
+        const responseText = getSmartAgentResponse(query);
+        
+        let charIndex = 0;
+        const words = responseText.split(' ');
+        
+        function streamWords() {
+            if (charIndex < words.length) {
+                targetDiv.innerHTML = parseMarkdown(words.slice(0, charIndex + 1).join(' '));
+                charIndex++;
+                registerWords.innerText = targetDiv.innerText.split(/\s+/).length;
                 chatScroller.scrollTo({ top: chatScroller.scrollHeight });
-                
-                // Track dynamic words
-                registerWords.innerText = streamTarget.innerText.split(/\s+/).filter(Boolean).length;
+                setTimeout(streamWords, 50);
             } else {
-                clearInterval(streamInterval);
-                streamTarget.classList.remove('cursor-blink');
+                targetDiv.classList.remove('cursor-blink');
+                const duration = Math.round(performance.now() - startTime);
+                registerLatency.innerText = `${duration}ms`;
+                registerIntent.innerText = "pipeline_resolved";
                 
-                // Finalize Telemetry Logging
-                const endTime = performance.now();
-                registerLatency.innerText = `${Math.round(endTime - startTime)}ms`;
-                
-                // Commit to storage arrays
-                const finalMsg = {
-                    id: Date.now(),
+                // Commit complete message object back into workspace history structure
+                channels[activeChannelId].messages.push({
+                    id: messageId,
                     role: 'assistant',
                     sender: 'NexusAgent',
-                    badge: 'RESOLVED',
+                    badge: 'SYS_BOT',
                     time: 'Delivered just now',
-                    content: finalPayload
-                };
-                channels[activeChannelId].messages.push(finalMsg);
+                    content: responseText
+                });
                 
                 isStreaming = false;
                 toggleSendButtonState(false);
-                loadActiveChannel(); // Re-render to wire actions properly
+                loadActiveChannel(); // Refresh full state and re-render beautifully
             }
-        }, 15);
-    }
-
-    function toggleSendButtonState(disabled) {
-        const btn = document.getElementById('send-button');
-        const icon = document.getElementById('send-icon');
-        if (disabled) {
-            btn.className = "w-8 h-8 rounded-lg bg-slate-800 text-slate-500 transition-all flex items-center justify-center shrink-0 cursor-not-allowed";
-            icon.className = "fa-solid fa-circle-notch animate-spin text-sm";
-        } else {
-            btn.className = "w-8 h-8 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition-all flex items-center justify-center shrink-0 shadow-lg shadow-indigo-600/10";
-            icon.className = "fa-solid fa-arrow-up text-sm";
         }
-    }
-
-    function handleInputKeyPress(e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            submitUserMessage();
-        }
-    }
-
-    // Code copy to clipboard implementation
-    function copyCodePayload(id) {
-        const codeElement = document.getElementById(id);
-        if (!codeElement) return;
         
-        navigator.clipboard.writeText(codeElement.innerText).then(() => {
-            const copyBtn = codeElement.parentElement.previousElementSibling.querySelector('button');
-            copyBtn.innerHTML = `<i class="fa-solid fa-check text-emerald-400"></i>Copied!`;
-            setTimeout(() => {
-                copyBtn.innerHTML = `<i class="fa-regular fa-copy"></i>Copy Code`;
-            }, 2000);
-        });
+        setTimeout(streamWords, 250);
     }
 
-    // Export State as Portable JSON file
-    function exportJSONState() {
-        const stateDump = {
-            config: engineConfig,
-            activeChannel: activeChannelId,
-            channels: channels
-        };
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(stateDump, null, 2));
-        const dlAnchor = document.createElement('a');
-        dlAnchor.setAttribute("href", dataStr);
-        dlAnchor.setAttribute("download", `nexusai_state_${Date.now()}.json`);
-        document.body.appendChild(dlAnchor);
-        dlAnchor.click();
-        dlAnchor.remove();
+    // Dynamic Context-Aware Query Resolver
+    function getSmartAgentResponse(query) {
+        const cleanQuery = query.toLowerCase();
+        
+        if (cleanQuery.includes('msp430')) {
+            return `### MSP430 Microcontroller Architecture
+Texas Instruments' **MSP430** is an industry-standard **16-bit RISC** microcontroller family celebrated for its ultra-low-power consumption profile.
+
+#### Key Engineering Features:
+* **Ultralow-Power Modes:** Consumes as low as $100\\text{ }\\mu\\text{A/MHz}$ in Active Mode, and $0.1\\text{ }\\mu\\text{A}$ in standby state.
+* **Instant Wakeup:** Transitions from standby to fully operational state in under $6\\text{ }\\mu\\text{s}$.
+* **Memory Configuration:** Supports up to $512\\text{ KB}$ of non-volatile memory (Flash or super-fast, low-power **FRAM**).
+* **Integrated Peripherals:** High-precision on-board ADC modules, analog comparators, and timers.`;
+        }
+        
+        if (cleanQuery.includes('8051')) {
+            return `### Intel 8051 Microcontroller Features
+The classic **Intel 8051** is an **8-bit CISC** Harvard Architecture controller designed originally in 1980.
+
+#### Primary Hardware registers & Specifications:
+* **Bit Width:** 8-bit Data Bus / Arithmetic Logic Unit (ALU).
+* **On-Chip Memory:** Includes $128\\text{ Bytes}$ of RAM and $4\\text{ KB}$ of Read-Only Program Memory.
+* **I/O Ports:** 32 general-purpose I/O lines organized into 4 addressable 8-bit registers (\`P0\`, \`P1\`, \`P2\`, \`P3\`).
+* **Timers & Interrupts:** Two 16-bit hardware timers and a 5-source interrupt framework.`;
+        }
+
+        if (cleanQuery.includes('rain') || cleanQuery.includes('weather') || cleanQuery.includes('temp')) {
+            return `### Live Weather Telemetry: Bengaluru, India
+Meteorological forecast telemetry check:
+* **Current Temperature:** 23°C (Feels like 25°C)
+* **Precipitation Probability:** 10% chance of showers today.
+* **Relative Humidity:** 71% with standard western breeze elements.`;
+        }
+
+        if (cleanQuery.includes('selenium') || cleanQuery.includes('driver') || cleanQuery.includes('automation')) {
+            return `### Automated SDET Test Pipeline
+Here is an enterprise-level, production-ready Page Object Model setup for your automation pipeline:
+
+\`\`\`python
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+
+class LoginPage:
+    def __init__(self, driver):
+        self.driver = driver
+        self.username_field = (By.ID, "username")
+        self.login_btn = (By.CSS_SELECTOR, "button.submit-btn")
+
+    def login_user(self, username):
+        self.driver.find_element(*self.username_field).send_keys(username)
+        self.driver.find_element(*self.login_btn).click()
+\`\`\``;
+        }
+
+        // Generic fallback with natural prompt execution details
+        return `### Agent execution resolved
+Your command: "${query}" has processed successfully through the active pipeline.
+
+Our multi-agent reasoning models are monitoring the active workspace. Let me know if you would like me to generate test scripts, write code configurations, or manage DevOps pipelines!`;
     }
 </script>
 </body>
