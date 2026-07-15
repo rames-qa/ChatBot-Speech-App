@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Voice-Enabled Chatbot Architecture Sandbox</title>
+    <title>Enterprise Dual-Viewport Chatbot Playground v5.0</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <script>
         tailwind.config = {
@@ -17,16 +19,6 @@
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
                         mono: ['JetBrains Mono', 'monospace'],
-                    },
-                    colors: {
-                        brand: {
-                            50: '#eef2ff',
-                            100: '#e0e7ff',
-                            500: '#6366f1',
-                            600: '#4f46e5',
-                            700: '#4338ca',
-                            900: '#312e81',
-                        }
                     }
                 }
             }
@@ -35,527 +27,792 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0f172a;
-            color: #f8fafc;
+            background-color: #030712;
+            color: #f1f5f9;
         }
+        /* High density custom scrollbar rules */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #1e293b; }
-        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        ::-webkit-scrollbar-track { background: #0b0f19; }
+        ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 99px; }
         ::-webkit-scrollbar-thumb:hover { background: #6366f1; }
-        
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 12px rgba(99, 102, 241, 0.4); border-color: rgba(99, 102, 241, 0.6); fill: #1e1b4b; }
-            50% { box-shadow: 0 0 28px rgba(99, 102, 241, 0.8); border-color: rgba(129, 140, 248, 1); fill: #312e81; }
+
+        /* Streaming cursor animation */
+        .cursor-blink::after {
+            content: '█';
+            animation: cursorBlink 0.8s infinite;
+            color: #6366f1;
+            margin-left: 2px;
         }
-        .active-node rect { animation: pulse-glow 1.5s infinite; stroke: #818cf8 !important; stroke-width: 3px !important; }
-        
-        @keyframes dash { to { stroke-dashoffset: -40; } }
-        .active-path { stroke: #6366f1 !important; stroke-dasharray: 6; animation: dash 1s linear infinite; }
-        
-        .bar {
-            display: inline-block;
-            width: 4px;
-            height: 6px;
-            background-color: #6366f1;
-            margin: 0 1.5px;
-            border-radius: 9999px;
-            transition: height 0.05s ease;
+        @keyframes cursorBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
-        .listening .bar { animation: soundWave 1.2s ease-in-out infinite alternate; }
-        @keyframes soundWave { 0% { height: 6px; } 100% { height: 32px; } }
     </style>
 </head>
 <body class="h-full flex flex-col overflow-hidden bg-slate-950 text-slate-100">
 
-<header class="bg-slate-900 border-b border-slate-800 shrink-0 px-6 py-4 flex items-center justify-between z-20">
+<!-- Header -->
+<header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 shrink-0 px-6 py-3 flex items-center justify-between z-30">
     <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-violet-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
-            <i class="fa-solid fa-microphone-lines text-lg"></i>
+        <!-- Mobile Sidebar Open Trigger -->
+        <button onclick="toggleSidebar('left-sidebar', true)" class="lg:hidden p-2 -ml-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
+            <i class="fa-solid fa-bars-staggered text-lg"></i>
+        </button>
+        <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
+            <i class="fa-solid fa-microchip text-sm"></i>
         </div>
         <div>
-            <h1 class="text-lg font-bold bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">
-                VoiceAI Chatbot Architect Pro
-            </h1>
-            <p class="text-xs text-slate-400">Interactive Full-Duplex Speech & Processing Pipeline</p>
+            <div class="flex items-center space-x-2">
+                <h1 class="text-sm font-bold bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">NexusAI Suite</h1>
+                <span class="text-[9px] font-mono bg-indigo-950 text-indigo-400 border border-indigo-800/60 px-1.5 py-0.2 rounded-full">v5.0</span>
+            </div>
+            <p class="text-[10px] text-slate-400 hidden sm:block">Enterprise Multi-Channel Control Console</p>
         </div>
     </div>
     
     <div class="flex items-center space-x-4">
-        <div class="flex items-center bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800 text-xs">
+        <!-- Model Selection Setup -->
+        <div class="flex items-center bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1">
+            <span class="text-[9px] text-slate-500 font-mono mr-2">ACTIVE MODEL:</span>
+            <select id="model-selector" class="bg-transparent text-xs font-semibold text-indigo-300 focus:outline-none cursor-pointer">
+                <option value="gpt-4o" class="bg-slate-900 text-slate-200">GPT-4o Advanced</option>
+                <option value="claude-3-5" class="bg-slate-900 text-slate-200">Claude 3.5 Sonnet</option>
+                <option value="deepseek-coder" class="bg-slate-900 text-slate-200">DeepSeek-Coder V2</option>
+            </select>
+        </div>
+
+        <div class="hidden md:flex items-center bg-slate-950 px-2.5 py-1 rounded-md border border-slate-800/80 text-[10px] font-mono">
             <span class="flex h-2 w-2 relative mr-2">
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
-            <span class="text-slate-300 font-medium mr-2">NLP State:</span>
-            <span class="text-indigo-400 font-bold">Advanced Speech Synthesis v2</span>
+            <span class="text-slate-400">ENGINE STATE:</span>
+            <span class="text-indigo-400 ml-1 font-bold">ONLINE_V5</span>
         </div>
+        
+        <!-- Mobile Inspector Open Trigger -->
+        <button onclick="toggleSidebar('right-sidebar', true)" class="lg:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
+            <i class="fa-solid fa-sliders text-lg"></i>
+        </button>
     </div>
 </header>
 
+<!-- Main Scaffold Area -->
 <div class="flex-1 flex overflow-hidden relative">
     
-    <aside class="w-[360px] xl:w-[420px] bg-slate-900 border-r border-slate-800 flex flex-col h-full shrink-0 z-10">
-        <div class="flex border-b border-slate-800 bg-slate-900/50 p-2">
-            <button onclick="switchLeftTab('concepts')" id="tab-concepts" class="flex-1 py-2 px-3 text-sm font-semibold rounded-lg transition-all text-indigo-400 bg-slate-800/60 shadow-sm border border-slate-700/50">
-                <i class="fa-solid fa-graduation-cap mr-2"></i>Core Architecture
-            </button>
-            <button onclick="switchLeftTab('quiz')" id="tab-quiz" class="flex-1 py-2 px-3 text-sm font-semibold rounded-lg transition-all text-slate-400 hover:text-slate-200">
-                <i class="fa-solid fa-circle-check mr-2"></i>System Quiz
+    <!-- LEFT SIDEBAR: Navigation & Chat Threads -->
+    <div id="left-sidebar-backdrop" onclick="toggleSidebar('left-sidebar', false)" class="hidden fixed inset-0 bg-black/70 z-30 lg:hidden"></div>
+    <aside id="left-sidebar" class="fixed inset-y-0 left-0 w-[280px] bg-slate-900 border-r border-slate-800 flex flex-col h-full transform -translate-x-full lg:transform-none lg:static transition-transform duration-300 ease-in-out z-40 shrink-0">
+        <!-- Close button mobile only -->
+        <div class="p-4 flex items-center justify-between border-b border-slate-800 lg:hidden">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Workspace Explorer</span>
+            <button onclick="toggleSidebar('left-sidebar', false)" class="p-1 rounded-md hover:bg-slate-800 text-slate-400 hover:text-white">
+                <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
         
-        <div class="flex-1 overflow-y-auto p-5 space-y-6">
-            <div id="content-concepts" class="space-y-6">
-                <div>
-                    <h3 class="text-sm font-bold text-indigo-400 uppercase tracking-wider mb-2">Voice AI Conversational Cycle</h3>
-                    <p class="text-sm text-slate-300 leading-relaxed">
-                        An advanced voice assistant integrates Automated Speech Recognition (ASR) with dynamic Text-to-Speech (TTS) pipelines. It converts unstructured audio waves down into distinct programmatic text frames, matches intent logic via natural language structures, updates session context state metrics, and returns a spoken synthesized payload to the user.
-                    </p>
-                </div>
-                
-                <div class="space-y-3">
-                    <h3 class="text-sm font-bold text-indigo-400 uppercase tracking-wider">Advanced Core Criteria</h3>
-                    <div class="grid grid-cols-1 gap-2">
-                        <div class="flex items-start bg-slate-950/45 p-2.5 rounded-lg border border-slate-800/80">
-                            <i class="fa-solid fa-microphone-halved text-indigo-500 mt-1 mr-3 text-sm"></i>
-                            <div>
-                                <h4 class="text-xs font-semibold text-white">Full-Duplex Speech Analytics</h4>
-                                <p class="text-xs text-slate-400">Continuous voice parsing via system standard web speech engines.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start bg-slate-950/45 p-2.5 rounded-lg border border-slate-800/80">
-                            <i class="fa-solid fa-sliders text-emerald-400 mt-1 mr-3 text-sm"></i>
-                            <div>
-                                <h4 class="text-xs font-semibold text-white">Intent Slot Extraction</h4>
-                                <p class="text-xs text-slate-400">Isolates entity variables (e.g., specific dates, distinct locations) out of context fields.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="space-y-3">
-                    <h3 class="text-sm font-bold text-indigo-400 uppercase tracking-wider">Pipeline System Component Inspector</h3>
-                    <div class="space-y-2">
-                        <button onclick="inspectComponent('asr')" class="w-full text-left bg-slate-800/30 hover:bg-slate-800/80 border border-slate-800 p-2.5 rounded-lg transition-all flex justify-between items-center group">
-                            <span class="text-xs font-semibold text-indigo-200"><i class="fa-solid fa-wave-square mr-2 text-indigo-400"></i>1. Speech Recognition Engine (ASR)</span>
-                            <i class="fa-solid fa-chevron-right text-[10px] text-slate-500"></i>
-                        </button>
-                        <button onclick="inspectComponent('dialogue')" class="w-full text-left bg-slate-800/30 hover:bg-slate-800/80 border border-slate-800 p-2.5 rounded-lg transition-all flex justify-between items-center group">
-                            <span class="text-xs font-semibold text-indigo-200"><i class="fa-solid fa-diagram-project mr-2 text-indigo-400"></i>2. State Slots & Context Logs</span>
-                            <i class="fa-solid fa-chevron-right text-[10px] text-slate-500"></i>
-                        </button>
-                        <button onclick="inspectComponent('tts')" class="w-full text-left bg-slate-800/30 hover:bg-slate-800/80 border border-slate-800 p-2.5 rounded-lg transition-all flex justify-between items-center group">
-                            <span class="text-xs font-semibold text-indigo-200"><i class="fa-solid fa-volume-high mr-2 text-indigo-400"></i>3. Voice Synthesis Module (TTS)</span>
-                            <i class="fa-solid fa-chevron-right text-[10px] text-slate-500"></i>
-                        </button>
-                    </div>
-                    <div id="inspector-card" class="bg-indigo-950/20 border border-indigo-500/30 rounded-xl p-3.5 hidden">
-                        <div class="flex items-center space-x-2 mb-2">
-                            <h4 id="inspect-title" class="text-xs font-bold text-indigo-200">Component Details</h4>
-                        </div>
-                        <p id="inspect-desc" class="text-xs text-slate-300 leading-relaxed"></p>
-                    </div>
-                </div>
+        <!-- Sidebar Actions -->
+        <div class="p-4 space-y-2 shrink-0">
+            <button onclick="createNewThread()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold py-2.5 px-4 rounded-xl flex items-center justify-center space-x-2 shadow-lg shadow-indigo-600/10 hover:shadow-indigo-600/20 transition-all group">
+                <i class="fa-solid fa-plus group-hover:rotate-90 transition-transform"></i>
+                <span>Start New Thread</span>
+            </button>
+        </div>
+        
+        <!-- Thread Channels -->
+        <div class="flex-1 overflow-y-auto px-2 space-y-1">
+            <div class="px-3 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest flex justify-between items-center">
+                <span>Active Core Pipelines</span>
+                <span class="text-[9px] lowercase font-normal text-slate-600">3 paths</span>
             </div>
+            
+            <div id="channels-list" class="space-y-1">
+                <!-- Loaded dynamically by script -->
+            </div>
+        </div>
+        
+        <!-- Quick Performance Indicators -->
+        <div class="p-4 bg-slate-950/40 border-t border-slate-800 space-y-3 shrink-0">
+            <div class="flex items-center justify-between text-[11px]">
+                <span class="text-slate-400 flex items-center"><i class="fa-solid fa-server mr-2 text-indigo-400"></i>Node Cluster</span>
+                <span class="font-mono text-emerald-400">AP-SOUTH-1</span>
+            </div>
+            <div class="flex items-center justify-between text-[11px]">
+                <span class="text-slate-400 flex items-center"><i class="fa-solid fa-bolt mr-2 text-amber-400"></i>SLA Rate</span>
+                <span class="font-mono text-slate-200">99.998%</span>
+            </div>
+        </div>
 
-            <div id="content-quiz" class="space-y-4 hidden">
-                <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-4">
-                    <div class="flex justify-between items-center text-xs text-slate-400">
-                        <span>Question <strong id="quiz-idx" class="text-white">1</strong> of 3</span>
-                        <span>Score: <strong id="quiz-score" class="text-emerald-400">0</strong></span>
-                    </div>
-                    <h4 id="quiz-question" class="text-sm font-semibold text-slate-200 leading-snug"></h4>
-                    <div id="quiz-options" class="space-y-2"></div>
-                    <button onclick="handleQuizNext()" id="btn-quiz-next" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs py-2 px-4 rounded-lg hidden transition-colors">
-                        Next Question <i class="fa-solid fa-arrow-right ml-1"></i>
-                    </button>
+        <div class="p-4 border-t border-slate-800 bg-slate-950">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400 font-bold text-xs border border-indigo-500/30">
+                    SO
+                </div>
+                <div>
+                    <h4 class="text-xs font-semibold text-white">System Operator</h4>
+                    <p class="text-[9px] text-slate-500 font-mono">ID: USER-90210</p>
                 </div>
             </div>
         </div>
     </aside>
 
-    <main class="flex-1 flex flex-col h-full bg-slate-950 overflow-hidden relative">
-        <div class="bg-slate-900/60 border-b border-slate-800 p-3 flex justify-between items-center px-6 shrink-0 z-10">
-            <span class="text-xs font-bold uppercase tracking-widest text-slate-400"><i class="fa-solid fa-circle-dot text-indigo-500 mr-2"></i>Active Pipeline Tracing Grid</span>
-            <span id="diagnostic-status-text" class="text-[10px] bg-slate-950 text-slate-400 px-2 py-0.5 rounded border border-slate-800 font-mono">SYSTEM READY</span>
+    <!-- CENTER MAIN: Dialogue Engine -->
+    <main class="flex-1 flex flex-col h-full bg-slate-950 overflow-hidden min-w-0">
+        <!-- Interactive Room Header -->
+        <div class="bg-slate-900/40 border-b border-slate-800 p-3 flex justify-between items-center px-4 md:px-6 shrink-0">
+            <div>
+                <span id="active-channel-title" class="text-xs font-bold uppercase tracking-wider text-indigo-400"><i class="fa-solid fa-hashtag mr-1"></i>General Core Support</span>
+                <p id="active-channel-desc" class="text-[10px] text-slate-500 hidden sm:block">Direct natural language parsing channel pipeline</p>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button onclick="exportJSONState()" class="text-[10px] font-semibold bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white px-3 py-1.5 rounded-lg border border-slate-850 transition-colors">
+                    <i class="fa-solid fa-file-export mr-1.5 text-indigo-400"></i>Export State
+                </button>
+                <button onclick="clearChatLog()" class="text-[10px] font-semibold bg-slate-900/60 hover:bg-red-950/40 text-slate-400 hover:text-red-400 px-3 py-1.5 rounded-lg border border-slate-800 transition-colors">
+                    <i class="fa-solid fa-trash-can mr-1.5"></i>Clear History
+                </button>
+            </div>
         </div>
 
-        <div class="flex-1 flex items-center justify-center p-6 bg-radial-gradient from-slate-900 to-slate-950 overflow-y-auto">
-            <div class="w-full max-w-[560px] bg-slate-900/20 border border-slate-800/60 rounded-2xl p-6 relative">
-                <svg id="blueprint-svg" viewBox="0 0 600 520" class="w-full h-auto text-slate-400 select-none">
-                    <defs>
-                        <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                            <path d="M 0 1 L 10 5 L 0 9 z" fill="#475569" />
-                        </marker>
-                    </defs>
+        <!-- Chat Stream Messages Container -->
+        <div id="chat-scroller" class="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
+            <!-- Populated dynamically by script -->
+        </div>
 
-                    <g id="svg-paths">
-                        <path id="path-asr" d="M 300 65 L 300 110" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" />
-                        <path id="path-nlp" d="M 300 150 L 300 200" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" />
-                        <path id="path-dialogue" d="M 300 240 L 300 290" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" />
-                        <path id="path-kb" d="M 300 330 L 300 380" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" />
-                        <path id="path-tts" d="M 300 420 L 300 465" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" />
-                    </g>
-
-                    <g id="node-user" class="transition-all duration-300">
-                        <rect x="200" y="20" width="200" height="45" rx="8" fill="#1e293b" stroke="#334155" stroke-width="2" />
-                        <text x="300" y="47" fill="#f8fafc" font-size="11" font-weight="700" text-anchor="middle">🎤 VOICE USER INPUT</text>
-                    </g>
-
-                    <g id="node-asr" class="transition-all duration-300">
-                        <rect x="160" y="110" width="280" height="40" rx="8" fill="#0f172a" stroke="#334155" stroke-width="2" />
-                        <text x="300" y="135" fill="#cbd5e1" font-size="11" font-weight="600" text-anchor="middle">1. SPEECH RECOGNITION (ASR)</text>
-                    </g>
-
-                    <g id="node-nlp" class="transition-all duration-300">
-                        <rect x="160" y="200" width="280" height="40" rx="8" fill="#0f172a" stroke="#334155" stroke-width="2" />
-                        <text x="300" y="225" fill="#cbd5e1" font-size="11" font-weight="600" text-anchor="middle">2. NLP ENGINE (INTENT MINING)</text>
-                    </g>
-
-                    <g id="node-dialogue" class="transition-all duration-300">
-                        <rect x="160" y="290" width="280" height="40" rx="8" fill="#0f172a" stroke="#334155" stroke-width="2" />
-                        <text x="300" y="315" fill="#cbd5e1" font-size="11" font-weight="600" text-anchor="middle">3. CONTEXT STATE & SLOT MANAGER</text>
-                    </g>
-
-                    <g id="node-kb" class="transition-all duration-300">
-                        <rect x="160" y="380" width="280" height="40" rx="8" fill="#0f172a" stroke="#334155" stroke-width="2" />
-                        <text x="300" y="405" fill="#cbd5e1" font-size="11" font-weight="600" text-anchor="middle">4. DATA KNOWLEDGE COMPUTE</text>
-                    </g>
-
-                    <g id="node-tts" class="transition-all duration-300">
-                        <rect x="160" y="465" width="280" height="40" rx="8" fill="#0f172a" stroke="#334155" stroke-width="2" />
-                        <text x="300" y="490" fill="#cbd5e1" font-size="11" font-weight="600" text-anchor="middle">5. TEXT TO SPEECH ENGINE (TTS)</text>
-                    </g>
-                </svg>
+        <!-- Input Box Area -->
+        <div class="p-4 bg-slate-900 border-t border-slate-800 space-y-3 shrink-0">
+            <div class="max-w-4xl mx-auto flex items-end space-x-2 bg-slate-950 border border-slate-800 focus-within:border-indigo-500/50 rounded-xl p-2 transition-all">
+                <textarea id="chat-input" rows="1" placeholder="Describe your prompt here (Shift + Enter for new lines)..." class="flex-1 bg-transparent border-0 focus:outline-none focus:ring-0 text-xs text-slate-100 placeholder-slate-500 max-h-32 resize-none py-2 px-3 align-bottom" onkeydown="handleInputKeyPress(event)"></textarea>
+                <button id="send-button" onclick="submitUserMessage()" class="w-8 h-8 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition-all flex items-center justify-center shrink-0 shadow-lg shadow-indigo-600/10">
+                    <i id="send-icon" class="fa-solid fa-arrow-up text-sm"></i>
+                </button>
+            </div>
+            
+            <div class="flex items-center justify-between text-[10px] text-slate-500 max-w-4xl mx-auto px-1">
+                <span>Responsive Frame Integration Workspace v5.0</span>
+                <span>Powered by Advanced NLP Parsing Core</span>
             </div>
         </div>
     </main>
 
-    <aside class="w-[380px] xl:w-[460px] bg-slate-900 border-l border-slate-800 flex flex-col h-full shrink-0 z-10">
-        <div class="bg-slate-900 p-4 border-b border-slate-800 flex items-center justify-between">
-            <h3 class="text-sm font-bold text-white"><i class="fa-solid fa-terminal mr-2 text-indigo-400"></i>Interactive Console</h3>
-            <button onclick="clearChatLogs()" class="text-[11px] bg-slate-800 text-slate-400 hover:text-indigo-400 px-2.5 py-1 rounded border border-slate-700 transition-colors">Clear Stream</button>
+    <!-- RIGHT SIDEBAR: System Inspector Info Board -->
+    <div id="right-sidebar-backdrop" onclick="toggleSidebar('right-sidebar', false)" class="hidden fixed inset-0 bg-black/70 z-30 lg:hidden"></div>
+    <aside id="right-sidebar" class="fixed inset-y-0 right-0 w-[320px] bg-slate-900 border-l border-slate-800 flex flex-col h-full transform translate-x-full lg:transform-none lg:static transition-transform duration-300 ease-in-out z-40 shrink-0">
+        <!-- Close button mobile only -->
+        <div class="p-4 flex items-center justify-between border-b border-slate-800 lg:hidden">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Settings & Context</span>
+            <button onclick="toggleSidebar('right-sidebar', false)" class="p-1 rounded-md hover:bg-slate-800 text-slate-400 hover:text-white">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
         </div>
+        
+        <!-- Inspector Details -->
+        <div class="p-5 flex-1 overflow-y-auto space-y-6">
+            <div>
+                <h3 class="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-2"><i class="fa-solid fa-microchip mr-1.5"></i>Live Engine Analytics</h3>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                    This context monitoring matrix visualizes active slot states, telemetry registers, and parameter controls.
+                </p>
+            </div>
 
-        <div class="flex-1 overflow-y-auto p-4 space-y-4" id="chat-scroller">
-            <div class="flex items-start space-x-2 bg-slate-950 border border-slate-800/80 rounded-xl p-3 max-w-[90%]">
-                <div class="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white text-xs shrink-0 font-bold"><i class="fa-solid fa-robot"></i></div>
-                <div class="space-y-1">
-                    <span class="text-[10px] text-indigo-400 font-bold font-mono">CORE_SYSTEM_NODE</span>
-                    <p class="text-xs text-slate-200">Voice Processing Engine Active. Pick a test prompt or press the microphone to talk.</p>
+            <!-- Context State Table -->
+            <div class="space-y-3">
+                <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Active NLP Registers</h4>
+                <div class="grid grid-cols-1 gap-2 font-mono text-[11px]">
+                    <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-850 flex justify-between items-center">
+                        <span class="text-slate-500">intent:</span>
+                        <span id="register-intent" class="text-indigo-400 font-bold">session_init</span>
+                    </div>
+                    <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-850 flex justify-between items-center">
+                        <span class="text-slate-500">processed_words:</span>
+                        <span id="register-words" class="text-emerald-400 font-bold">0</span>
+                    </div>
+                    <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-850 flex justify-between items-center">
+                        <span class="text-slate-500">confidence:</span>
+                        <span id="register-confidence" class="text-amber-400 font-bold">1.00</span>
+                    </div>
+                    <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-850 flex justify-between items-center">
+                        <span class="text-slate-500">engine_speed:</span>
+                        <span id="register-latency" class="text-cyan-400 font-bold">0ms</span>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="bg-slate-950/60 border-t border-slate-800 p-3 px-4">
-            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block mb-2"><i class="fa-solid fa-table-list mr-1.5 text-emerald-400"></i>Active Session Context Slots</span>
-            <div class="grid grid-cols-2 gap-2 text-[11px] font-mono">
-                <div class="bg-slate-900 p-1.5 rounded border border-slate-800 flex justify-between"><span class="text-slate-500">intent:</span><span id="slot-intent" class="text-indigo-400 font-bold">null</span></div>
-                <div class="bg-slate-900 p-1.5 rounded border border-slate-800 flex justify-between"><span class="text-slate-500">entity_loc:</span><span id="slot-loc" class="text-emerald-400 font-bold">null</span></div>
-            </div>
-        </div>
+            <hr class="border-slate-800">
 
-        <div class="p-4 bg-slate-950 border-t border-slate-800 space-y-3">
-            <div class="flex items-center space-x-2">
-                <input type="text" id="user-text-input" placeholder="Type a response or use speech controls..." class="flex-1 bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-indigo-500 text-slate-100" onkeydown="if(event.key === 'Enter') processTextMessage()">
-                <button onclick="toggleSpeechCapture()" id="btn-mic" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all flex items-center justify-center relative">
-                    <i id="mic-icon" class="fa-solid fa-microphone"></i>
-                </button>
-            </div>
-            
-            <div class="flex items-center justify-between text-[11px] text-slate-400">
-                <span>Accent Synthesizer Profile:</span>
-                <select id="tts-accent" class="bg-transparent text-indigo-400 focus:outline-none cursor-pointer text-[11px] font-medium">
-                    <option value="en-US" class="bg-slate-900 text-slate-300">Natural English (US)</option>
-                    <option value="en-GB" class="bg-slate-900 text-slate-300">British Executive (UK)</option>
-                    <option value="en-IN" class="bg-slate-900 text-slate-300">Indian Technical Specialist</option>
-                </select>
+            <!-- Hyperparameter Tuning Panel -->
+            <div class="space-y-4">
+                <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest"><i class="fa-solid fa-sliders mr-1.5 text-indigo-500"></i>Model Parameters</h4>
+                
+                <!-- Temp -->
+                <div class="space-y-1">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-slate-400">Temperature</span>
+                        <span id="val-temp" class="font-mono text-indigo-400">0.7</span>
+                    </div>
+                    <input type="range" id="param-temp" min="0" max="2" step="0.1" value="0.7" oninput="updateParam('temp', this.value)" class="w-full accent-indigo-500 bg-slate-950 h-1 rounded-lg cursor-pointer">
+                </div>
+
+                <!-- Max Tokens -->
+                <div class="space-y-1">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-slate-400">Max Output Tokens</span>
+                        <span id="val-tokens" class="font-mono text-indigo-400">2048</span>
+                    </div>
+                    <input type="range" id="param-tokens" min="256" max="8192" step="256" value="2048" oninput="updateParam('tokens', this.value)" class="w-full accent-indigo-500 bg-slate-950 h-1 rounded-lg cursor-pointer">
+                </div>
+
+                <!-- Top-P -->
+                <div class="space-y-1">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-slate-400">Top-P Sampling</span>
+                        <span id="val-topp" class="font-mono text-indigo-400">0.9</span>
+                    </div>
+                    <input type="range" id="param-topp" min="0" max="1" step="0.05" value="0.9" oninput="updateParam('topp', this.value)" class="w-full accent-indigo-500 bg-slate-950 h-1 rounded-lg cursor-pointer">
+                </div>
             </div>
 
-            <div id="waveform-container" class="h-8 flex items-center justify-center bg-slate-900/40 rounded-lg border border-slate-800/60 overflow-hidden">
-                <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
-                <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
-                <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            <hr class="border-slate-800">
+
+            <div class="space-y-3">
+                <h4 class="text-xs font-bold text-slate-300">Live Workspace Attributes</h4>
+                <div class="space-y-2 text-xs text-slate-400">
+                    <div class="flex items-start space-x-2">
+                        <i class="fa-solid fa-circle-check text-indigo-500 mt-0.5"></i>
+                        <span><strong>State Serialization:</strong> Your custom parameters and chats can be exported live inside our state files.</span>
+                    </div>
+                    <div class="flex items-start space-x-2">
+                        <i class="fa-solid fa-circle-check text-indigo-500 mt-0.5"></i>
+                        <span><strong>State Memory:</strong> Switching pipelines preserves conversation histories seamlessly.</span>
+                    </div>
+                </div>
             </div>
         </div>
     </aside>
 </div>
 
+<!-- JavaScript Engine Logic -->
 <script>
-    // System Local Variables
-    let activeSpeechRecognition = null;
-    let isCurrentlyRecording = false;
-    let localQuizIndex = 0;
-    let localQuizScore = 0;
-
-    // Advanced Speech Recognition & Parsing Logic Initialization
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (SpeechRecognition) {
-        activeSpeechRecognition = new SpeechRecognition();
-        activeSpeechRecognition.continuous = false;
-        activeSpeechRecognition.lang = 'en-US';
-        activeSpeechRecognition.interimResults = false;
-
-        activeSpeechRecognition.onstart = () => {
-            isCurrentlyRecording = true;
-            document.getElementById('mic-icon').className = "fa-solid fa-circle-stop text-red-500 animate-pulse";
-            document.getElementById('waveform-container').classList.add('listening');
-            updateDiagnosticLabel('Listening to user voice input...', 'user');
-        };
-
-        activeSpeechRecognition.onresult = (event) => {
-            const voiceTranscript = event.results[0][0].transcript;
-            executePipelineExecution(voiceTranscript);
-        };
-
-        activeSpeechRecognition.onerror = () => { stopRecordingState(); };
-        activeSpeechRecognition.onend = () => { stopRecordingState(); };
-    }
-
-    function toggleSpeechCapture() {
-        if (!activeSpeechRecognition) {
-            alert("Web Speech capturing API is not natively supported inside your current browser platform.");
-            return;
+    // System Local Memory State
+    const channels = {
+        'general-core': {
+            id: 'general-core',
+            name: 'General Core Support',
+            desc: 'Direct natural language parsing channel pipeline',
+            icon: 'fa-regular fa-comments',
+            messages: [
+                {
+                    id: 1,
+                    role: 'assistant',
+                    sender: 'NexusAgent',
+                    badge: 'SYS_BOT',
+                    time: 'Delivered just now',
+                    content: 'Hello! I am NexusAI v5.0. Choose an operational system path below or submit your custom execution instructions directly.',
+                    chips: [
+                        { label: '💡 Explain APIs', text: 'Explain asynchronous API integration in simple terms' },
+                        { label: '🎨 CSS Hero Layout', text: 'Generate a clean CSS layout for a hero section' },
+                        { label: '⚙️ Fix JS Leaks', text: 'How do I fix memory leaks in standard JavaScript loop routines?' }
+                    ]
+                }
+            ]
+        },
+        'devops-agent': {
+            id: 'devops-agent',
+            name: 'System DevOps Agent',
+            desc: 'Kubernetes orchestration and continuous integration monitor pipelines',
+            icon: 'fa-solid fa-terminal',
+            messages: [
+                {
+                    id: 1,
+                    role: 'assistant',
+                    sender: 'DevOpsBot',
+                    badge: 'KUBE_ENG',
+                    time: 'Initialized pipeline',
+                    content: 'Enterprise cluster operational at node **AP-SOUTH-1**. Ready to diagnose server stack configurations.',
+                    chips: [
+                        { label: '🛡️ Scan Dockerfile', text: 'Analyze safety configurations of my multi-stage Docker build files' },
+                        { label: '⚓ Health Check', text: 'Show an example configuration for Kubernetes Liveness and Readiness probes' }
+                    ]
+                }
+            ]
+        },
+        'ecommerce-helper': {
+            id: 'ecommerce-helper',
+            name: 'E-Commerce Helper',
+            desc: 'Merchant fulfillment and database pipeline manager',
+            icon: 'fa-solid fa-cart-shopping',
+            messages: [
+                {
+                    id: 1,
+                    role: 'assistant',
+                    sender: 'MerchantBot',
+                    badge: 'SALES_ENG',
+                    time: 'Listening on port 8082',
+                    content: 'Billing pipelines are open. Ready to track transaction logs and construct inventory logic.',
+                    chips: [
+                        { label: '🛒 Inventory Logic', text: 'Create a database schema logic path for shopping cart states' }
+                    ]
+                }
+            ]
         }
-        if (isCurrentlyRecording) {
-            activeSpeechRecognition.stop();
-        } else {
-            activeSpeechRecognition.start();
-        }
-    }
-
-    function stopRecordingState() {
-        isCurrentlyRecording = false;
-        document.getElementById('mic-icon').className = "fa-solid fa-microphone text-slate-300";
-        document.getElementById('waveform-container').classList.remove('listening');
-    }
-
-    function processTextMessage() {
-        const inputField = document.getElementById('user-text-input');
-        const userText = inputField.value.trim();
-        if (!userText) return;
-        inputField.value = '';
-        executePipelineExecution(userText);
-    }
-
-    // Comprehensive Pipeline Lifecycle Trace Execution
-    async function executePipelineExecution(inputPrompt) {
-        clearDiagnosticHighlights();
-        appendChatMessage('USER', inputPrompt);
-
-        // Step 1: ASR Waveform Extraction
-        await triggerPipelineStep('asr', 'Extracting text strings from voice packet...');
-        
-        // Step 2: NLP Intent Routing
-        await triggerPipelineStep('nlp', 'Analyzing token arrays & syntax parsing tree...');
-        let computedIntent = "fallback_unknown";
-        let capturedLocation = "null";
-
-        const dynamicQuery = inputPrompt.toLowerCase();
-        if (dynamicQuery.includes('weather') || dynamicQuery.includes('temp') || dynamicQuery.includes('rain')) {
-            computedIntent = "get_weather_metrics";
-            capturedLocation = extractEntityTarget(dynamicQuery, ['london', 'paris', 'tokyo', 'delhi', 'bangalore', 'new york']) || "Bangalore";
-        } else if (dynamicQuery.includes('hello') || dynamicQuery.includes('hi ') || dynamicQuery.includes('hey')) {
-            computedIntent = "system_greeting";
-        } else if (dynamicQuery.includes('creator') || dynamicQuery.includes('who made you')) {
-            computedIntent = "fetch_system_author";
-        }
-
-        document.getElementById('slot-intent').innerText = computedIntent;
-        document.getElementById('slot-loc').innerText = capturedLocation;
-
-        // Step 3: Dialogue State Tracking Context Manager
-        await triggerPipelineStep('dialogue', 'Verifying active conversational history maps...');
-        
-        // Step 4: Knowledge Compute Execution
-        await triggerPipelineStep('kb', 'Computing dynamic analytical solution context frames...');
-        let resolutionTextResponse = "I could not resolve that intent clearly. Could you state your query differently?";
-        
-        if (computedIntent === "system_greeting") {
-            resolutionTextResponse = "Hello there! I am your advanced voice-enabled conversational assistant. How can I help you today?";
-        } else if (computedIntent === "fetch_system_author") {
-            resolutionTextResponse = "I was built by a senior automation engineer using advanced frontend components and the Web Speech framework standard.";
-        } else if (computedIntent === "get_weather_metrics") {
-            resolutionTextResponse = `Processing cloud telemetry parameters. The simulated current condition in ${capturedLocation.toUpperCase()} is 24°C with light seasonal winds.`;
-        }
-
-        // Step 5: Voice Synthesis Pipeline Module Execution (TTS)
-        await triggerPipelineStep('tts', 'Compiling voice output wave synthesis frames...');
-        appendChatMessage('SYSTEM_BOT', resolutionTextResponse);
-        synthesizeSpeechOutput(resolutionTextResponse);
-        
-        updateDiagnosticLabel('System Idle', 'ready');
-    }
-
-    function extractEntityTarget(text, validEntitiesList) {
-        for (let targetEntity of validEntitiesList) {
-            if (text.includes(targetEntity)) return targetEntity;
-        }
-        return null;
-    }
-
-    function triggerPipelineStep(nodeId, functionalStatusText) {
-        return new Promise(resolve => {
-            setTimeout(() => {
-                clearDiagnosticHighlights();
-                document.getElementById(`node-${nodeId}`).classList.add('active-node');
-                const pathElement = document.getElementById(`path-${nodeId}`);
-                if (pathElement) pathElement.classList.add('active-path');
-                updateDiagnosticLabel(functionalStatusText, 'processing');
-                resolve();
-            }, 850);
-        });
-    }
-
-    function clearDiagnosticHighlights() {
-        ['asr', 'nlp', 'dialogue', 'kb', 'tts'].forEach(nodeId => {
-            document.getElementById(`node-${nodeId}`).classList.remove('active-node');
-            const pathElement = document.getElementById(`path-${nodeId}`);
-            if (pathElement) pathElement.classList.remove('active-path');
-        });
-    }
-
-    function updateDiagnosticLabel(messageText, stateProfile) {
-        const label = document.getElementById('diagnostic-status-text');
-        label.innerText = messageText.toUpperCase();
-        if (stateProfile === 'ready') label.className = "text-[10px] bg-slate-950 text-slate-400 px-2 py-0.5 rounded border border-slate-800 font-mono";
-        if (stateProfile === 'processing') label.className = "text-[10px] bg-indigo-950/80 text-indigo-300 px-2 py-0.5 rounded border border-indigo-800 font-mono animate-pulse";
-    }
-
-    function appendChatMessage(senderIdentity, displayMessage) {
-        const scroller = document.getElementById('chat-scroller');
-        const messageBubbleWrapper = document.createElement('div');
-        
-        if (senderIdentity === 'USER') {
-            messageBubbleWrapper.className = "flex items-start space-x-2 bg-slate-800/40 border border-slate-800 rounded-xl p-3 max-w-[90%] ml-auto justify-end";
-            messageBubbleWrapper.innerHTML = `
-                <div class="text-right space-y-1">
-                    <span class="text-[10px] text-slate-400 font-bold font-mono">USER_INPUT_STREAM</span>
-                    <p class="text-xs text-indigo-200">${displayMessage}</p>
-                </div>`;
-        } else {
-            messageBubbleWrapper.className = "flex items-start space-x-2 bg-indigo-950/20 border border-indigo-900/40 rounded-xl p-3 max-w-[90%]";
-            messageBubbleWrapper.innerHTML = `
-                <div class="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white text-xs shrink-0 font-bold"><i class="fa-solid fa-robot"></i></div>
-                <div class="space-y-1">
-                    <span class="text-[10px] text-indigo-400 font-bold font-mono">SYSTEM_OUTPUT_TTS</span>
-                    <p class="text-xs text-slate-200">${displayMessage}</p>
-                </div>`;
-        }
-        
-        scroller.appendChild(messageBubbleWrapper);
-        document.getElementById('chat-messages-container').scrollTo({ top: scroller.scrollHeight, behavior: 'smooth' });
-    }
-
-    function synthesizeSpeechOutput(plainTextPayload) {
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel(); // Terminate pending audio streams instantly
-            const voiceUtterance = new SpeechSynthesisUtterance(plainTextPayload);
-            const targetedAccentCode = document.getElementById('tts-accent').value;
-            
-            const systemVoicesList = window.speechSynthesis.getVoices();
-            const selectedVoiceMatch = systemVoicesList.find(voice => voice.lang.includes(targetedAccentCode));
-            if (selectedVoiceMatch) voiceUtterance.voice = selectedVoiceMatch;
-            
-            voiceUtterance.lang = targetedAccentCode;
-            voiceUtterance.rate = 1.0;
-            window.speechSynthesis.speak(voiceUtterance);
-        }
-    }
-
-    function clearChatLogs() {
-        document.getElementById('chat-scroller').innerHTML = '';
-    }
-
-    // Left Navigation Tab Switching
-    function switchLeftTab(targetTabId) {
-        ['concepts', 'quiz'].forEach(tabName => {
-            document.getElementById(`content-${tabName}`).classList.add('hidden');
-            document.getElementById(`tab-${tabName}`).className = "flex-1 py-2 px-3 text-sm font-semibold rounded-lg transition-all text-slate-400 hover:text-slate-200";
-        });
-        document.getElementById(`content-${targetTabId}`).classList.remove('hidden');
-        document.getElementById(`tab-${targetTabId}`).className = "flex-1 py-2 px-3 text-sm font-semibold rounded-lg transition-all text-indigo-400 bg-slate-800/60 shadow-sm border border-slate-700/50";
-        if (targetTabId === 'quiz') resetQuizBoardState();
-    }
-
-    // Component Inspector Dataset Structure
-    const componentsKnowledgeDictionary = {
-        asr: "Automated Speech Recognition (ASR) extracts human voice wave patterns and maps audio amplitudes into standard string character blocks.",
-        dialogue: "The Context Slot Tracker acts as the persistent database state of the session, locking important analytical payload values.",
-        tts: "Text-to-Speech (TTS) maps string responses back into synthesized acoustic audio files, using custom voice engine profiles."
     };
 
-    function inspectComponent(componentKey) {
-        const card = document.getElementById('inspector-card');
-        document.getElementById('inspect-desc').innerText = componentsKnowledgeDictionary[componentKey];
-        card.classList.remove('hidden');
-    }
+    let activeChannelId = 'general-core';
+    let isStreaming = false;
+    
+    // Engine Parameters
+    const engineConfig = {
+        temp: 0.7,
+        tokens: 2048,
+        topp: 0.9,
+        model: 'gpt-4o'
+    };
 
-    // Interactive Architecture Quiz Engine Data
-    const datasetQuizRecords = [
-        { q: "Which component transforms human acoustics into standard text string variables?", o: ["NLU System", "ASR Engine", "Dialogue Manager"], a: 1 },
-        { q: "What does a Dialog Manager use to retain session memory fields?", o: ["Slot Entities", "Audio Resonators", "Regex Arrays"], a: 0 },
-        { q: "What module translates conversational responses back into human language audio output waveforms?", o: ["TTS Engine", "ASR Compiler", "NLP Core Gateway"], a: 0 }
-    ];
+    // DOM Elements Cache
+    const chatScroller = document.getElementById('chat-scroller');
+    const registerIntent = document.getElementById('register-intent');
+    const registerWords = document.getElementById('register-words');
+    const registerConfidence = document.getElementById('register-confidence');
+    const registerLatency = document.getElementById('register-latency');
+    const chatInput = document.getElementById('chat-input');
+    const modelSelector = document.getElementById('model-selector');
 
-    function resetQuizBoardState() {
-        localQuizIndex = 0;
-        localQuizScore = 0;
-        renderQuizQuestionFrame();
-    }
+    // Init Application
+    window.addEventListener('DOMContentLoaded', () => {
+        renderChannelsList();
+        loadActiveChannel();
+        
+        // Sync parameters UI
+        document.getElementById('param-temp').value = engineConfig.temp;
+        document.getElementById('param-tokens').value = engineConfig.tokens;
+        document.getElementById('param-topp').value = engineConfig.topp;
+        modelSelector.value = engineConfig.model;
+    });
 
-    function renderQuizQuestionFrame() {
-        const container = document.getElementById('quiz-options');
-        const nextButton = document.getElementById('btn-quiz-next');
-        nextButton.classList.add('hidden');
-        container.innerHTML = '';
+    // Model Selector Change Handler
+    modelSelector.addEventListener('change', (e) => {
+        engineConfig.model = e.target.value;
+        const alertMsg = `Model successfully reallocated to: **${e.target.value.toUpperCase()}**`;
+        appendMessageDirectly('assistant', 'SystemAgent', 'CONFIG', alertMsg);
+    });
 
-        if (localQuizIndex >= datasetQuizRecords.length) {
-            document.getElementById('quiz-question').innerText = "System Evaluation Architecture Quiz Complete!";
-            confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
-            return;
-        }
-
-        const currentRecord = datasetQuizRecords[localQuizIndex];
-        document.getElementById('quiz-idx').innerText = localQuizIndex + 1;
-        document.getElementById('quiz-score').innerText = localQuizScore;
-        document.getElementById('quiz-question').innerText = currentRecord.q;
-
-        currentRecord.o.forEach((optionString, index) => {
-            const rowButton = document.createElement('button');
-            rowButton.className = "w-full text-left bg-slate-900 hover:bg-slate-800 border border-slate-800 p-2.5 rounded-lg text-xs transition-all";
-            rowButton.innerText = optionString;
-            rowButton.onclick = () => verifyQuizAnswerResponse(index, rowButton);
-            container.appendChild(rowButton);
+    // Rendering Operations
+    function renderChannelsList() {
+        const listContainer = document.getElementById('channels-list');
+        listContainer.innerHTML = '';
+        
+        Object.values(channels).forEach(ch => {
+            const isActive = ch.id === activeChannelId;
+            const btn = document.createElement('button');
+            btn.className = `w-full text-left px-3 py-2.5 text-xs rounded-lg flex items-center justify-between transition-all duration-200 ${
+                isActive 
+                ? 'bg-indigo-600/10 border border-indigo-500/30 text-indigo-200 font-semibold' 
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent'
+            }`;
+            btn.onclick = () => switchChannel(ch.id);
+            
+            btn.innerHTML = `
+                <span class="truncate flex items-center pr-2">
+                    <i class="${ch.icon} mr-2.5 text-xs ${isActive ? 'text-indigo-400' : 'text-slate-500'}"></i>
+                    <span class="truncate">${ch.name}</span>
+                </span>
+                ${isActive ? '<span class="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0"></span>' : ''}
+            `;
+            listContainer.appendChild(btn);
         });
     }
 
-    function verifyQuizAnswerResponse(selectedIdx, selectedButtonNode) {
-        const currentRecord = datasetQuizRecords[localQuizIndex];
-        const allOptionButtons = document.getElementById('quiz-options').querySelectorAll('button');
+    function loadActiveChannel() {
+        const ch = channels[activeChannelId];
+        document.getElementById('active-channel-title').innerHTML = `<i class="${ch.icon} mr-1.5"></i>${ch.name}`;
+        document.getElementById('active-channel-desc').innerText = ch.desc;
         
-        allOptionButtons.forEach(btn => btn.disabled = true);
+        chatScroller.innerHTML = '';
+        ch.messages.forEach(msg => {
+            renderMessageBubble(msg);
+        });
+        chatScroller.scrollTo({ top: chatScroller.scrollHeight });
+    }
 
-        if (selectedIdx === currentRecord.a) {
-            selectedButtonNode.className = "w-full text-left bg-emerald-950/60 border border-emerald-500 p-2.5 rounded-lg text-xs font-semibold text-emerald-200 shadow-lg shadow-emerald-500/10";
-            localQuizScore += 10;
-            document.getElementById('quiz-score').innerText = localQuizScore;
+    function renderMessageBubble(msg) {
+        const isUser = msg.role === 'user';
+        const bubbleWrapper = document.createElement('div');
+        bubbleWrapper.className = `flex items-start space-x-3 max-w-[85%] md:max-w-[75%] ${isUser ? 'ml-auto justify-end' : ''}`;
+        
+        let headerRow = '';
+        if (isUser) {
+            headerRow = `
+                <div class="flex items-center space-x-2 justify-end">
+                    <span class="text-xs font-bold text-slate-200">${msg.sender}</span>
+                    <span class="text-[9px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded border border-slate-700 font-mono">${msg.badge}</span>
+                </div>
+            `;
         } else {
-            selectedButtonNode.className = "w-full text-left bg-red-950/60 border border-red-500 p-2.5 rounded-lg text-xs font-semibold text-red-200";
-            allOptionButtons[currentRecord.a].className = "w-full text-left bg-emerald-950/40 border border-emerald-600/80 p-2.5 rounded-lg text-xs text-emerald-300 font-medium";
+            headerRow = `
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs font-bold text-slate-200">${msg.sender}</span>
+                    <span class="text-[9px] bg-indigo-950/80 text-indigo-400 px-1.5 py-0.5 rounded border border-indigo-900 font-mono">${msg.badge}</span>
+                </div>
+            `;
         }
-        document.getElementById('btn-quiz-next').classList.remove('hidden');
+
+        let innerContent = parseMarkdown(msg.content);
+        
+        // Setup chips if available
+        let chipsRow = '';
+        if (msg.chips && msg.chips.length > 0) {
+            chipsRow = `<div class="mt-3 flex flex-wrap gap-2">`;
+            msg.chips.forEach(chip => {
+                chipsRow += `
+                    <button onclick="sendQuickPrompt('${chip.text.replace(/'/g, "\\'")}')" class="bg-slate-950 hover:bg-indigo-950/50 border border-slate-800 hover:border-indigo-500/30 text-slate-400 hover:text-indigo-300 text-[10px] px-2.5 py-1.5 rounded-lg transition-all text-left font-medium">
+                        ${chip.label}
+                    </button>
+                `;
+            });
+            chipsRow += `</div>`;
+        }
+
+        const avatar = isUser ? '' : `
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white text-xs shrink-0 shadow-lg shadow-indigo-500/10">
+                <i class="fa-solid fa-robot"></i>
+            </div>
+        `;
+
+        bubbleWrapper.innerHTML = `
+            ${avatar}
+            <div class="space-y-1 ${isUser ? 'text-right' : 'text-left'}">
+                ${headerRow}
+                <div class="${isUser ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-slate-900 border border-slate-800/80 text-slate-300 rounded-tl-none'} rounded-2xl p-4 text-xs leading-relaxed shadow-sm">
+                    <div class="prose prose-invert max-w-none text-left leading-relaxed space-y-2">${innerContent}</div>
+                    ${chipsRow}
+                </div>
+                <span class="text-[9px] text-slate-600 font-mono block pl-1">${msg.time}</span>
+            </div>
+        `;
+        
+        chatScroller.appendChild(bubbleWrapper);
     }
 
-    function handleQuizNext() {
-        localQuizIndex++;
-        renderQuizQuestionFrame();
+    // Dynamic Markdown Parser (Basic Engine for Links, Lists, Bolds, and Code Blocks)
+    function parseMarkdown(text) {
+        let esc = text;
+        
+        // Escape standard HTML tags safely
+        esc = esc.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+        // Code blocks: ```javascript [code] ```
+        esc = esc.replace(/```([a-zA-Z]*)\n([\s\S]*?)```/g, function(match, lang, code) {
+            const blockId = 'code-' + Math.random().toString(36).substr(2, 9);
+            return `
+                <div class="my-3 rounded-lg border border-slate-800 bg-slate-950 overflow-hidden font-mono text-[11px]">
+                    <div class="flex items-center justify-between px-3.5 py-1.5 bg-slate-900/80 border-b border-slate-850 text-slate-400 select-none">
+                        <span class="text-[9px] font-bold uppercase tracking-wider">${lang || 'code'}</span>
+                        <button onclick="copyCodePayload('${blockId}')" class="text-[10px] text-slate-400 hover:text-indigo-400 flex items-center gap-1 transition-colors">
+                            <i class="fa-regular fa-copy"></i>Copy Code
+                        </button>
+                    </div>
+                    <pre class="p-3 overflow-x-auto text-emerald-400 leading-relaxed"><code id="${blockId}">${code.trim()}</code></pre>
+                </div>
+            `;
+        });
+
+        // Inline code blocks: `code`
+        esc = esc.replace(/`([^`]+)`/g, '<code class="bg-slate-950 text-rose-400 font-mono px-1.5 py-0.5 rounded border border-slate-800 text-[10.5px] font-bold">$1</code>');
+
+        // Strong emphasis: **text**
+        esc = esc.replace(/\*\*([^*]+)\*\*/g, '<strong class="font-bold text-white">$1</strong>');
+
+        // Lists: * bullet
+        esc = esc.replace(/^\*\s(.*)$/gm, '<li class="ml-4 list-disc text-slate-350 my-1">$1</li>');
+
+        return esc;
     }
 
-    // Trigger pre-fetch of speech elements on load
-    if ('speechSynthesis' in window) {
-        window.speechSynthesis.getVoices();
+    // Workspace Mechanics
+    function switchChannel(channelId) {
+        if (isStreaming) return;
+        activeChannelId = channelId;
+        renderChannelsList();
+        loadActiveChannel();
+        toggleSidebar('left-sidebar', false);
     }
+
+    function createNewThread() {
+        if (isStreaming) return;
+        const threadName = prompt("Enter a name for this custom integration pipeline:", "Integration Handler API");
+        if (!threadName) return;
+
+        const safeId = 'ch-' + Date.now();
+        channels[safeId] = {
+            id: safeId,
+            name: threadName,
+            desc: 'Custom operational workspace sandbox thread',
+            icon: 'fa-solid fa-cubes-stacked',
+            messages: [
+                {
+                    id: Date.now(),
+                    role: 'assistant',
+                    sender: 'SystemAgent',
+                    badge: 'CUSTOM',
+                    time: 'Initialized workspace',
+                    content: `Workspace pipeline **${threadName}** is active. Describe the logic configurations you wish to evaluate.`,
+                    chips: []
+                }
+            ]
+        };
+
+        activeChannelId = safeId;
+        renderChannelsList();
+        loadActiveChannel();
+        toggleSidebar('left-sidebar', false);
+    }
+
+    function clearChatLog() {
+        if (isStreaming) return;
+        channels[activeChannelId].messages = [];
+        loadActiveChannel();
+        
+        registerIntent.innerText = 'null';
+        registerWords.innerText = '0';
+        registerConfidence.innerText = '1.00';
+        registerLatency.innerText = '0ms';
+    }
+
+    // Core Stream Controller Injection
+    function submitUserMessage() {
+        if (isStreaming) return;
+        const userPrompt = chatInput.value.trim();
+        if (!userPrompt) return;
+
+        chatInput.value = '';
+        chatInput.style.height = 'auto'; // Reset sizes
+        
+        appendUserMessageToStore(userPrompt);
+        executeResponsePipeline(userPrompt);
+    }
+
+    function sendQuickPrompt(promptText) {
+        if (isStreaming) return;
+        appendUserMessageToStore(promptText);
+        executeResponsePipeline(promptText);
+    }
+
+    function appendUserMessageToStore(content) {
+        const msg = {
+            id: Date.now(),
+            role: 'user',
+            sender: 'You',
+            badge: 'OPERATOR',
+            time: 'Sent just now',
+            content: content
+        };
+        channels[activeChannelId].messages.push(msg);
+        renderMessageBubble(msg);
+        chatScroller.scrollTo({ top: chatScroller.scrollHeight, behavior: 'smooth' });
+    }
+
+    function appendMessageDirectly(role, sender, badge, text) {
+        const msg = {
+            id: Date.now(),
+            role: role,
+            sender: sender,
+            badge: badge,
+            time: 'Delivered just now',
+            content: text
+        };
+        channels[activeChannelId].messages.push(msg);
+        renderMessageBubble(msg);
+        chatScroller.scrollTo({ top: chatScroller.scrollHeight, behavior: 'smooth' });
+    }
+
+    // Stream Engine Simulated Framework
+    function executeResponsePipeline(query) {
+        isStreaming = true;
+        toggleSendButtonState(true);
+        
+        // Mocking Telemetry
+        const startTime = performance.now();
+        registerIntent.innerText = "evaluating_query...";
+        registerConfidence.innerText = (0.89 + Math.random() * 0.10).toFixed(2);
+        
+        // Append Streaming Bubble Shell
+        const streamId = 'stream-' + Date.now();
+        const bubbleWrapper = document.createElement('div');
+        bubbleWrapper.className = "flex items-start space-x-3 max-w-[85%] md:max-w-[75%]";
+        
+        bubbleWrapper.innerHTML = `
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white text-xs shrink-0 shadow-lg">
+                <i class="fa-solid fa-robot"></i>
+            </div>
+            <div class="space-y-1">
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs font-bold text-slate-200">NexusAgent</span>
+                    <span class="text-[9px] bg-indigo-950/80 text-indigo-400 px-1.5 py-0.5 rounded border border-indigo-900 font-mono">STREAMING_v5</span>
+                </div>
+                <div class="bg-slate-900 border border-slate-800/80 rounded-2xl rounded-tl-none p-4 text-xs text-slate-300 leading-relaxed shadow-sm">
+                    <div id="${streamId}" class="prose prose-invert max-w-none space-y-2 cursor-blink"></div>
+                </div>
+                <span class="text-[9px] text-slate-600 font-mono block pl-1">Delivering...</span>
+            </div>
+        `;
+        chatScroller.appendChild(bubbleWrapper);
+        chatScroller.scrollTo({ top: chatScroller.scrollHeight, behavior: 'smooth' });
+
+        // Build Payload Answer
+        let fullPayloadText = `Successfully resolved instructions. Telemetry is active. Here is your pipeline configuration block for reference.`;
+        const lower = query.toLowerCase();
+
+        if (lower.includes('api') || lower.includes('explain')) {
+            registerIntent.innerText = "describe_api_routes";
+            fullPayloadText = `Asynchronous API processing executes requests decoupled from the primary thread loop. \n\nHere is an example structure utilizing **Promise-based interfaces** inside JavaScript pipelines: \n\n\`\`\`javascript\nasync function dispatchJob(payload) {\n  const response = await fetch('/api/v5/dispatch', {\n    method: 'POST',\n    headers: { 'Content-Type': 'application/json' },\n    body: JSON.stringify(payload)\n  });\n  \n  return await response.json();\n}\n\`\`\`\n\n*   **High Performance**: Unblocks user interface updates.\n*   **Safe Handling**: Captures error state registers instantly without program terminations.`;
+        } else if (lower.includes('css') || lower.includes('layout')) {
+            registerIntent.innerText = "css_generative";
+            fullPayloadText = `A modern high-density layout pattern utilizing modern utility structures: \n\n\`\`\`css\n.workspace-container {\n  display: grid;\n  grid-template-columns: var(--sidebar-width) 1fr var(--telemetry-width);\n  height: 100vh;\n  overflow: hidden;\n  background-color: #030712;\n}\n\`\`\`\n\n*   **Grid Framework**: Automatically allocates column partitions cleanly across varied monitors.`;
+        } else if (lower.includes('memory') || lower.includes('leak')) {
+            registerIntent.innerText = "diagnostic_js";
+            fullPayloadText = `To protect against persistent memory leak vectors in Javascript loops:\n\n*   Always invoke **clearTimeout()** or **clearInterval()** before deleting execution nodes.\n*   Remove listeners upon destruction loops:\n\n\`\`\`javascript\nfunction bindConsole(element) {\n  const clickLog = () => console.log('Ping telemetry');\n  element.addEventListener('click', clickLog);\n  \n  // Return disposer pattern\n  return () => element.removeEventListener('click', clickLog);\n}\n\`\`\`\n\nThis guarantees garbage collectors free the allocated registers instantly.`;
+        } else {
+            registerIntent.innerText = "general_qa";
+            fullPayloadText = `We processed your telemetry request with active parameter states.\n\n*   Current Temperature: **${engineConfig.temp}**\n*   Active Confidence Value: **${registerConfidence.innerText}**\n\nYour sandbox variables are active on current frames.`;
+        }
+
+        // Streaming Simulation Loop
+        let currentIndex = 0;
+        const streamContainer = document.getElementById(streamId);
+        
+        function streamTick() {
+            if (currentIndex < fullPayloadText.length) {
+                // Adjust dynamic chunk size based on token settings
+                const chunkSize = engineConfig.temp > 1.2 ? 6 : 3; 
+                currentIndex += chunkSize;
+                if (currentIndex > fullPayloadText.length) currentIndex = fullPayloadText.length;
+                
+                streamContainer.innerHTML = parseMarkdown(fullPayloadText.slice(0, currentIndex));
+                
+                // Words processed count update
+                registerWords.innerText = streamContainer.innerText.split(/\s+/).length;
+                
+                chatScroller.scrollTo({ top: chatScroller.scrollHeight });
+                setTimeout(streamTick, 15);
+            } else {
+                // Done Streaming
+                streamContainer.classList.remove('cursor-blink');
+                
+                // Resolve system latency metric
+                const latency = Math.round(performance.now() - startTime);
+                registerLatency.innerText = latency + 'ms';
+                
+                // Save final message in the thread channel memory state
+                const finalMsgObj = {
+                    id: Date.now(),
+                    role: 'assistant',
+                    sender: 'NexusAgent',
+                    badge: 'RESOLVED',
+                    time: `Processed in ${latency}ms`,
+                    content: fullPayloadText
+                };
+                channels[activeChannelId].messages.push(finalMsgObj);
+                
+                // Remove the dynamic stream elements wrapper and reload layout from memory to lock state listeners
+                loadActiveChannel();
+                
+                isStreaming = false;
+                toggleSendButtonState(false);
+            }
+        }
+        
+        setTimeout(streamTick, 300); // slight initial pipeline latency simulation
+    }
+
+    // Toggle Button Loading State UI
+    function toggleSendButtonState(loading) {
+        const sendBtn = document.getElementById('send-button');
+        const sendIcon = document.getElementById('send-icon');
+        if (loading) {
+            sendBtn.classList.add('bg-slate-800', 'cursor-not-allowed');
+            sendBtn.classList.remove('bg-indigo-600', 'hover:bg-indigo-500');
+            sendIcon.className = "fa-solid fa-circle-notch animate-spin text-slate-400";
+        } else {
+            sendBtn.classList.remove('bg-slate-800', 'cursor-not-allowed');
+            sendBtn.classList.add('bg-indigo-600', 'hover:bg-indigo-500');
+            sendIcon.className = "fa-solid fa-arrow-up text-sm";
+        }
+    }
+
+    // Drawer Visibility Utility
+    function toggleSidebar(sidebarId, isVisible) {
+        const sidebar = document.getElementById(sidebarId);
+        const backdrop = document.getElementById(`${sidebarId}-backdrop`);
+        
+        if (isVisible) {
+            sidebar.classList.remove('-translate-x-full', 'translate-x-full');
+            sidebar.classList.add('translate-x-0');
+            backdrop.classList.remove('hidden');
+        } else {
+            if (sidebarId === 'left-sidebar') sidebar.classList.add('-translate-x-full');
+            if (sidebarId === 'right-sidebar') sidebar.classList.add('translate-x-full');
+            backdrop.classList.add('hidden');
+        }
+    }
+
+    // Dynamic Engine Parameters Tuning
+    function updateParam(paramKey, val) {
+        if (paramKey === 'temp') {
+            engineConfig.temp = parseFloat(val);
+            document.getElementById('val-temp').innerText = val;
+        } else if (paramKey === 'tokens') {
+            engineConfig.tokens = parseInt(val);
+            document.getElementById('val-tokens').innerText = val;
+        } else if (paramKey === 'topp') {
+            engineConfig.topp = parseFloat(val);
+            document.getElementById('val-topp').innerText = val;
+        }
+    }
+
+    // Copy Code Helper Action
+    function copyCodePayload(elemId) {
+        const targetText = document.getElementById(elemId).innerText;
+        navigator.clipboard.writeText(targetText).then(() => {
+            alert('Code block copy dispatched to host memory clipboard.');
+        }).catch(err => {
+            console.error('Failed to copy code: ', err);
+        });
+    }
+
+    // Export Workspace State to clean local JSON File
+    function exportJSONState() {
+        const exportPayload = {
+            timestamp: new Date().toISOString(),
+            engine_parameters: engineConfig,
+            active_channels_manifest: channels
+        };
+        
+        const jsonStr = JSON.stringify(exportPayload, null, 2);
+        const blob = new Blob([jsonStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        
+        const dlAnchor = document.createElement('a');
+        dlAnchor.href = url;
+        dlAnchor.download = `nexus-workspace-state-${activeChannelId}.json`;
+        document.body.appendChild(dlAnchor);
+        dlAnchor.click();
+        document.body.removeChild(dlAnchor);
+        URL.revokeObjectURL(url);
+    }
+
+    // Handle user keyboard submit routines
+    function handleInputKeyPress(event) {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            submitUserMessage();
+        }
+    }
+
+    // Auto-expand textarea on text wrap
+    chatInput.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight) + 'px';
+    });
 </script>
 </body>
 </html>
