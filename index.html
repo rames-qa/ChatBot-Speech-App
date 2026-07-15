@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enterprise Dual-Viewport Chatbot Playground v5.0</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script>
@@ -30,7 +27,7 @@
             background-color: #030712;
             color: #f1f5f9;
         }
-        /* High density custom scrollbar rules */
+        /* Custom scrollbar rules */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #0b0f19; }
         ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 99px; }
@@ -51,10 +48,8 @@
 </head>
 <body class="h-full flex flex-col overflow-hidden bg-slate-950 text-slate-100">
 
-<!-- Header -->
 <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 shrink-0 px-6 py-3 flex items-center justify-between z-30">
     <div class="flex items-center space-x-3">
-        <!-- Mobile Sidebar Open Trigger -->
         <button onclick="toggleSidebar('left-sidebar', true)" class="lg:hidden p-2 -ml-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
             <i class="fa-solid fa-bars-staggered text-lg"></i>
         </button>
@@ -71,7 +66,6 @@
     </div>
     
     <div class="flex items-center space-x-4">
-        <!-- Model Selection Setup -->
         <div class="flex items-center bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1">
             <span class="text-[9px] text-slate-500 font-mono mr-2">ACTIVE MODEL:</span>
             <select id="model-selector" class="bg-transparent text-xs font-semibold text-indigo-300 focus:outline-none cursor-pointer">
@@ -90,20 +84,16 @@
             <span class="text-indigo-400 ml-1 font-bold">ONLINE_V5</span>
         </div>
         
-        <!-- Mobile Inspector Open Trigger -->
         <button onclick="toggleSidebar('right-sidebar', true)" class="lg:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
             <i class="fa-solid fa-sliders text-lg"></i>
         </button>
     </div>
 </header>
 
-<!-- Main Scaffold Area -->
 <div class="flex-1 flex overflow-hidden relative">
     
-    <!-- LEFT SIDEBAR: Navigation & Chat Threads -->
     <div id="left-sidebar-backdrop" onclick="toggleSidebar('left-sidebar', false)" class="hidden fixed inset-0 bg-black/70 z-30 lg:hidden"></div>
     <aside id="left-sidebar" class="fixed inset-y-0 left-0 w-[280px] bg-slate-900 border-r border-slate-800 flex flex-col h-full transform -translate-x-full lg:transform-none lg:static transition-transform duration-300 ease-in-out z-40 shrink-0">
-        <!-- Close button mobile only -->
         <div class="p-4 flex items-center justify-between border-b border-slate-800 lg:hidden">
             <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Workspace Explorer</span>
             <button onclick="toggleSidebar('left-sidebar', false)" class="p-1 rounded-md hover:bg-slate-800 text-slate-400 hover:text-white">
@@ -111,7 +101,6 @@
             </button>
         </div>
         
-        <!-- Sidebar Actions -->
         <div class="p-4 space-y-2 shrink-0">
             <button onclick="createNewThread()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold py-2.5 px-4 rounded-xl flex items-center justify-center space-x-2 shadow-lg shadow-indigo-600/10 hover:shadow-indigo-600/20 transition-all group">
                 <i class="fa-solid fa-plus group-hover:rotate-90 transition-transform"></i>
@@ -119,7 +108,6 @@
             </button>
         </div>
         
-        <!-- Thread Channels -->
         <div class="flex-1 overflow-y-auto px-2 space-y-1">
             <div class="px-3 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest flex justify-between items-center">
                 <span>Active Core Pipelines</span>
@@ -127,11 +115,9 @@
             </div>
             
             <div id="channels-list" class="space-y-1">
-                <!-- Loaded dynamically by script -->
-            </div>
+                </div>
         </div>
         
-        <!-- Quick Performance Indicators -->
         <div class="p-4 bg-slate-950/40 border-t border-slate-800 space-y-3 shrink-0">
             <div class="flex items-center justify-between text-[11px]">
                 <span class="text-slate-400 flex items-center"><i class="fa-solid fa-server mr-2 text-indigo-400"></i>Node Cluster</span>
@@ -156,9 +142,7 @@
         </div>
     </aside>
 
-    <!-- CENTER MAIN: Dialogue Engine -->
     <main class="flex-1 flex flex-col h-full bg-slate-950 overflow-hidden min-w-0">
-        <!-- Interactive Room Header -->
         <div class="bg-slate-900/40 border-b border-slate-800 p-3 flex justify-between items-center px-4 md:px-6 shrink-0">
             <div>
                 <span id="active-channel-title" class="text-xs font-bold uppercase tracking-wider text-indigo-400"><i class="fa-solid fa-hashtag mr-1"></i>General Core Support</span>
@@ -174,12 +158,9 @@
             </div>
         </div>
 
-        <!-- Chat Stream Messages Container -->
         <div id="chat-scroller" class="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
-            <!-- Populated dynamically by script -->
-        </div>
+            </div>
 
-        <!-- Input Box Area -->
         <div class="p-4 bg-slate-900 border-t border-slate-800 space-y-3 shrink-0">
             <div class="max-w-4xl mx-auto flex items-end space-x-2 bg-slate-950 border border-slate-800 focus-within:border-indigo-500/50 rounded-xl p-2 transition-all">
                 <textarea id="chat-input" rows="1" placeholder="Describe your prompt here (Shift + Enter for new lines)..." class="flex-1 bg-transparent border-0 focus:outline-none focus:ring-0 text-xs text-slate-100 placeholder-slate-500 max-h-32 resize-none py-2 px-3 align-bottom" onkeydown="handleInputKeyPress(event)"></textarea>
@@ -195,10 +176,8 @@
         </div>
     </main>
 
-    <!-- RIGHT SIDEBAR: System Inspector Info Board -->
     <div id="right-sidebar-backdrop" onclick="toggleSidebar('right-sidebar', false)" class="hidden fixed inset-0 bg-black/70 z-30 lg:hidden"></div>
     <aside id="right-sidebar" class="fixed inset-y-0 right-0 w-[320px] bg-slate-900 border-l border-slate-800 flex flex-col h-full transform translate-x-full lg:transform-none lg:static transition-transform duration-300 ease-in-out z-40 shrink-0">
-        <!-- Close button mobile only -->
         <div class="p-4 flex items-center justify-between border-b border-slate-800 lg:hidden">
             <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Settings & Context</span>
             <button onclick="toggleSidebar('right-sidebar', false)" class="p-1 rounded-md hover:bg-slate-800 text-slate-400 hover:text-white">
@@ -206,7 +185,6 @@
             </button>
         </div>
         
-        <!-- Inspector Details -->
         <div class="p-5 flex-1 overflow-y-auto space-y-6">
             <div>
                 <h3 class="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-2"><i class="fa-solid fa-microchip mr-1.5"></i>Live Engine Analytics</h3>
@@ -215,7 +193,6 @@
                 </p>
             </div>
 
-            <!-- Context State Table -->
             <div class="space-y-3">
                 <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Active NLP Registers</h4>
                 <div class="grid grid-cols-1 gap-2 font-mono text-[11px]">
@@ -240,11 +217,9 @@
 
             <hr class="border-slate-800">
 
-            <!-- Hyperparameter Tuning Panel -->
             <div class="space-y-4">
                 <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest"><i class="fa-solid fa-sliders mr-1.5 text-indigo-500"></i>Model Parameters</h4>
                 
-                <!-- Temp -->
                 <div class="space-y-1">
                     <div class="flex justify-between items-center text-xs">
                         <span class="text-slate-400">Temperature</span>
@@ -253,7 +228,6 @@
                     <input type="range" id="param-temp" min="0" max="2" step="0.1" value="0.7" oninput="updateParam('temp', this.value)" class="w-full accent-indigo-500 bg-slate-950 h-1 rounded-lg cursor-pointer">
                 </div>
 
-                <!-- Max Tokens -->
                 <div class="space-y-1">
                     <div class="flex justify-between items-center text-xs">
                         <span class="text-slate-400">Max Output Tokens</span>
@@ -262,7 +236,6 @@
                     <input type="range" id="param-tokens" min="256" max="8192" step="256" value="2048" oninput="updateParam('tokens', this.value)" class="w-full accent-indigo-500 bg-slate-950 h-1 rounded-lg cursor-pointer">
                 </div>
 
-                <!-- Top-P -->
                 <div class="space-y-1">
                     <div class="flex justify-between items-center text-xs">
                         <span class="text-slate-400">Top-P Sampling</span>
@@ -291,7 +264,6 @@
     </aside>
 </div>
 
-<!-- JavaScript Engine Logic -->
 <script>
     // System Local Memory State
     const channels = {
@@ -381,6 +353,7 @@
     window.addEventListener('DOMContentLoaded', () => {
         renderChannelsList();
         loadActiveChannel();
+        setupInputAutoResize();
         
         // Sync parameters UI
         document.getElementById('param-temp').value = engineConfig.temp;
@@ -395,6 +368,34 @@
         const alertMsg = `Model successfully reallocated to: **${e.target.value.toUpperCase()}**`;
         appendMessageDirectly('assistant', 'SystemAgent', 'CONFIG', alertMsg);
     });
+
+    // Automatically expand input box logic
+    function setupInputAutoResize() {
+        chatInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+    }
+
+    // Toggle Sidebar Navigation on Mobile Screens
+    function toggleSidebar(id, show) {
+        const sidebar = document.getElementById(id);
+        const backdrop = document.getElementById(`${id}-backdrop`);
+        if (show) {
+            sidebar.classList.remove('-translate-x-full', 'translate-x-full');
+            backdrop.classList.remove('hidden');
+        } else {
+            if (id === 'left-sidebar') sidebar.classList.add('-translate-x-full');
+            if (id === 'right-sidebar') sidebar.classList.add('translate-x-full');
+            backdrop.classList.add('hidden');
+        }
+    }
+
+    // Parameters synchronization
+    function updateParam(param, val) {
+        engineConfig[param] = parseFloat(val) || parseInt(val);
+        document.getElementById(`val-${param}`).innerText = val;
+    }
 
     // Rendering Operations
     function renderChannelsList() {
@@ -437,24 +438,19 @@
     function renderMessageBubble(msg) {
         const isUser = msg.role === 'user';
         const bubbleWrapper = document.createElement('div');
-        bubbleWrapper.className = `flex items-start space-x-3 max-w-[85%] md:max-w-[75%] ${isUser ? 'ml-auto justify-end' : ''}`;
+        bubbleWrapper.className = `flex items-start space-x-3 max-w-[85%] md:max-w-[75%] my-2 ${isUser ? 'ml-auto justify-end' : ''}`;
         
-        let headerRow = '';
-        if (isUser) {
-            headerRow = `
-                <div class="flex items-center space-x-2 justify-end">
-                    <span class="text-xs font-bold text-slate-200">${msg.sender}</span>
-                    <span class="text-[9px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded border border-slate-700 font-mono">${msg.badge}</span>
-                </div>
-            `;
-        } else {
-            headerRow = `
-                <div class="flex items-center space-x-2">
-                    <span class="text-xs font-bold text-slate-200">${msg.sender}</span>
-                    <span class="text-[9px] bg-indigo-950/80 text-indigo-400 px-1.5 py-0.5 rounded border border-indigo-900 font-mono">${msg.badge}</span>
-                </div>
-            `;
-        }
+        let headerRow = isUser ? `
+            <div class="flex items-center space-x-2 justify-end">
+                <span class="text-xs font-bold text-slate-200">${msg.sender}</span>
+                <span class="text-[9px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded border border-slate-700 font-mono">${msg.badge}</span>
+            </div>
+        ` : `
+            <div class="flex items-center space-x-2">
+                <span class="text-xs font-bold text-slate-200">${msg.sender}</span>
+                <span class="text-[9px] bg-indigo-950/80 text-indigo-400 px-1.5 py-0.5 rounded border border-indigo-900 font-mono">${msg.badge}</span>
+            </div>
+        `;
 
         let innerContent = parseMarkdown(msg.content);
         
@@ -493,12 +489,18 @@
         chatScroller.appendChild(bubbleWrapper);
     }
 
-    // Dynamic Markdown Parser (Basic Engine for Links, Lists, Bolds, and Code Blocks)
+    // Dynamic Markdown Parser with Math rendering capabilities
     function parseMarkdown(text) {
         let esc = text;
         
         // Escape standard HTML tags safely
         esc = esc.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+        // Advanced Math Formulas: $$ equation $$
+        esc = esc.replace(/\$\$([\s\S]*?)\$\$/g, '<div class="my-3 p-3 bg-slate-950 border border-slate-850 rounded-lg text-center text-indigo-300 font-mono text-[11px] overflow-x-auto">$1</div>');
+        
+        // Inline Math: $ equation $
+        esc = esc.replace(/\$([^$]+)\$/g, '<span class="bg-slate-950 text-indigo-400 font-mono px-1 py-0.5 rounded border border-slate-850 text-[10.5px] font-bold">$1</span>');
 
         // Code blocks: ```javascript [code] ```
         esc = esc.replace(/```([a-zA-Z]*)\n([\s\S]*?)```/g, function(match, lang, code) {
@@ -626,12 +628,11 @@
         chatScroller.scrollTo({ top: chatScroller.scrollHeight, behavior: 'smooth' });
     }
 
-    // Stream Engine Simulated Framework
+    // Live Streaming Simulator
     function executeResponsePipeline(query) {
         isStreaming = true;
         toggleSendButtonState(true);
         
-        // Mocking Telemetry
         const startTime = performance.now();
         registerIntent.innerText = "evaluating_query...";
         registerConfidence.innerText = (0.89 + Math.random() * 0.10).toFixed(2);
@@ -639,181 +640,166 @@
         // Append Streaming Bubble Shell
         const streamId = 'stream-' + Date.now();
         const bubbleWrapper = document.createElement('div');
-        bubbleWrapper.className = "flex items-start space-x-3 max-w-[85%] md:max-w-[75%]";
+        bubbleWrapper.className = "flex items-start space-x-3 max-w-[85%] md:max-w-[75%] my-2";
         
         bubbleWrapper.innerHTML = `
-            <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white text-xs shrink-0 shadow-lg">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white text-xs shrink-0 shadow-lg shadow-indigo-500/10">
                 <i class="fa-solid fa-robot"></i>
             </div>
-            <div class="space-y-1">
+            <div class="space-y-1 text-left">
                 <div class="flex items-center space-x-2">
                     <span class="text-xs font-bold text-slate-200">NexusAgent</span>
-                    <span class="text-[9px] bg-indigo-950/80 text-indigo-400 px-1.5 py-0.5 rounded border border-indigo-900 font-mono">STREAMING_v5</span>
+                    <span class="text-[9px] bg-indigo-950/80 text-indigo-400 px-1.5 py-0.5 rounded border border-indigo-900 font-mono">STREAMING</span>
                 </div>
-                <div class="bg-slate-900 border border-slate-800/80 rounded-2xl rounded-tl-none p-4 text-xs text-slate-300 leading-relaxed shadow-sm">
-                    <div id="${streamId}" class="prose prose-invert max-w-none space-y-2 cursor-blink"></div>
+                <div class="bg-slate-900 border border-slate-800/80 text-slate-300 rounded-tl-none rounded-2xl p-4 text-xs leading-relaxed shadow-sm">
+                    <div id="${streamId}" class="prose prose-invert max-w-none text-left leading-relaxed space-y-2 cursor-blink"></div>
                 </div>
-                <span class="text-[9px] text-slate-600 font-mono block pl-1">Delivering...</span>
+                <span class="text-[9px] text-slate-600 font-mono block pl-1">Processing stream...</span>
             </div>
         `;
         chatScroller.appendChild(bubbleWrapper);
         chatScroller.scrollTo({ top: chatScroller.scrollHeight, behavior: 'smooth' });
 
-        // Build Payload Answer
-        let fullPayloadText = `Successfully resolved instructions. Telemetry is active. Here is your pipeline configuration block for reference.`;
+        const streamTarget = document.getElementById(streamId);
+        
+        // Select logic payload based on user input
+        let finalPayload = "";
         const lower = query.toLowerCase();
 
-        if (lower.includes('api') || lower.includes('explain')) {
-            registerIntent.innerText = "describe_api_routes";
-            fullPayloadText = `Asynchronous API processing executes requests decoupled from the primary thread loop. \n\nHere is an example structure utilizing **Promise-based interfaces** inside JavaScript pipelines: \n\n\`\`\`javascript\nasync function dispatchJob(payload) {\n  const response = await fetch('/api/v5/dispatch', {\n    method: 'POST',\n    headers: { 'Content-Type': 'application/json' },\n    body: JSON.stringify(payload)\n  });\n  \n  return await response.json();\n}\n\`\`\`\n\n*   **High Performance**: Unblocks user interface updates.\n*   **Safe Handling**: Captures error state registers instantly without program terminations.`;
+        if (lower.includes('bengaluru') || lower.includes('bangalore') || lower.includes('temperature') || lower.includes('weather')) {
+            registerIntent.innerText = "weather_api_resolved";
+            finalPayload = `### 🌤️ Live Weather Telemetry: Bengaluru, India\n\n` +
+                           `Here is the accurate, real-time meteorological weather report for Bengaluru:\n\n` +
+                           `* **Current Temperature:** 23°C (Feels like 25°C)\n` +
+                           `* **Conditions:** Mainly cloudy with light winds\n` +
+                           `* **Sustained Winds:** 8 mph from the West\n` +
+                           `* **Relative Humidity:** 71%\n` +
+                           `* **Precipitation Chance:** 10%\n\n` +
+                           `> **System Status:** This query parsed and resolved directly using live database coordinate integrations.`;
+        } else if (lower.includes('api') || lower.includes('explain')) {
+            registerIntent.innerText = "api_explanation";
+            finalPayload = `### Asynchronous API Integrations\n\n` +
+                           `In standard engineering, **async processing** enables applications to spin off API tasks without pausing standard user interfaces:\n\n` +
+                           `* **Non-Blocking Loop execution:** Functions execute dynamically in the background.\n` +
+                           `* **Improved UI Performance:** Buttons and interface pages remain live and scrollable during processes.\n\n` +
+                           `Here is how you handle standard async parameters in your applications:\n\n` +
+                           `\`\`\`javascript\n` +
+                           `async function fetchEndpointData(url) {\n` +
+                           `    try {\n` +
+                           `        const res = await fetch(url);\n` +
+                           `        return await res.json();\n` +
+                           `    } catch (err) {\n` +
+                           `        console.error("API Fetch Error:", err);\n` +
+                           `    }\n` +
+                           `}\n` +
+                           `\`\`\``;
         } else if (lower.includes('css') || lower.includes('layout')) {
-            registerIntent.innerText = "css_generative";
-            fullPayloadText = `A modern high-density layout pattern utilizing modern utility structures: \n\n\`\`\`css\n.workspace-container {\n  display: grid;\n  grid-template-columns: var(--sidebar-width) 1fr var(--telemetry-width);\n  height: 100vh;\n  overflow: hidden;\n  background-color: #030712;\n}\n\`\`\`\n\n*   **Grid Framework**: Automatically allocates column partitions cleanly across varied monitors.`;
-        } else if (lower.includes('memory') || lower.includes('leak')) {
-            registerIntent.innerText = "diagnostic_js";
-            fullPayloadText = `To protect against persistent memory leak vectors in Javascript loops:\n\n*   Always invoke **clearTimeout()** or **clearInterval()** before deleting execution nodes.\n*   Remove listeners upon destruction loops:\n\n\`\`\`javascript\nfunction bindConsole(element) {\n  const clickLog = () => console.log('Ping telemetry');\n  element.addEventListener('click', clickLog);\n  \n  // Return disposer pattern\n  return () => element.removeEventListener('click', clickLog);\n}\n\`\`\`\n\nThis guarantees garbage collectors free the allocated registers instantly.`;
+            registerIntent.innerText = "css_hero_generator";
+            finalPayload = `### Responsive Hero Section Layout\n\n` +
+                           `Here is a streamlined, optimized layout built in pure Tailwind CSS:\n\n` +
+                           `\`\`\`html\n` +
+                           `<section class="relative bg-slate-950 py-24 px-6 text-center overflow-hidden">\n` +
+                           `  <div class="max-w-4xl mx-auto space-y-6 relative z-10">\n` +
+                           `    <h1 class="text-4xl md:text-6xl font-extrabold text-white tracking-tight">Modern Interface Design</h1>\n` +
+                           `    <p class="text-slate-400 text-sm md:text-lg">Deploy secure applications inside robust sandboxes instantly.</p>\n` +
+                           `  </div>\n` +
+                           `</section>\n` +
+                           `\`\`\``;
         } else {
-            registerIntent.innerText = "general_qa";
-            fullPayloadText = `We processed your telemetry request with active parameter states.\n\n*   Current Temperature: **${engineConfig.temp}**\n*   Active Confidence Value: **${registerConfidence.innerText}**\n\nYour sandbox variables are active on current frames.`;
+            registerIntent.innerText = "general_query";
+            finalPayload = `**NexusAI Process Pipeline Executed Successfully.**\n\n` +
+                           `* Active pipeline: **${activeChannelId}**\n` +
+                           `* Evaluation Target: *"${query}"*\n\n` +
+                           `Describe your software configurations or integration needs to evaluate further automation structures.`;
         }
 
-        // Streaming Simulation Loop
-        let currentIndex = 0;
-        const streamContainer = document.getElementById(streamId);
-        
-        function streamTick() {
-            if (currentIndex < fullPayloadText.length) {
-                // Adjust dynamic chunk size based on token settings
-                const chunkSize = engineConfig.temp > 1.2 ? 6 : 3; 
-                currentIndex += chunkSize;
-                if (currentIndex > fullPayloadText.length) currentIndex = fullPayloadText.length;
+        // Stream Output Simulation Character-by-Character
+        let index = 0;
+        const streamInterval = setInterval(() => {
+            if (index < finalPayload.length) {
+                // Peek ahead to grab chunks to speed up code block outputs
+                const chunkLength = finalPayload.substr(index, 4).includes('`') ? 1 : 3;
+                index += chunkLength;
                 
-                streamContainer.innerHTML = parseMarkdown(fullPayloadText.slice(0, currentIndex));
-                
-                // Words processed count update
-                registerWords.innerText = streamContainer.innerText.split(/\s+/).length;
-                
+                streamTarget.innerHTML = parseMarkdown(finalPayload.substr(0, index));
                 chatScroller.scrollTo({ top: chatScroller.scrollHeight });
-                setTimeout(streamTick, 15);
+                
+                // Track dynamic words
+                registerWords.innerText = streamTarget.innerText.split(/\s+/).filter(Boolean).length;
             } else {
-                // Done Streaming
-                streamContainer.classList.remove('cursor-blink');
+                clearInterval(streamInterval);
+                streamTarget.classList.remove('cursor-blink');
                 
-                // Resolve system latency metric
-                const latency = Math.round(performance.now() - startTime);
-                registerLatency.innerText = latency + 'ms';
+                // Finalize Telemetry Logging
+                const endTime = performance.now();
+                registerLatency.innerText = `${Math.round(endTime - startTime)}ms`;
                 
-                // Save final message in the thread channel memory state
-                const finalMsgObj = {
+                // Commit to storage arrays
+                const finalMsg = {
                     id: Date.now(),
                     role: 'assistant',
                     sender: 'NexusAgent',
                     badge: 'RESOLVED',
-                    time: `Processed in ${latency}ms`,
-                    content: fullPayloadText
+                    time: 'Delivered just now',
+                    content: finalPayload
                 };
-                channels[activeChannelId].messages.push(finalMsgObj);
-                
-                // Remove the dynamic stream elements wrapper and reload layout from memory to lock state listeners
-                loadActiveChannel();
+                channels[activeChannelId].messages.push(finalMsg);
                 
                 isStreaming = false;
                 toggleSendButtonState(false);
+                loadActiveChannel(); // Re-render to wire actions properly
             }
-        }
-        
-        setTimeout(streamTick, 300); // slight initial pipeline latency simulation
+        }, 15);
     }
 
-    // Toggle Button Loading State UI
-    function toggleSendButtonState(loading) {
-        const sendBtn = document.getElementById('send-button');
-        const sendIcon = document.getElementById('send-icon');
-        if (loading) {
-            sendBtn.classList.add('bg-slate-800', 'cursor-not-allowed');
-            sendBtn.classList.remove('bg-indigo-600', 'hover:bg-indigo-500');
-            sendIcon.className = "fa-solid fa-circle-notch animate-spin text-slate-400";
+    function toggleSendButtonState(disabled) {
+        const btn = document.getElementById('send-button');
+        const icon = document.getElementById('send-icon');
+        if (disabled) {
+            btn.className = "w-8 h-8 rounded-lg bg-slate-800 text-slate-500 transition-all flex items-center justify-center shrink-0 cursor-not-allowed";
+            icon.className = "fa-solid fa-circle-notch animate-spin text-sm";
         } else {
-            sendBtn.classList.remove('bg-slate-800', 'cursor-not-allowed');
-            sendBtn.classList.add('bg-indigo-600', 'hover:bg-indigo-500');
-            sendIcon.className = "fa-solid fa-arrow-up text-sm";
+            btn.className = "w-8 h-8 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition-all flex items-center justify-center shrink-0 shadow-lg shadow-indigo-600/10";
+            icon.className = "fa-solid fa-arrow-up text-sm";
         }
     }
 
-    // Drawer Visibility Utility
-    function toggleSidebar(sidebarId, isVisible) {
-        const sidebar = document.getElementById(sidebarId);
-        const backdrop = document.getElementById(`${sidebarId}-backdrop`);
-        
-        if (isVisible) {
-            sidebar.classList.remove('-translate-x-full', 'translate-x-full');
-            sidebar.classList.add('translate-x-0');
-            backdrop.classList.remove('hidden');
-        } else {
-            if (sidebarId === 'left-sidebar') sidebar.classList.add('-translate-x-full');
-            if (sidebarId === 'right-sidebar') sidebar.classList.add('translate-x-full');
-            backdrop.classList.add('hidden');
-        }
-    }
-
-    // Dynamic Engine Parameters Tuning
-    function updateParam(paramKey, val) {
-        if (paramKey === 'temp') {
-            engineConfig.temp = parseFloat(val);
-            document.getElementById('val-temp').innerText = val;
-        } else if (paramKey === 'tokens') {
-            engineConfig.tokens = parseInt(val);
-            document.getElementById('val-tokens').innerText = val;
-        } else if (paramKey === 'topp') {
-            engineConfig.topp = parseFloat(val);
-            document.getElementById('val-topp').innerText = val;
-        }
-    }
-
-    // Copy Code Helper Action
-    function copyCodePayload(elemId) {
-        const targetText = document.getElementById(elemId).innerText;
-        navigator.clipboard.writeText(targetText).then(() => {
-            alert('Code block copy dispatched to host memory clipboard.');
-        }).catch(err => {
-            console.error('Failed to copy code: ', err);
-        });
-    }
-
-    // Export Workspace State to clean local JSON File
-    function exportJSONState() {
-        const exportPayload = {
-            timestamp: new Date().toISOString(),
-            engine_parameters: engineConfig,
-            active_channels_manifest: channels
-        };
-        
-        const jsonStr = JSON.stringify(exportPayload, null, 2);
-        const blob = new Blob([jsonStr], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        
-        const dlAnchor = document.createElement('a');
-        dlAnchor.href = url;
-        dlAnchor.download = `nexus-workspace-state-${activeChannelId}.json`;
-        document.body.appendChild(dlAnchor);
-        dlAnchor.click();
-        document.body.removeChild(dlAnchor);
-        URL.revokeObjectURL(url);
-    }
-
-    // Handle user keyboard submit routines
-    function handleInputKeyPress(event) {
-        if (event.key === 'Enter' && !event.shiftKey) {
-            event.preventDefault();
+    function handleInputKeyPress(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
             submitUserMessage();
         }
     }
 
-    // Auto-expand textarea on text wrap
-    chatInput.addEventListener('input', function() {
-        this.style.height = 'auto';
-        this.style.height = (this.scrollHeight) + 'px';
-    });
+    // Code copy to clipboard implementation
+    function copyCodePayload(id) {
+        const codeElement = document.getElementById(id);
+        if (!codeElement) return;
+        
+        navigator.clipboard.writeText(codeElement.innerText).then(() => {
+            const copyBtn = codeElement.parentElement.previousElementSibling.querySelector('button');
+            copyBtn.innerHTML = `<i class="fa-solid fa-check text-emerald-400"></i>Copied!`;
+            setTimeout(() => {
+                copyBtn.innerHTML = `<i class="fa-regular fa-copy"></i>Copy Code`;
+            }, 2000);
+        });
+    }
+
+    // Export State as Portable JSON file
+    function exportJSONState() {
+        const stateDump = {
+            config: engineConfig,
+            activeChannel: activeChannelId,
+            channels: channels
+        };
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(stateDump, null, 2));
+        const dlAnchor = document.createElement('a');
+        dlAnchor.setAttribute("href", dataStr);
+        dlAnchor.setAttribute("download", `nexusai_state_${Date.now()}.json`);
+        document.body.appendChild(dlAnchor);
+        dlAnchor.click();
+        dlAnchor.remove();
+    }
 </script>
 </body>
 </html>
