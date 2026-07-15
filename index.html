@@ -591,6 +591,7 @@
         executeResponsePipeline(userPrompt);
     }
 
+    // Quick Prompts Trigger
     function sendQuickPrompt(promptText) {
         if (isStreaming) return;
         appendUserMessageToStore(promptText);
